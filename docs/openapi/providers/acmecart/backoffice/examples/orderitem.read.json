@@ -1,0 +1,8 @@
+{
+  "id": "item_003",
+  "sku": "DEF456",
+  "name": "Accessory Pack",
+  "qty": 3,
+  "price_minor": 250,
+  "total_minor": 750
+}

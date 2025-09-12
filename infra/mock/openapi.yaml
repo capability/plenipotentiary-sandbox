@@ -1,0 +1,12 @@
+openapi: 3.0.3
+info: { title: Mock API, version: 0.0.1 }
+paths:
+  /health:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { type: object, properties: { ok: { type: boolean } }, required: [ok] }
+              examples: { default: { value: { ok: true } } }
