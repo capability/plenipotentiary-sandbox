@@ -1,0 +1,5 @@
+{
+  "code": "rate_limit_exceeded",
+  "message": "Too many requests, please try again later",
+  "details": [{ "field": "retry_after", "message": "5" }]
+}

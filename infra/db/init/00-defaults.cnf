@@ -1,0 +1,3 @@
+# Ensures new users default to MySQL 8's recommended plugin
+[mysqld]
+default_authentication_plugin=caching_sha2_password

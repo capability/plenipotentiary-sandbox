@@ -1,0 +1,58 @@
+{
+  "name": "frontend (vite)",
+  "dockerComposeFile": ["../../docker-compose.yml", "./compose.enable.yml", "./compose.init.yml"],
+  "service": "frontend",
+  "workspaceFolder": "/usr/src/app",
+  "runServices": ["frontend"],
+  "overrideCommand": false,
+
+  // Node image includes a 'node' user with home /home/node
+  "remoteUser": "node",
+
+  // Keep VS Code server fast/persistent in a named volume
+  "mounts": [
+    "source=vscode-server-frontend,target=/home/node/.vscode-server,type=volume"
+    // NOTE: pnpm store comes from docker-compose at /pnpm-store; no second store mount here
+  ],
+
+  // Point pnpm at the compose-mounted store
+  "containerEnv": {
+    "PNPM_STORE_DIR": "/pnpm-store"
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "workbench.colorTheme": "Default Light Modern",
+
+        // TypeScript/ESLint scoped to the workspace
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "eslint.workingDirectories": [{ "directory": ".", "changeProcessCWD": true }],
+
+        // Reduce watcher churn
+        "files.watcherExclude": {
+          "**/node_modules/**": true,
+          "**/dist/**": true
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "vitest.explorer",
+        "yoavbls.pretty-ts-errors",
+        "esbenp.prettier-vscode",
+        "editorconfig.editorconfig",
+        // If this is Vue:
+        "Vue.volar",
+        "Vue.vscode-typescript-vue-plugin"
+      ]
+    }
+  },
+
+  // Install JS dependencies with pnpm (frozen lockfile if possible)
+  "postCreateCommand": "sh -lc 'set -eux; corepack enable; corepack prepare pnpm@10.15.1 --activate; pnpm config set store-dir ${PNPM_STORE_DIR}; pnpm install --frozen-lockfile || true'",
+
+  // Forward vite dev server port
+  "forwardPorts": [5173],
+  "otherPortsAttributes": { "onAutoForward": "notify" }
+}

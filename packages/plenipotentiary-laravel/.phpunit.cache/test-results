@@ -1,0 +1,1 @@
+{"version":"pest_2.36.0","defects":[],"times":{"P\\Tests\\Package\\BindsContractsTest::__pest_evaluable_it_binds_AuthStrategy_to_a_concrete_implementation":0.033,"P\\Tests\\Package\\LoadsConfigTest::__pest_evaluable_it_merges_package_config":0.001}}
