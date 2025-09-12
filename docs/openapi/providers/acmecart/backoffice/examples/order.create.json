@@ -1,0 +1,19 @@
+{
+  "customer_id": "cust_12345",
+  "currency": "GBP",
+  "notes": "Deliver before Friday",
+  "items": [
+    {
+      "sku": "ABC123",
+      "name": "Acme Widget",
+      "qty": 2,
+      "price_minor": 1299
+    },
+    {
+      "sku": "XYZ789",
+      "name": "Replacement Part",
+      "qty": 1,
+      "price_minor": 499
+    }
+  ]
+}

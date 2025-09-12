@@ -1,0 +1,80 @@
+{
+  "name": "stack (api + frontend)",
+  "dockerComposeFile": ["../docker-compose.yml", "./compose.init.yml"],
+  "service": "api",
+
+  // Open the project root in VS Code (the folder that contains this .devcontainer/)
+  "workspaceFolder": "/workspaces/stack-root",
+
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspaces/stack-root,type=bind,consistency=cached",
+    "source=vscode-server,target=/home/app-user/.vscode-server,type=volume",
+    "source=composer-cache,target=/home/app-user/.composer/cache,type=volume"
+  ],
+
+  "runServices": ["api", "web", "db", "cache", "mail", "frontend", "caddy"],
+  "overrideCommand": false,
+
+  "remoteUser": "app-user",
+  "remoteEnv": { 
+    "SHELL": "/bin/bash",
+    "HOME": "/home/app-user",
+    "VSCODE_AGENT_FOLDER": "/home/app-user/.vscode-server" 
+  },
+  "containerEnv": {
+    "VSCODE_AGENT_FOLDER": "/home/app-user/.vscode-server",
+    "XDEBUG_MODE": "${localEnv:XDEBUG_MODE:off}"
+  },
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "app-user",
+      "uid": "1000",
+      "gid": "1000",
+      "updateRemoteUserUID": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "nodeGypDependencies": false
+    }
+  },
+
+  "forwardPorts": [8080, 3307, 6380, 8025, 1025, 5173],
+  "otherPortsAttributes": { "onAutoForward": "notify" },
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.cwd": "/workspaces/stack-root",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": { "path": "/bin/bash", "args": ["-l"] }
+        },
+        "intelephense.environment.phpVersion": "8.3",
+        "intelephense.environment.includePaths": ["/var/www/html/vendor"],
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "typescript.tsdk": "apps/frontend/node_modules/typescript/lib",
+        "eslint.workingDirectories": [{ "directory": "apps/frontend", "changeProcessCWD": true }],
+        "vitest.projectRoot": "apps/frontend",
+        "vitest.commandLine": "pnpm vitest",
+        "files.exclude": { "**/.git": true, "**/.DS_Store": true },
+        "files.watcherExclude": { "**/node_modules/**": true, "**/vendor/**": true, "**/storage/**": true },
+        "search.exclude": { "**/node_modules": true, "**/vendor": true, "**/storage": true },
+        "editor.formatOnSave": true
+      }
+    }
+  },
+
+  // Leave Laravel at /var/www/html (compose mounts ./apps/backend there)
+  "postCreateCommand": "sh -lc 'set -eux; \
+    if command -v corepack >/dev/null 2>&1; then corepack enable; corepack prepare pnpm@10.15.1 --activate || true; fi; \
+    mkdir -p /home/app-user/.vscode-server /var/www/html/storage /var/www/html/bootstrap/cache; \
+    chown -R app-user:app-user /home/app-user /var/www/html/storage /var/www/html/bootstrap/cache || true; \
+    cd /var/www/html; \
+    [ -f composer.json ] && composer install --no-interaction --prefer-dist || true; \
+    [ -f .env ] || cp .env.example .env || true; \
+    if ! grep -qE \"^APP_KEY=base64:.+\" .env; then php artisan key:generate --force; fi; \
+    php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force || true'"
+}
+

@@ -1,0 +1,45 @@
+{
+  "data": [
+    {
+      "id": "ord_67890",
+      "customer_id": "cust_12345",
+      "currency": "GBP",
+      "total_minor": 3087,
+      "status": "placed",
+      "notes": "Deliver before Friday",
+      "items": [
+        {
+          "id": "item_001",
+          "sku": "ABC123",
+          "name": "Acme Widget",
+          "qty": 2,
+          "price_minor": 1299,
+          "total_minor": 2598
+        },
+        {
+          "id": "item_002",
+          "sku": "XYZ789",
+          "name": "Replacement Part",
+          "qty": 1,
+          "price_minor": 499,
+          "total_minor": 499
+        }
+      ],
+      "created_at": "2025-09-11T10:10:00Z",
+      "updated_at": "2025-09-11T10:15:00Z"
+    },
+    {
+      "id": "ord_98765",
+      "customer_id": "cust_67890",
+      "currency": "GBP",
+      "total_minor": 1999,
+      "status": "draft",
+      "notes": null,
+      "items": [],
+      "created_at": "2025-09-08T08:30:00Z",
+      "updated_at": null
+    }
+  ],
+  "next_cursor": null,
+  "limit": 50
+}
