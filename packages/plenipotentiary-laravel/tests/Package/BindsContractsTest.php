@@ -1,8 +1,7 @@
 <?php
 
-use Plenipotentiary\Laravel\Tests\Support\TestCase;
-use Plenipotentiary\Laravel\Contracts\AuthStrategy;
 use Plenipotentiary\Laravel\Auth\NoopAuth;
+use Plenipotentiary\Laravel\Contracts\AuthStrategy;
 
 it('binds AuthStrategy to a concrete implementation', function () {
     $impl = app(AuthStrategy::class);

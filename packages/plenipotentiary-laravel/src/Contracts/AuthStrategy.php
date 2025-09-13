@@ -13,8 +13,8 @@ use Psr\Http\Message\RequestInterface;
 interface AuthStrategy
 {
     /**
-     * @param RequestInterface $request  The outbound request to sign or decorate.
-     * @param array<string,mixed> $context Optional context (scopes, tenant, provider hints).
+     * @param  RequestInterface  $request  The outbound request to sign or decorate.
+     * @param  array<string,mixed>  $context  Optional context (scopes, tenant, provider hints).
      * @return RequestInterface The request with auth applied.
      */
     public function apply(RequestInterface $request, array $context = []): RequestInterface;
