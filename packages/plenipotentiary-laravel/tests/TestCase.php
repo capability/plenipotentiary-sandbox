@@ -1,10 +1,20 @@
 <?php
 
-namespace Tests;
+namespace Plenipotentiary\Laravel\Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Orchestra\Testbench\TestCase as BaseTestCase;
+use Plenipotentiary\Laravel\PleniServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
-    //
+    protected function getPackageProviders($app)
+    {
+        return [PleniServiceProvider::class];
+    }
+
+    protected function defineEnvironment($app)
+    {
+        // Any minimal env config for tests
+        $app['config']->set('app.key', 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=');
+    }
 }

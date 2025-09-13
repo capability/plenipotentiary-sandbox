@@ -6,14 +6,22 @@ use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
 class TrustHosts extends Middleware
 {
-    protected function hosts(): array
+    /**
+     * Get the host patterns that should be trusted.
+     *
+     * When developing or running tests, we allow all hosts (empty array).
+     * In other envs, trust the app URL's domain and its subdomains.
+     */
+    public function hosts(): array
     {
-        if (app()->environment('local')) {
-            // In local, don’t restrict hosts (skip specifying patterns)
+        if (app()->environment(['local', 'testing'])) {
             return [];
         }
 
-        // In non-local, trust the APP_URL host (+ subdomains)
-        return [$this->allSubdomainsOfApplicationUrl()];
+        return [
+            $this->allSubdomainsOfApplicationUrl(), // e.g. *.your-app-domain.tld
+            // You can add explicit hosts if you need:
+            // 'your-app-domain.tld',
+        ];
     }
 }
