@@ -1,26 +1,20 @@
-## Summary
+# Task: <Specific piece of work>
 
-Explain what this PR does and why.
+**Goal**: <what is produced>
 
-## Changes
+## Definition of Done
+- [ ] Code + tests
+- [ ] Docs updated (file/path)
+- [ ] CI green
 
-- [ ] Feature
-- [ ] Fix
-- [ ] Docs
-- [ ] Chore
+**Links**: Story #, Epic E<n>
 
-## Testing
+## Branch & Commits
+- Branch naming: `feature/e<n>-<seq>-<slug>` (epic), or `fix/<slug>`, `chore/<slug>`, `docs/<slug>`
+- Conventional commits: `feat|fix|chore|docs|test|refactor|perf|ci(scope): subject`
 
-Steps taken to test this change:
-
-1. …
-2. …
-
-## Related Issues
-
-Closes #<issue-number> (if applicable)
+---
 
 ## Notes
-
-Any extra context for reviewers.
-
+- What changed / why
+- Risks / rollbacks
