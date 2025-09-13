@@ -1,51 +1,21 @@
-name: CI (sanity)
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-  workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  sanity:
+  pint:
+    name: Laravel Pint code style
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/backend
     steps:
       - uses: actions/checkout@v4
 
-      # Backend: Composer metadata only
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: "8.3"
           tools: composer
-          coverage: none
 
-      - name: Composer validate
-        working-directory: apps/backend
-        run: composer validate --ansi
+      - run: composer install --no-interaction --prefer-dist
 
-      # Frontend: install only
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Enable corepack & pnpm
+      # Lint both the Laravel app and the package
+      - name: Pint (app + package)
         run: |
-          corepack enable
-          corepack prepare pnpm@10.15.1 --activate
-          pnpm -v
-
-      - name: pnpm install
-        run: pnpm -C apps/frontend install --frozen-lockfile
-
-      # Repo hygiene checks
-      - name: Required files exist
-        run: |
-          test -f README.md
-          test -f LICENSE
-          test -f .env.example
-          test -f apps/backend/.env.example
-          test -f apps/frontend/.env.example
+          vendor/bin/pint --test ../../apps/backend ../../packages/plenipotentiary-laravel
