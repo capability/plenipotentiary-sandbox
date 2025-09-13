@@ -1,0 +1,27 @@
+name: Task
+description: Create a scoped piece of work using the team template
+title: "Task: <short summary>"
+labels: ["task"]
+body:
+  - type: input
+    id: goal
+    attributes:
+      label: Goal
+      description: What will be produced?
+      placeholder: e.g., Implement E0-02 schema migrations
+    validations:
+      required: true
+  - type: textarea
+    id: dod
+    attributes:
+      label: Definition of Done
+      value: |
+        - [ ] Code + tests
+        - [ ] Docs updated (file/path)
+        - [ ] CI green
+  - type: input
+    id: links
+    attributes:
+      label: Links
+      placeholder: "Story #123, Epic E1"
+
