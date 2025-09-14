@@ -9,7 +9,8 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspaces/stack-root,type=bind,consistency=cached",
     "source=vscode-server,target=/home/app-user/.vscode-server,type=volume",
-    "source=composer-cache,target=/home/app-user/.composer/cache,type=volume"
+    "source=composer-cache,target=/home/app-user/.composer/cache,type=volume",
+    "source=pnpm-store,target=/pnpm-store,type=volume"
   ],
 
   "runServices": ["api", "web", "db", "cache", "mail", "frontend", "caddy"],
@@ -23,7 +24,8 @@
   },
   "containerEnv": {
     "VSCODE_AGENT_FOLDER": "/home/app-user/.vscode-server",
-    "XDEBUG_MODE": "${localEnv:XDEBUG_MODE:off}"
+    "XDEBUG_MODE": "${localEnv:XDEBUG_MODE:off}",
+    "PNPM_STORE_DIR": "/pnpm-store"
   },
 
   "features": {
@@ -61,13 +63,13 @@
         ],
         "php.validate.executablePath": "/usr/local/bin/php",
 
-        // Frontend (TypeScript, ESLint, Vitest)
+        // Frontend (Nuxt 2 + Vue 2 with pnpm store volume)
         "typescript.tsdk": "apps/frontend/node_modules/typescript/lib",
         "eslint.workingDirectories": [
           { "directory": "apps/frontend", "changeProcessCWD": true }
         ],
-        "vitest.projectRoot": "apps/frontend",
-        "vitest.commandLine": "pnpm vitest",
+        "jest.jestCommandLine": "pnpm test:unit --",
+        "jest.rootPath": "apps/frontend",
 
         // Ignore noise
         "files.exclude": { "**/.git": true, "**/.DS_Store": true },
@@ -89,12 +91,21 @@
 
   // Post-create ensures backend is bootstrapped
   "postCreateCommand": "sh -lc 'set -eux; \
-    if command -v corepack >/dev/null 2>&1; then corepack enable; corepack prepare pnpm@10.15.1 --activate || true; fi; \
-    mkdir -p /home/app-user/.vscode-server /workspaces/stack-root/apps/backend/storage /workspaces/stack-root/apps/backend/bootstrap/cache; \
-    chown -R app-user:app-user /home/app-user /workspaces/stack-root/apps/backend/storage /workspaces/stack-root/apps/backend/bootstrap/cache || true; \
-    cd /workspaces/stack-root/apps/backend; \
-    [ -f composer.json ] && composer install --no-interaction --prefer-dist || true; \
-    [ -f .env ] || cp .env.example .env || true; \
-    if ! grep -qE \"^APP_KEY=base64:.+\" .env; then php artisan key:generate --force; fi; \
-    php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force || true'"
+  # ensure dirs and perms
+  mkdir -p /home/app-user/.vscode-server \
+           /workspaces/stack-root/apps/backend/storage \
+           /workspaces/stack-root/apps/backend/bootstrap/cache; \
+  chown -R app-user:app-user /home/app-user \
+           /workspaces/stack-root/apps/backend/storage \
+           /workspaces/stack-root/apps/backend/bootstrap/cache || true; \
+  # backend bootstrap
+  cd /workspaces/stack-root/apps/backend; \
+  if [ ! -f vendor/autoload.php ] && [ -f composer.json ]; then composer install --no-interaction --prefer-dist; fi; \
+  [ -f .env ] || cp .env.example .env || true; \
+  grep -qE \"^APP_KEY=base64:.+\" .env || php artisan key:generate --force; \
+  # run migrations if DB is reachable, no-op if already up-to-date
+  php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force --no-interaction || true \
+'"
+
+
 }
