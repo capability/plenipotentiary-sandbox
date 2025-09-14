@@ -1,7 +1,57 @@
+# docker-compose.dev.yml
 services:
   api:
     build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
       target: development
+    working_dir: /workspaces/stack-root/apps/backend
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
+      APP_ROOT: /workspaces/stack-root/apps/backend
+      COMPOSER_CACHE_DIR: /home/app-user/.composer/cache
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+    volumes:
+      - .:/workspaces/stack-root # RW bind of whole repo
+      - composer_cache:/home/app-user/.composer/cache # composer cache in home, not in code tree
+    tmpfs: [] # cancel any base tmpfs on app paths
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_started
+
+  web:
+    image: nginx:alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_web
+    volumes:
+      - .:/workspaces/stack-root:ro
+      - ./apps/backend/docker/nginx/default.dev.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  horizon:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+      target: development
+    working_dir: /workspaces/stack-root/apps/backend
+    command: sh -lc "php artisan horizon"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_ROOT: /workspaces/stack-root/apps/backend
+      QUEUE_CONNECTION: redis
+    volumes:
+      - .:/workspaces/stack-root
+    depends_on:
+      api:
+        condition: service_started
+      cache:
+        condition: service_started
+    profiles: ["delivery"]

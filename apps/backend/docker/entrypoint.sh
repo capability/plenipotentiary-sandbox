@@ -4,7 +4,7 @@ set -euo pipefail
 APP_USER=app-user
 APP_GROUP=app-user
 APP_HOME=/home/${APP_USER}
-APP_ROOT=/var/www/html
+APP_ROOT="${APP_ROOT:-$PWD}"   # env wins, else working_dir
 
 mkdir -p \
   "${APP_ROOT}/vendor" \
@@ -38,10 +38,9 @@ chown_if_needed "${APP_HOME}/.vscode-server"
 
 chmod -R u+rwX,g+rwX "${APP_HOME}/.vscode-server" || true
 
-# Install composer deps if vendor missing and not production
+# install deps if missing and not prod
 if [[ ! -f "${APP_ROOT}/vendor/autoload.php" && "${APP_ENV:-local}" != "production" ]]; then
   su -s /bin/sh -c "cd '${APP_ROOT}' && composer install --prefer-dist --no-interaction" "${APP_USER}"
 fi
 
-# IMPORTANT: start php-fpm as root master (children drop to pool user)
 exec php-fpm -F

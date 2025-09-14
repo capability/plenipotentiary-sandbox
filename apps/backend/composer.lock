@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6572f4928c202611fbab45d5354ceec",
+    "content-hash": "1be6871748566e6c1524dac61a175653",
     "packages": [
         {
             "name": "brick/math",
@@ -71,8 +71,8 @@
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "/workspaces/stack-root/packages/plenipotentiary-laravel",
-                "reference": "5f7324f5158df581e2cfe2500dd4c5848adc87d4"
+                "url": "../../packages/plenipotentiary-laravel",
+                "reference": "42ee6263801b7bbc049e9c1e18125f3d2057e1a8"
             },
             "require": {
                 "illuminate/http": "^11.0",
@@ -84,8 +84,7 @@
                 "brianium/paratest": "^7.8.4",
                 "orchestra/testbench": "^9.0",
                 "pestphp/pest": "^3.0",
-                "pestphp/pest-plugin-laravel": "^3.0",
-                "phpunit/phpunit": "^11.2"
+                "pestphp/pest-plugin-laravel": "^3.0"
             },
             "type": "library",
             "extra": {
@@ -105,13 +104,18 @@
                     "Plenipotentiary\\Laravel\\Tests\\": "tests/"
                 }
             },
+            "scripts": {
+                "test": [
+                    "vendor/bin/pest --colors=always"
+                ]
+            },
             "license": [
                 "MIT"
             ],
             "description": "Opinionated integration/orchestration layer for Laravel.",
             "transport-options": {
                 "symlink": true,
-                "relative": false
+                "relative": true
             }
         },
         {
@@ -7681,16 +7685,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.23",
+            "version": "2.1.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "a34502adbbd5c2366b5a97679848a5ace4f6f2f5"
+                "reference": "4087d28bd252895874e174d65e26b2c202ed893a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a34502adbbd5c2366b5a97679848a5ace4f6f2f5",
-                "reference": "a34502adbbd5c2366b5a97679848a5ace4f6f2f5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/4087d28bd252895874e174d65e26b2c202ed893a",
+                "reference": "4087d28bd252895874e174d65e26b2c202ed893a",
                 "shasum": ""
             },
             "require": {
@@ -7735,7 +7739,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-10T11:42:22+00:00"
+            "time": "2025-09-12T14:26:42+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
