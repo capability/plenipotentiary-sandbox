@@ -1,59 +1,56 @@
 name: CI
 
 on:
-  push:            # runs on all branches
-  pull_request:    # runs for PRs between any branches
-  workflow_dispatch:
+  push:              # runs on all branches
+  pull_request:      # runs for PRs between any branches
+  workflow_dispatch: # manual trigger
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
-:
+
 jobs:
   pint:
     name: Laravel Pint code style
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/backend
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: '8.3'
           tools: composer
 
-      - run: composer install --no-interaction --prefer-dist
+      - name: Composer install (backend app)
+        working-directory: apps/backend
+        run: composer install --no-interaction --prefer-dist
 
-      # Lint both the Laravel app and the package
       - name: Pint (app + package)
+        working-directory: apps/backend
         run: |
-          vendor/bin/pint --test . ../../packages/plenipotentiary-laravel
+          vendor/bin/pint --test . ../packages/plenipotentiary-laravel
 
   pest:
     name: Pest tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/backend
     steps:
       - uses: actions/checkout@v4
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.3"
+          php-version: '8.3'
           tools: composer
 
-      - run: composer install --no-interaction --prefer-dist
+      - name: Composer install (backend app)
+        working-directory: apps/backend
+        run: composer install --no-interaction --prefer-dist
 
-      # Run app tests
       - name: Pest (backend app)
+        working-directory: apps/backend
         run: vendor/bin/pest --colors=always --testsuite=Feature
 
-      # Run package tests
       - name: Pest (package plenipotentiary-laravel)
-        working-directory: ../../packages/plenipotentiary-laravel
+        working-directory: packages/plenipotentiary-laravel
         run: |
           composer install --no-interaction --prefer-dist
           vendor/bin/pest --colors=always
