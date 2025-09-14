@@ -7,6 +7,7 @@
   "workspaceFolder": "/workspaces/stack-root",
 
   "mounts": [
+    "source=${localEnv:HOME}/.gitmessage.txt,target=/home/app-user/.gitmessage.txt,type=bind,consistency=cached",
     "source=${localWorkspaceFolder},target=/workspaces/stack-root,type=bind,consistency=cached",
     "source=vscode-server,target=/home/app-user/.vscode-server,type=volume",
     "source=composer-cache,target=/home/app-user/.composer/cache,type=volume",
