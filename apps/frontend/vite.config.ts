@@ -1,4 +1,7 @@
+/// <reference types="node" />
+
 import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue'; // or react if that’s your stack
 
 function parseSourceMap(value?: string): boolean | 'hidden' | 'inline' | false {
   if (!value) return false;
@@ -11,23 +14,28 @@ function parseSourceMap(value?: string): boolean | 'hidden' | 'inline' | false {
 }
 
 export default defineConfig(({ mode }) => {
-  const sm = mode === 'production'
-    ? parseSourceMap(process.env.SOURCEMAPS)
-    : true;
+  const sm =
+    mode === 'production'
+      ? parseSourceMap(process.env.SOURCEMAPS)
+      : true;
+
+  const frontendHost =
+    process.env.FRONTEND_HOST ||
+    `ui.${process.env.PROJECT_SLUG || 'plenipotentiary-sandbox'}.test`;
 
   return {
     build: {
       sourcemap: sm,
     },
+    plugins: [vue()],
     server: {
       host: '0.0.0.0',
-      // Required for HMR over TLS when proxied through Caddy
+      allowedHosts: [frontendHost, 'localhost'],
       hmr: {
-        host: process.env.FRONTEND_HOST || 'ui.${process.env.PROJECT_SLUG}.test',
+        host: frontendHost,
         protocol: 'wss',
         clientPort: 443,
       },
     },
   };
 });
-
