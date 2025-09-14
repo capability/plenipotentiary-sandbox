@@ -101,6 +101,13 @@ sh:
       {{compose}} exec -it -u {{container_user}} {{api_svc}} bash; \
     fi
 
+sh-root:
+    @if [ "{{_in_container}}" = "1" ]; then \
+      exec -u root bash; \
+    else \
+      {{compose}} exec -it -u root {{api_svc}} bash; \
+    fi
+
 up:
     @{{ensure_host}}
     {{compose}} up -d {{db_svc}} {{cache_svc}} {{mail_svc}} {{api_svc}} {{web_svc}}
@@ -140,6 +147,29 @@ test:
 
 test-cov:
     @just run-backend '(composer run -q test:cov || php artisan test --coverage --min=0)'
+
+watch-app-tests:
+    @{{ensure_host}}
+    watchexec -e php -w apps/backend -- \
+      docker compose exec api vendor/bin/pest --colors=always
+
+watch-package-tests:
+    @{{ensure_host}}
+    watchexec -e php -w packages/plenipotentiary-laravel -- \
+      docker compose exec api bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always"
+
+# Watch BOTH in parallel with prefixed output
+watch-all-tests:
+	@{{ensure_host}}
+	bash -ceu '\
+	  prefix(){ stdbuf -oL sed -e "s/^/[$$1] /"; } ; \
+	  ( watchexec -e php -w apps/backend -- \
+	      docker compose exec api vendor/bin/pest --colors=always | prefix app ) & APP=$$! ; \
+	  ( watchexec -e php -w packages/plenipotentiary-laravel -- \
+	      docker compose exec api bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always" | prefix pkg ) & PKG=$$! ; \
+	  trap "kill $$APP $$PKG" INT TERM ; \
+	  wait \
+	'
 
 lint:
     @just run-backend 'composer lint'

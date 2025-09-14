@@ -18,3 +18,8 @@ it('returns ready on /readyz', function () {
                  ->etc()
         );
 });
+
+// Temporary test to verify the test harness is working
+// it('boots the test harness', function () {
+//     expect(false)->toBeTrue(); // <- temp fail
+// });
