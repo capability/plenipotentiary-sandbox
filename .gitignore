@@ -81,6 +81,11 @@ apps/backend/coverage.xml
 # Frontend: Vite/TS + pnpm (apps/frontend)
 # =============================================================================
 
+# nuxt
+.nuxt
+.output
+dist
+
 # Node
 apps/frontend/node_modules/
 # keep lockfile
