@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2019",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
+    "moduleResolution": "Node",
+    "allowJs": true,
+    "checkJs": false,
     "jsx": "preserve",
+    "noEmit": true,
+    "strict": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] }
+    "paths": { "@/*": ["./*"] },
+    "types": ["node", "jest"],          // removed "vite/client"
+    "skipLibCheck": true
   },
-  "include": ["src", "vitest.config.ts", "vite.config.ts"]
+  "include": ["**/*.js", "**/*.vue", "test/**/*.js"],
+  "exclude": ["node_modules", ".nuxt", "dist", "coverage"]
 }

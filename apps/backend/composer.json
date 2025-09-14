@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sandbox to develop the plenipotentiary package.",
     "keywords": [
         "laravel",
         "framework"
@@ -10,9 +10,11 @@
     "license": "MIT",
     "repositories": [
         {
-        "type": "path",
-        "url": "/workspaces/stack-root/packages/plenipotentiary-laravel",
-        "options": { "symlink": true }
+            "type": "path",
+            "url": "../../packages/plenipotentiary-laravel",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {

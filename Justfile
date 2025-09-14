@@ -15,7 +15,8 @@ _in_container := `test -f /.dockerenv && echo 1 || echo 0`
 container_user := "app-user"
 
 # Docker Compose + common service names
-compose     := "docker compose"
+compose     := "docker compose -f docker-compose.yml -f docker-compose.dev.yml"
+compose_prod := "docker compose -f docker-compose.yml"
 api_svc     := "api"
 web_svc     := "web"
 db_svc      := "db"
@@ -224,64 +225,79 @@ fe-store-clear:
     {{compose}} run -T --rm --no-deps {{fe_svc}} sh -lc 'rm -rf /pnpm-store/* && echo "pnpm store cleared"'
 
 # ----------------------------------------------------------------------------
-# CI simulators
+# CI simulators (mirror .github/workflows/ci.yml)
 # ----------------------------------------------------------------------------
+
 ci:
+    just ci-pint
     just ci-backend-sqlite
+    just ci-package
     just ci-frontend
 
 ci-all:
+    just ci-pint
     just ci-backend-sqlite
     just ci-backend-mysql
+    just ci-package
     just ci-frontend
 
-ci-backend-sqlite:
-    @if [ "{{_in_container}}" = "1" ]; then \
-      {{backend_cd}}; \
-      composer install --no-interaction --no-progress --prefer-dist; \
-      php -r "file_exists('.env') || copy('.env.example','.env');"; \
-      php artisan key:generate --force; \
-      php artisan config:cache; \
-      php artisan route:cache; \
-      php artisan test --coverage-clover=coverage.xml; \
-    else \
-      {{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc ' \
-        {{backend_cd}}; \
-        composer install --no-interaction --no-progress --prefer-dist; \
-        php -r "file_exists('\''.env'\'') || copy('\''.env.example'\'','\''.env'\'');"; \
-        php artisan key:generate --force; \
-        php artisan config:cache; \
-        php artisan route:cache; \
-        php artisan test --coverage-clover=coverage.xml \
-      '; \
-    fi
+# Style checks (Laravel Pint)
+ci-pint:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/pint --test . ../../packages/plenipotentiary-laravel \
+    '
 
+# Backend tests with sqlite (default, in-memory DB + array cache)
+ci-backend-sqlite:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    [ -f .env ] || cp .env.example .env; \
+    php artisan key:generate --force; \
+    export DB_CONNECTION=sqlite DB_DATABASE=":memory:" CACHE_DRIVER=array QUEUE_CONNECTION=sync SESSION_DRIVER=array; \
+    php artisan config:clear && php artisan route:clear; \
+    vendor/bin/pest --colors=always --coverage-clover=coverage.xml \
+    '
+
+# Backend tests with mysql (requires db container)
 ci-backend-mysql:
     @{{ensure_host}}
     {{compose}} up -d {{db_svc}} >/dev/null
-    {{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc ' \
-      {{backend_cd}}; \
-      composer install --no-interaction --no-progress --prefer-dist; \
-      php -r "file_exists('\''.env'\'') || copy('\''.env.example'\'','\''.env'\'');"; \
-      php artisan key:generate --force; \
-      php artisan config:cache; \
-      php artisan route:cache; \
-      DB_CONNECTION=mysql DB_HOST=db DB_PORT=3306 DB_DATABASE=laravel DB_USERNAME=laravel DB_PASSWORD=secret \
-      php artisan test --coverage-clover=coverage.xml \
+    {{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    [ -f .env ] || cp .env.example .env; \
+    php artisan key:generate --force; \
+    export DB_CONNECTION=mysql DB_HOST=db DB_PORT=3306 DB_DATABASE=laravel DB_USERNAME=laravel DB_PASSWORD=secret; \
+    php artisan config:clear && php artisan route:clear; \
+    vendor/bin/pest --colors=always --coverage-clover=coverage.xml \
     '
 
+# Package tests (plenipotentiary-laravel)
+ci-package:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    cd /workspaces/stack-root/packages/plenipotentiary-laravel; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/pest --colors=always \
+    '
+
+# Frontend (lint, typecheck, test, build)
 ci-frontend:
     @{{ensure_host}}
-    {{compose}} pull {{fe_svc}} >/dev/null || true
-    {{compose}} run -T --rm --no-deps -w {{fe_dir}} -e CI=1 {{fe_svc}} sh -lc '\
-      set -e; \
-      corepack enable; \
-      corepack prepare pnpm@10.15.1 --activate; \
-      rm -rf node_modules; \
-      pnpm install --frozen-lockfile --reporter=silent --no-color; \
+    {{compose}} up -d {{fe_svc}} >/dev/null
+    {{compose}} exec -T {{fe_svc}} sh -lc '\
+      set -eu; \
+      corepack enable; corepack prepare pnpm@10.15.1 --activate; \
+      export PNPM_STORE_DIR=/pnpm-store; \
+      [ -f package.json ] || { echo "[skip] no frontend"; exit 0; }; \
+      if [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile --reporter=append-only; else pnpm install --no-frozen-lockfile --reporter=append-only; fi; \
       echo "[lint]"; pnpm lint; \
       echo "[typecheck]"; pnpm typecheck; \
-      echo "[test]"; pnpm test -- --coverage; \
+      echo "[test]"; pnpm test:unit; \
       echo "[build]"; pnpm build \
     '
 
@@ -451,7 +467,6 @@ tiers-down:
 nuke-all:
     @{{ensure_host}}
     {{compose}} -p {{PROJECT_SLUG}} down -v --remove-orphans || true
-    # Remove any stragglers for this compose project
     docker rm -f $(docker ps -aq -f "label=com.docker.compose.project={{PROJECT_SLUG}}") 2>/dev/null || true
     docker network rm {{PROJECT_SLUG}}_default 2>/dev/null || true
 
