@@ -16,6 +16,6 @@ parameters:
   level: 6
   tmpDir: /tmp/phpstan-app                         # local, cacheable
   parallel:
-    maximumNumberOfProcesses: 2
+    maximumNumberOfProcesses: 1
   checkModelProperties: true
   inferPrivatePropertyTypeFromConstructor: true

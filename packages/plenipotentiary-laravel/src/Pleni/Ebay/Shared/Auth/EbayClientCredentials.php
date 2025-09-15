@@ -21,13 +21,11 @@ class EbayClientCredentials implements AuthStrategy
         private readonly array $scopes,
     ) {}
 
-    public function apply(array $options = []): array
+    public function apply(\Psr\Http\Message\RequestInterface $request, array $context = []): \Psr\Http\Message\RequestInterface
     {
         $token = $this->getAccessToken();
 
-        $options['headers']['Authorization'] = 'Bearer '.$token;
-
-        return $options;
+        return $request->withHeader('Authorization', 'Bearer '.$token);
     }
 
     private function getAccessToken(): string

@@ -19,8 +19,12 @@ class EbayBrowseItemSummaryService implements SearchServiceContract
         protected GeneratedService $generated
     ) {}
 
-    public function search(string $keywords): SearchResult
+    public function search(mixed $criteria): iterable
     {
-        return $this->generated->search($keywords);
+        if (! is_string($criteria)) {
+            throw new \InvalidArgumentException('EbayBrowseItemSummaryService::search expects string keywords.');
+        }
+
+        return $this->generated->search($criteria);
     }
 }

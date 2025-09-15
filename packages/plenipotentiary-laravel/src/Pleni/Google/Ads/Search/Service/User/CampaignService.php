@@ -118,15 +118,24 @@ class CampaignService implements CrudServiceContract
         }
     }
 
-    public function delete(CampaignDomainData $domainDto): bool
+    public function delete(string|int $id): bool
     {
+        // Wrap given id into a Domain DTO so we can reuse validation/builders
+        $dto = new CampaignDomainData(
+            id: null,
+            name: '',
+            status: '',
+            resourceName: (string) $id,
+            customerId: null,
+        );
+
         // Validate identifiers
-        CampaignValidator::validateForDelete($domainDto);
+        CampaignValidator::validateForDelete($dto);
 
         try {
             $request = CampaignRequestBuilder::buildRemove(
-                $domainDto->customerId,
-                $domainDto->resourceName
+                $dto->customerId ?? '',
+                $dto->resourceName
             );
 
             $response = $this->generated->client()
@@ -135,7 +144,7 @@ class CampaignService implements CrudServiceContract
 
             return $response->getResults()->count() > 0;
         } catch (\Throwable $e) {
-            throw GoogleAdsExceptionMapper::map($e, "Error removing campaign '{$domainDto->resourceName}'");
+            throw GoogleAdsExceptionMapper::map($e, "Error removing campaign '{$dto->resourceName}'");
         }
     }
 

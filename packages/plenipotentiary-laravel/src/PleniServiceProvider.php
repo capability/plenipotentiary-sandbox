@@ -4,40 +4,49 @@ namespace Plenipotentiary\Laravel;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
-use Plenipotentiary\Laravel\Auth\NoopAuth;
 use Plenipotentiary\Laravel\Contracts\AuthStrategy;
+use Plenipotentiary\Laravel\Auth\NoopAuth;
+use RuntimeException;
 
 class PleniServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Merge package config
+        // Merge package defaults
         $this->mergeConfigFrom(__DIR__.'/../config/pleni.php', 'pleni');
 
-        // Minimal, testable seam: bind the default AuthStrategy
-        $this->app->bind(AuthStrategy::class, function (Container $app): AuthStrategy {
-            $raw = config('pleni.auth.default');
-            $default = is_string($raw) && $raw !== '' ? $raw : 'noop';
+        // Bind the default AuthStrategy, allowing FQCN in config
+        $this->app->scoped(AuthStrategy::class, static function (Container $app): AuthStrategy {
+            $raw = config('pleni.auth.default', 'noop');
 
-            return match ($default) {
-                'noop' => $app->make(NoopAuth::class),
-                default => $app->make(NoopAuth::class),
+            $impl = match (true) {
+                $raw === 'noop' => NoopAuth::class,
+                is_string($raw) && class_exists($raw) => $raw, // allow FQCN
+                default => NoopAuth::class,
             };
+
+            $resolved = $app->make($impl);
+
+            if (! $resolved instanceof AuthStrategy) {
+                throw new RuntimeException("Configured auth [$impl] does not implement AuthStrategy");
+            }
+
+            return $resolved;
         });
 
-        // Bind Ebay Browse Item service (Generated/User split, user class is resolved)
-        $this->app->bind(
-            \Plenipotentiary\Laravel\Pleni\Ebay\Browse\Item\Service\User\EbayBrowseItemService::class,
-            fn (Container $app) => $app->make(
-                \Plenipotentiary\Laravel\Pleni\Ebay\Browse\Item\Service\User\EbayBrowseItemService::class
-            )
-        );
+        // Do NOT bind concrete-to-concrete, Laravel already resolves concretes.
+        // If you need an abstraction, define a contract and bind it:
+        // $this->app->bind(EbayBrowseItemService::class, UserEbayBrowseItemService::class);
     }
 
     public function boot(): void
     {
-        $this->publishes([
-            __DIR__.'/../config/pleni.php' => config_path('pleni.php'),
-        ], 'config');
+        // Only publish when the helper exists (Testbench safe)
+        if (function_exists('config_path')) {
+            $this->publishes([
+                __DIR__.'/../config/pleni.php' => config_path('pleni.php'),
+            ], 'config');
+        }
     }
 }
+

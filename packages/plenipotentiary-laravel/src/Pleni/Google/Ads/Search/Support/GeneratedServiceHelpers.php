@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Support;
 
 use Illuminate\Support\Facades\Log;
+use Plenipotentiary\Laravel\Pleni\Jobs\PlenipotentiaryJob;
 use Throwable;
 
 /**
@@ -66,9 +67,9 @@ class GeneratedServiceHelpers
      */
     public static function withQueue(string $serviceClass, string $method, array $payload = []): void
     {
-        // This generic job could be implemented inside plenipotentiary core
-        // using Laravel's dispatch() to push onto the queue.
-        \App\Jobs\PlenipotentiaryJob::dispatch($serviceClass, $method, $payload);
+        // This generic job is provided inside plenipotentiary core
+        // It can be dispatched via Laravel queues
+        PlenipotentiaryJob::dispatch($serviceClass, $method, $payload);
     }
 
     /**
