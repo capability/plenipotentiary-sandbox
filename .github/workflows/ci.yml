@@ -59,6 +59,8 @@ jobs:
           DB_CONNECTION=sqlite
           DB_DATABASE=:memory:
           ENV
+          # Generate and append a valid Laravel app key
+          echo "APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));")" >> .env
           php artisan key:generate --force
           php artisan config:clear
 
