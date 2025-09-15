@@ -75,7 +75,10 @@ jobs:
         working-directory: packages/plenipotentiary-laravel
         run: |
           composer install --no-interaction --prefer-dist
-          vendor/bin/pest --colors=always
+          vendor/bin/pest --colors=always --testsuite=Contracts
+          vendor/bin/pest --colors=always --testsuite=Package
+          vendor/bin/pest --colors=always --testsuite=Feature
+          vendor/bin/pest --colors=always --testsuite=Unit
 
   phpstan:
     name: PHPStan (app + package)

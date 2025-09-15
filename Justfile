@@ -172,11 +172,37 @@ watch-all-tests:
 	  wait \
 	'
 
-lint:
-    @just run-backend 'composer lint'
+# Pint (check) — run from anywhere. Optional args to restrict paths.
+pint *paths:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+      set -eu; \
+      export XDEBUG_MODE=off; \
+      cd /workspaces/stack-root/apps/backend; \
+      [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+      if [ -z "{{paths}}" ]; then \
+        set -- . ../../packages/plenipotentiary-laravel; \
+      else \
+        set -- {{paths}}; \
+      fi; \
+      echo "[pint --test] $@"; \
+      vendor/bin/pint --test "$@" \
+    '
 
-lint-fix:
-    @just run-backend 'composer lint:fix'
+# Pint (fix) — same, but applies fixes.
+pint-fix *paths:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+      set -eu; \
+      export XDEBUG_MODE=off; \
+      cd /workspaces/stack-root/apps/backend; \
+      [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+      if [ -z "{{paths}}" ]; then \
+        set -- . ../../packages/plenipotentiary-laravel; \
+      else \
+        set -- {{paths}}; \
+      fi; \
+      echo "[pint --fix] $@"; \
+      vendor/bin/pint "$@" \
+    '
 
 stan:
     @just run-backend 'composer stan'
@@ -376,9 +402,14 @@ ci-backend-mysql:
 # Package tests (plenipotentiary-laravel)
 ci-package:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
     cd /workspaces/stack-root/packages/plenipotentiary-laravel; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/pest --colors=always \
+    export EXAMPLES_ROOT=/workspaces/stack-root/docs/openapi/examples; \
+    vendor/bin/pest --colors=always --testsuite=Contracts; \
+    vendor/bin/pest --colors=always --testsuite=Package; \
+    vendor/bin/pest --colors=always --testsuite=Feature; \
+    vendor/bin/pest --colors=always --testsuite=Unit \
     '
 
 # Frontend (lint, typecheck, test, build)
