@@ -1,0 +1,9 @@
+<template>
+  <div class="hello">Hello {{ name }}</div>
+</template>
+
+<script>
+export default {
+  props: { name: { type: String, default: 'World' } }
+}
+</script>

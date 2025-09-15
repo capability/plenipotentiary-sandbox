@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Sandbox to develop the plenipotentiary package.",
     "keywords": [
         "laravel",
         "framework"
@@ -10,9 +10,11 @@
     "license": "MIT",
     "repositories": [
         {
-        "type": "path",
-        "url": "/workspaces/stack-root/packages/plenipotentiary-laravel",
-        "options": { "symlink": true }
+            "type": "path",
+            "url": "../../packages/plenipotentiary-laravel",
+            "options": {
+                "symlink": true
+            }
         }
     ],
     "require": {
@@ -66,7 +68,10 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
-        ]
+        ],
+        "stan": "php -d memory_limit=1G vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress",
+        "stan:max": "php -d memory_limit=1G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --no-progress",
+        "stan:baseline": "php -d memory_limit=1G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --generate-baseline=phpstan-baseline.neon --no-progress"
     },
     "extra": {
         "laravel": {

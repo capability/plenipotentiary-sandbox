@@ -1,0 +1,91 @@
+{
+    "name": "backend (api)",
+    "dockerComposeFile": [
+        "../../docker-compose.yml",
+        "../../docker-compose.dev.yml"
+    ],
+    "service": "api",
+
+    // Open directly in backend app
+    "workspaceFolder": "/workspaces/stack-root/apps/backend",
+
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/workspaces/stack-root,type=bind,consistency=cached",
+        "source=vscode-server-backend,target=/home/app-user/.vscode-server,type=volume",
+        "source=composer-cache,target=/home/app-user/.composer/cache,type=volume"
+    ],
+
+    "runServices": ["api", "web", "db", "cache", "mail"],
+    "overrideCommand": false,
+
+    "remoteUser": "app-user",
+    "remoteEnv": {
+        "SHELL": "/bin/bash",
+        "HOME": "/home/app-user",
+        "VSCODE_AGENT_FOLDER": "/home/app-user/.vscode-server"
+    },
+    "containerEnv": {
+        "VSCODE_AGENT_FOLDER": "/home/app-user/.vscode-server",
+        "XDEBUG_MODE": "${localEnv:XDEBUG_MODE:off}"
+    },
+
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "username": "app-user",
+            "uid": "1000",
+            "gid": "1000",
+            "updateRemoteUserUID": true
+        }
+    },
+
+    "forwardPorts": [8080, 3307, 6380, 8025, 1025],
+    "otherPortsAttributes": { "onAutoForward": "notify" },
+    "shutdownAction": "stopCompose",
+
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.cwd": "/workspaces/stack-root/apps/backend",
+
+                // PHP & Laravel
+                "intelephense.environment.phpVersion": "8.3",
+                "intelephense.environment.includePaths": [
+                    "/workspaces/stack-root/apps/backend/vendor",
+                    "/workspaces/stack-root/packages"
+                ],
+                "php.validate.executablePath": "/usr/local/bin/php",
+
+                // Ignore noise
+                "files.exclude": { "**/.git": true, "**/.DS_Store": true },
+                "files.watcherExclude": {
+                    "**/node_modules/**": true,
+                    "**/vendor/**": true,
+                    "**/storage/**": true
+                },
+                "search.exclude": {
+                    "**/node_modules": true,
+                    "**/vendor": true,
+                    "**/storage": true
+                },
+
+                "editor.formatOnSave": true
+            },
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "xdebug.php-pack",
+                "onecentlin.laravel-blade",
+                "ryannaddy.laravel-artisan",
+                "editorconfig.editorconfig"
+            ]
+        }
+    },
+
+    "postCreateCommand": "sh -lc 'set -eux; \
+    mkdir -p /home/app-user/.vscode-server /workspaces/stack-root/apps/backend/storage /workspaces/stack-root/apps/backend/bootstrap/cache; \
+    chown -R app-user:app-user /home/app-user /workspaces/stack-root/apps/backend/storage /workspaces/stack-root/apps/backend/bootstrap/cache || true; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f composer.json ] && composer install --no-interaction --prefer-dist || true; \
+    [ -f .env ] || cp .env.example .env || true; \
+    if ! grep -qE \"^APP_KEY=base64:.+\" .env; then php artisan key:generate --force; fi; \
+    php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force || true'"
+}
