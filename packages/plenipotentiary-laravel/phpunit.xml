@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="Package">
-      <directory>tests/Package</directory>
+      <directory suffix="Test.php">tests/Package</directory>
+    </testsuite>
+    <testsuite name="Contracts">
+      <directory suffix="Test.php">tests/Contracts</directory>
+    </testsuite>
+    <testsuite name="Feature">
+      <directory suffix="Test.php">tests/Feature</directory>
+    </testsuite>
+    <testsuite name="Unit">
+      <directory suffix="Test.php">tests/Unit</directory>
+    </testsuite>
+    <!-- convenient catch-all -->
+    <testsuite name="All">
+      <directory suffix="Test.php">tests</directory>
     </testsuite>
   </testsuites>
+
   <source restrictNotices="true" restrictWarnings="true" ignoreIndirectDeprecations="true">
     <include>
       <directory suffix=".php">src</directory>
