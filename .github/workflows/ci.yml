@@ -45,23 +45,22 @@ jobs:
       - name: Prepare test env
         working-directory: apps/backend
         run: |
-          - name: Prepare test env
-            working-directory: apps/backend
-            run: |
-              rm -f .env
-              cat > .env <<'ENV'
-              APP_ENV=testing
-              APP_DEBUG=true
-              CACHE_STORE=array
-              SESSION_DRIVER=array
-              QUEUE_CONNECTION=sync
-              BROADCAST_DRIVER=log
-              MAIL_MAILER=array
-              DB_CONNECTION=sqlite
-              DB_DATABASE=:memory:
-              ENV
-              php artisan key:generate --force
-              php artisan config:clear
+          set -eu
+          rm -f .env
+          cat > .env <<'ENV'
+          APP_ENV=testing
+          APP_DEBUG=true
+          CACHE_STORE=array
+          CACHE_DRIVER=array
+          SESSION_DRIVER=array
+          QUEUE_CONNECTION=sync
+          BROADCAST_DRIVER=log
+          MAIL_MAILER=array
+          DB_CONNECTION=sqlite
+          DB_DATABASE=:memory:
+          ENV
+          php artisan key:generate --force
+          php artisan config:clear
 
       - name: Pest (backend app)
         working-directory: apps/backend
