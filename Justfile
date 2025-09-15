@@ -284,35 +284,65 @@ ci-pint:
 ci-phpstan:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
     set -eu; \
+    export XDEBUG_MODE=off; \
     cd /workspaces/stack-root/apps/backend; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress \
+    '
+ci-phpstan-split:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=1G vendor/bin/phpstan analyse app database -c phpstan.neon.dist --no-progress; \
+    php -d memory_limit=1G vendor/bin/phpstan analyse ../../packages/plenipotentiary-laravel/src -c phpstan.neon.dist --no-progress \
     '
 
 # Strict mode to catch new issues (baseline still applied if included in config)
 ci-phpstan-max:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
     set -eu; \
+    export XDEBUG_MODE=off; \
     cd /workspaces/stack-root/apps/backend; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --no-progress \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --no-progress \
     '
 
 # Regenerate the baseline at max (use when you’ve fixed stuff)
 ci-phpstan-baseline:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
     set -eu; \
+    export XDEBUG_MODE=off; \
     cd /workspaces/stack-root/apps/backend; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --generate-baseline=phpstan-baseline.neon --no-progress \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --generate-baseline=phpstan-baseline.neon --no-progress \
     '
 
+# Package-only scan (lower peak RAM than scanning everything)
 ci-phpstan-package:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
     set -eu; \
+    export XDEBUG_MODE=off; \
     cd /workspaces/stack-root/apps/backend; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/phpstan analyse -c phpstan.neon.dist ../../packages/plenipotentiary-laravel/src --no-progress \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist ../../packages/plenipotentiary-laravel/src --no-progress \
+    '
+
+# Debug (single worker-ish output to find crashes)
+ci-phpstan-debug:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --debug --no-progress \
     '
     
 # Backend tests with sqlite (default, in-memory DB + array cache)
