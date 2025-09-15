@@ -24,6 +24,14 @@ class PleniServiceProvider extends ServiceProvider
                 default => $app->make(NoopAuth::class),
             };
         });
+
+        // Bind Ebay Browse Item service (Generated/User split, user class is resolved)
+        $this->app->bind(
+            \Plenipotentiary\Laravel\Pleni\Ebay\Browse\Item\Service\User\EbayBrowseItemService::class,
+            fn (Container $app) => $app->make(
+                \Plenipotentiary\Laravel\Pleni\Ebay\Browse\Item\Service\User\EbayBrowseItemService::class
+            )
+        );
     }
 
     public function boot(): void
