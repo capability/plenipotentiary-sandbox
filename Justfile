@@ -102,6 +102,13 @@ sh:
       {{compose}} exec -it -u {{container_user}} {{api_svc}} bash; \
     fi
 
+sh-root:
+    @if [ "{{_in_container}}" = "1" ]; then \
+      exec -u root bash; \
+    else \
+      {{compose}} exec -it -u root {{api_svc}} bash; \
+    fi
+
 up:
     @{{ensure_host}}
     {{compose}} up -d {{db_svc}} {{cache_svc}} {{mail_svc}} {{api_svc}} {{web_svc}}
@@ -142,11 +149,55 @@ test:
 test-cov:
     @just run-backend '(composer run -q test:cov || php artisan test --coverage --min=0)'
 
-lint:
-    @just run-backend 'composer lint'
+watch-app-tests:
+    @{{ensure_host}}
+    watchexec -e php -w apps/backend -- \
+      {{compose}} exec -T {{api_svc}} vendor/bin/pest --colors=always
 
-lint-fix:
-    @just run-backend 'composer lint:fix'
+watch-package-tests:
+    @{{ensure_host}}
+    watchexec -e php -w packages/plenipotentiary-laravel -- \
+      {{compose}} exec -T {{api_svc}} bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always"
+
+# Watch BOTH in parallel with prefixed output
+watch-all-tests:
+    @{{ensure_host}}
+    bash -ceu '\
+      prefix(){ stdbuf -oL sed -e "s/^/[$$1] /"; } ; \
+      ( watchexec -e php -w apps/backend -- \
+          {{compose}} exec -T {{api_svc}} vendor/bin/pest --colors=always | prefix app ) & APP=$$! ; \
+      ( watchexec -e php -w packages/plenipotentiary-laravel -- \
+          {{compose}} exec -T {{api_svc}} bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always" | prefix pkg ) & PKG=$$! ; \
+      trap "kill $$APP $$PKG" INT TERM ; \
+      wait \
+    '
+
+# Pint (check) — run from anywhere. Optional args to restrict paths.
+pint *paths:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+      set -eu; export XDEBUG_MODE=off; \
+      cd /workspaces/stack-root/apps/backend; \
+      [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+      if [ -z "{{paths}}" ]; then set -- . ../../packages/plenipotentiary-laravel; else set -- {{paths}}; fi; \
+      echo "[pint --test] $@"; vendor/bin/pint --test "$@" \
+    '
+
+# Pint (fix)
+pint-fix *paths:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+      set -eu; export XDEBUG_MODE=off; \
+      cd /workspaces/stack-root/apps/backend; \
+      [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+      if [ -z "{{paths}}" ]; then set -- . ../../packages/plenipotentiary-laravel; else set -- {{paths}}; fi; \
+      echo "[pint --fix] $@"; vendor/bin/pint "$@" \
+    '
+
+# Friendly aliases so old muscle-memory still works
+lint *paths:
+    just pint {{paths}}
+
+lint-fix *paths:
+    just pint-fix {{paths}}
 
 stan:
     @just run-backend 'composer stan'
@@ -230,12 +281,14 @@ fe-store-clear:
 
 ci:
     just ci-pint
+    just ci-phpstan
     just ci-backend-sqlite
     just ci-package
     just ci-frontend
 
 ci-all:
     just ci-pint
+    just ci-phpstan
     just ci-backend-sqlite
     just ci-backend-mysql
     just ci-package
@@ -249,6 +302,70 @@ ci-pint:
     vendor/bin/pint --test . ../../packages/plenipotentiary-laravel \
     '
 
+ci-phpstan:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress \
+    '
+ci-phpstan-split:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=1G vendor/bin/phpstan analyse app database -c phpstan.neon.dist --no-progress; \
+    php -d memory_limit=1G vendor/bin/phpstan analyse ../../packages/plenipotentiary-laravel/src -c phpstan.neon.dist --no-progress \
+    '
+
+# Strict mode to catch new issues (baseline still applied if included in config)
+ci-phpstan-max:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --no-progress \
+    '
+
+# Regenerate the baseline at max (use when you’ve fixed stuff)
+ci-phpstan-baseline:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --generate-baseline=phpstan-baseline.neon --no-progress \
+    '
+
+# Package-only scan (lower peak RAM than scanning everything)
+ci-phpstan-package:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist ../../packages/plenipotentiary-laravel/src --no-progress \
+    '
+
+# Debug (single worker-ish output to find crashes)
+ci-phpstan-debug:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    export XDEBUG_MODE=off; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    mkdir -p /tmp/phpstan-app; \
+    php -d memory_limit=2G vendor/bin/phpstan analyse -c phpstan.neon.dist --debug --no-progress \
+    '
+    
 # Backend tests with sqlite (default, in-memory DB + array cache)
 ci-backend-sqlite:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
@@ -280,9 +397,14 @@ ci-backend-mysql:
 # Package tests (plenipotentiary-laravel)
 ci-package:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
     cd /workspaces/stack-root/packages/plenipotentiary-laravel; \
     [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-    vendor/bin/pest --colors=always \
+    export EXAMPLES_ROOT=/workspaces/stack-root/docs/openapi/examples; \
+    vendor/bin/pest --colors=always --testsuite=Contracts; \
+    vendor/bin/pest --colors=always --testsuite=Package; \
+    vendor/bin/pest --colors=always --testsuite=Feature; \
+    vendor/bin/pest --colors=always --testsuite=Unit \
     '
 
 # Frontend (lint, typecheck, test, build)
