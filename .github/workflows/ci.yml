@@ -45,10 +45,23 @@ jobs:
       - name: Prepare test env
         working-directory: apps/backend
         run: |
-          cp .env.example .env
-          php -r "echo 'APP_ENV=testing\nAPP_DEBUG=true\nCACHE_STORE=array\nSESSION_DRIVER=array\nQUEUE_CONNECTION=sync\nBROADCAST_DRIVER=log\nMAIL_MAILER=array\nDB_CONNECTION=sqlite\nDB_DATABASE=:memory:\n' >> .env"
-          php artisan key:generate
-          php artisan config:clear
+          - name: Prepare test env
+            working-directory: apps/backend
+            run: |
+              rm -f .env
+              cat > .env <<'ENV'
+              APP_ENV=testing
+              APP_DEBUG=true
+              CACHE_STORE=array
+              SESSION_DRIVER=array
+              QUEUE_CONNECTION=sync
+              BROADCAST_DRIVER=log
+              MAIL_MAILER=array
+              DB_CONNECTION=sqlite
+              DB_DATABASE=:memory:
+              ENV
+              php artisan key:generate --force
+              php artisan config:clear
 
       - name: Pest (backend app)
         working-directory: apps/backend
