@@ -81,6 +81,6 @@ jobs:
           path: apps/backend/.phpstan
           key: phpstan-${{ hashFiles('apps/backend/phpstan.neon.dist','apps/backend/phpstan-baseline.neon','apps/backend/composer.lock') }}
 
-    - name: Run PHPStan
-      working-directory: apps/backend
-      run: php vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress
+      - name: Run PHPStan
+        working-directory: apps/backend
+        run: php vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress
