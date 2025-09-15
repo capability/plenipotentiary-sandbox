@@ -60,26 +60,26 @@ jobs:
           composer install --no-interaction --prefer-dist
           vendor/bin/pest --colors=always
 
-phpstan:
-  name: PHPStan (app + package)
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+  phpstan:
+    name: PHPStan (app + package)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    - uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        tools: composer
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer
 
-    - name: Install composer deps (app)
-      working-directory: apps/backend
-      run: composer install --no-interaction --prefer-dist
+      - name: Install composer deps (app)
+        working-directory: apps/backend
+        run: composer install --no-interaction --prefer-dist
 
-    - name: Cache PHPStan results
-      uses: actions/cache@v4
-      with:
-        path: apps/backend/.phpstan
-        key: phpstan-${{ hashFiles('apps/backend/phpstan.neon.dist','apps/backend/phpstan-baseline.neon','apps/backend/composer.lock') }}
+      - name: Cache PHPStan results
+        uses: actions/cache@v4
+        with:
+          path: apps/backend/.phpstan
+          key: phpstan-${{ hashFiles('apps/backend/phpstan.neon.dist','apps/backend/phpstan-baseline.neon','apps/backend/composer.lock') }}
 
     - name: Run PHPStan
       working-directory: apps/backend
