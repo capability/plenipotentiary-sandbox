@@ -1,6 +1,2826 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Call to an undefined method Plenipotentiary\\Laravel\\Contracts\\AuthStrategy\:\:getHeaders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Call to static method fromArray\(\) on an unknown class Plenipotentiary\\Laravel\\Pleni\\Ebay\\Browse\\ItemSummary\\DTO\\External\\BrowseItemSummary\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Call to static method toDomain\(\) on an unknown class Plenipotentiary\\Laravel\\Pleni\\Ebay\\Browse\\ItemSummary\\Translate\\EbayBrowseToDomainMapper\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Cannot access offset ''itemSummaries'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Cannot access offset ''total'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Instantiated class Plenipotentiary\\Laravel\\Support\\SearchResultCollection not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Browse\\ItemSummary\\Service\\Generated\\EbayBrowseItemSummaryService\:\:search\(\) has invalid return type Plenipotentiary\\Laravel\\Contracts\\SearchResult\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Browse\\ItemSummary\\Service\\Generated\\EbayBrowseItemSummaryService\:\:search\(\) should return Plenipotentiary\\Laravel\\Contracts\\SearchResult but returns Plenipotentiary\\Laravel\\Support\\SearchResultCollection\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Parameter \#1 \$headers of static method Illuminate\\Support\\Facades\\Http\:\:withHeaders\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/Generated/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Browse\\ItemSummary\\Service\\User\\EbayBrowseItemSummaryService\:\:search\(\) has invalid return type Plenipotentiary\\Laravel\\Contracts\\SearchResult\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Browse/ItemSummary/Service/User/EbayBrowseItemSummaryService.php
+
+		-
+			message: '#^Cannot access offset ''client_id'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset ''client_secret'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset ''defaults'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset ''drivers'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset ''scopes'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset ''token_url'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset mixed on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\AuthRegistry\:\:__construct\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Property Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\AuthRegistry\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Property Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\AuthRegistry\:\:\$strategies \(array\<string, Plenipotentiary\\Laravel\\Contracts\\AuthStrategy\>\) does not accept array\<Plenipotentiary\\Laravel\\Contracts\\AuthStrategy\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/AuthRegistry.php
+
+		-
+			message: '#^Anonymous function should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Cannot access offset ''Authorization'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Cannot access offset ''access_token'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\EbayClientCredentials\:\:__construct\(\) has parameter \$scopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\EbayClientCredentials\:\:apply\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\EbayClientCredentials\:\:apply\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Ebay\\Shared\\Auth\\EbayClientCredentials\:\:getAccessToken\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Ebay/Shared/Auth/EbayClientCredentials.php
+
+		-
+			message: '#^Parameter \#1 \$dto of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:findOrCreateFromDto\(\) expects Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroupCriteria.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData\:\:fromModel\(\) expects App\\Models\\Search\\AdGroupCriterion, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroupCriteria.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroups.php
+
+		-
+			message: '#^Call to an undefined method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:getNewForSync\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroups.php
+
+		-
+			message: '#^Parameter \#1 \$dto of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:findOrCreateFromDto\(\) expects Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroups.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData\:\:fromModel\(\) expects App\\Models\\Search\\AdGroup, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroups.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAdGroups.php
+
+		-
+			message: '#^Cannot access offset ''text'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAds.php
+
+		-
+			message: '#^Parameter \#1 \$dto of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:findOrCreateFromDto\(\) expects Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAds.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:fromModel\(\) expects App\\Models\\Search\\Ad, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAds.php
+
+		-
+			message: '#^Part \$headline \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncAds.php
+
+		-
+			message: '#^Parameter \#1 \$dto of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:findOrCreateFromDto\(\) expects Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData, object given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncCampaigns.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData\:\:fromModel\(\) expects App\\Models\\Search\\Campaign, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Console/Commands/SyncCampaigns.php
+
+		-
+			message: '#^Access to property \$adGroup on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$ad_id on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$customer_id on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$description1 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$description2 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$description3 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$description4 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$destination_url on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$display_url_path1 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$display_url_path2 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline10 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline11 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline12 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline13 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline14 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline3 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline4 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline5 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline6 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline7 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline8 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$headline9 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$id on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$pinned_headline1 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$pinned_headline2 on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$resource_name on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$status on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Cannot access property \$resource_name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:__construct\(\) has parameter \$descriptions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:__construct\(\) has parameter \$finalUrls with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:__construct\(\) has parameter \$headlines with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$adId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$customerId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$id of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$model of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:fromModel\(\) has invalid type App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$parentAdGroupResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$path1 of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$path2 of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdDomainData.php
+
+		-
+			message: '#^Access to property \$adgroup on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$criterion_id on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$customer_id on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$id on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$resource_name on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$status on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$text on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$type on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Cannot access property \$resource_name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$criterionId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$customerId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$id of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$keywordText of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$matchType of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$model of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData\:\:fromModel\(\) has invalid type App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$parentAdGroupResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupCriterionDomainData.php
+
+		-
+			message: '#^Access to property \$campaign on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$customer_id on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$id on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$image_asset_link_resource_name on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$max_cpc on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$name on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$price_customizer_link_resource_name on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$price_customizer_text on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$resource_name on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$status on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$stock_customizer_link_resource_name on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$stock_customizer_text on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$thumbnail_url on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Cannot access property \$resource_name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$campaignResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$customerId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$id of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$imageAssetLinkResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$maxCpc of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$model of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData\:\:fromModel\(\) has invalid type App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$name of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$priceCustomizerLinkResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$priceCustomizerText of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$stockCustomizerLinkResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$stockCustomizerText of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Parameter \$thumbnailUrl of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/AdGroupDomainData.php
+
+		-
+			message: '#^Access to property \$budget_resource_name on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$campaign_id on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$customer_id on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$daily_budget on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$id on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$name on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$resource_name on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Access to property \$status on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$budgetResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$campaignId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$customerId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$dailyBudget of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects float\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$id of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$model of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData\:\:fromModel\(\) has invalid type App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$name of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/Domain/CampaignDomainData.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getFinalUrls\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getPinnedField\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Common\\AdTextAsset\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getResourceName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getResponsiveSearchAd\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getText\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Common\\AdTextAsset\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to static method name\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\ServedAssetFieldTypeEnum\\ServedAssetFieldType\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Cannot call method getDescriptions\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Cannot call method getHeadlines\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Cannot call method getPath1\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Cannot call method getPath2\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Cannot call method getText\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:__construct\(\) has parameter \$descriptions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:__construct\(\) has parameter \$finalUrls with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:__construct\(\) has parameter \$headlines with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$asset contains unknown class Google\\Ads\\GoogleAds\\V20\\Common\\AdTextAsset\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \#1 \$iterator of function iterator_to_array expects iterable, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \$adId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \$googleAd of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:fromGoogleResponse\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \$path1 of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \$path2 of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdExternalData.php
+
+		-
+			message: '#^Call to method getAdGroup\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to method getCriterionId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to method getKeyword\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to method getResourceName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to method getStatus\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to static method name\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupCriterionStatusEnum\\AdGroupCriterionStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Call to static method name\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\KeywordMatchTypeEnum\\KeywordMatchType\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Cannot call method getMatchType\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Cannot call method getText\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$criterionId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$keywordText of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$matchType of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$parentAdGroupResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$remote of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData\:\:fromGoogleResponse\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupCriterionExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupCriterionExternalData.php
+
+		-
+			message: '#^Binary operation "/" between mixed and 1000000\.0 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getCampaign\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getCpcBidMicros\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getResourceName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getStatus\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to static method name\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupStatusEnum\\AdGroupStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$adGroupId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$campaignResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$name of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$remote of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData\:\:fromGoogleResponse\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/AdGroupExternalData.php
+
+		-
+			message: '#^Call to method getCampaignBudget\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Call to method getId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Call to method getName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Call to method getResourceName\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Call to method getStatus\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Call to static method name\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\CampaignStatusEnum\\CampaignStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData\:\:jsonSerialize\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$budgetResourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$campaignId of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData constructor expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$name of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$remote of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData\:\:fromGoogleResponse\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$resourceName of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Parameter \$status of class Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/DTO/External/CampaignExternalData.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdGroupCriterionRepository\:\:all\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdGroupCriterionRepository\:\:all\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdGroupRepository\:\:all\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdGroupRepository\:\:all\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdRepository\:\:all\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\AdRepository\:\:all\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\CampaignRepository\:\:all\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\Generated\\CampaignRepository\:\:all\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/Generated/CampaignRepository.php
+
+		-
+			message: '#^Call to static method find\(\) on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Call to static method query\(\) on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Call to static method updateOrCreate\(\) on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Call to static method whereNotNull\(\) on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Call to static method whereNull\(\) on an unknown class App\\Models\\Search\\AdGroupCriterion\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method limit\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method map\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method update\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Cannot call method whereNotNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getAll\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getAll\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getExistingForSync\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getExistingForSync\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getNewForSync\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:getNewForSync\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupCriterionRepository\:\:update\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupCriterionDomainData\:\:fromModel\(\) expects App\\Models\\Search\\AdGroupCriterion, mixed given\.$#'
+			identifier: argument.type
+			count: 5
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupCriterionRepository.php
+
+		-
+			message: '#^Call to static method find\(\) on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Call to static method query\(\) on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Call to static method updateOrCreate\(\) on an unknown class App\\Models\\Search\\AdGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method limit\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method map\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method update\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:getAll\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:getAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:getAll\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdGroupRepository\:\:update\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdGroupDomainData\:\:fromModel\(\) expects App\\Models\\Search\\AdGroup, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdGroupRepository.php
+
+		-
+			message: '#^Call to static method find\(\) on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Call to static method query\(\) on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Call to static method updateOrCreate\(\) on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Call to static method whereHas\(\) on an unknown class App\\Models\\Search\\Ad\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method limit\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method map\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method update\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method whereNotNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Cannot call method whereNull\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getAll\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getAll\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getExistingForSync\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getExistingForSync\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getNewForSync\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:getNewForSync\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\AdRepository\:\:update\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\AdDomainData\:\:fromModel\(\) expects App\\Models\\Search\\Ad, mixed given\.$#'
+			identifier: argument.type
+			count: 5
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/AdRepository.php
+
+		-
+			message: '#^Call to static method find\(\) on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Call to static method query\(\) on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Call to static method updateOrCreate\(\) on an unknown class App\\Models\\Search\\Campaign\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Cannot call method map\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Cannot call method update\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:getAll\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:getAll\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:getAll\(\) should return array but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Repository\\User\\CampaignRepository\:\:update\(\) should return bool but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Parameter \#1 \$model of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\Domain\\CampaignDomainData\:\:fromModel\(\) expects App\\Models\\Search\\Campaign, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Repository/User/CampaignRepository.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdGroupCriterionService\:\:listAll\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdGroupCriterionService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdGroupCriterionService\:\:listAll\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdGroupCriterionService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdGroupService\:\:listAll\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdGroupService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdGroupService\:\:listAll\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdGroupService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdService\:\:listAll\(\) has parameter \$criteria with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\AdService\:\:listAll\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/AdService.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Call to an undefined method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\Generated\\CampaignService\:\:client\(\)\.$#'
+			identifier: method.notFound
+			count: 6
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Call to method setQuery\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method count\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getCampaign\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getCampaignBudget\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getCampaignBudgetServiceClient\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getCampaignServiceClient\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getGoogleAdsServiceClient\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method getResults\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method iterateAllElements\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method mutateCampaignBudgets\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method mutateCampaigns\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Cannot call method search\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\User\\CampaignService\:\:listAll\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Parameter \#1 \$client of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignFinder\:\:findByName\(\) expects Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Parameter \#1 \$customerId of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildRemove\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Parameter \#1 \$id of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Service\\Generated\\CampaignService\:\:getCampaign\(\) expects string, int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Parameter \#1 \$remote of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData\:\:fromGoogleResponse\(\) expects Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Parameter \#2 \$resourceName of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildRemove\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Service/User/CampaignService.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Call to method getGoogleAdsServiceClient\(\) on an unknown class Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Call to method setQuery\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Cannot call method getAd\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Cannot call method iterateAllElements\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Cannot call method search\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Parameter \#1 \$googleAd of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdExternalData\:\:fromGoogleResponse\(\) expects Google\\Ads\\GoogleAds\\V20\\Resources\\Ad, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Parameter \$client of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdFinder\:\:findById\(\) has invalid type Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdFinder.php
+
+		-
+			message: '#^Access to constant MUTABLE_RESOURCE on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\ResponseContentTypeEnum\\ResponseContentType\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Access to constant REMOVED on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupCriterionStatusEnum\\AdGroupCriterionStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to method setCreate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupCriterionOperation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupCriterionOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdateMask\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupCriterionOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to static method fromSet\(\) on an unknown class Google\\Ads\\GoogleAds\\Util\\V20\\FieldMasks\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to static method value\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupCriterionStatusEnum\\AdGroupCriterionStatus\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Call to static method value\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\KeywordMatchTypeEnum\\KeywordMatchType\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setOperations\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setResponseContentType\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Common\\KeywordInfo not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupCriterion not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupCriterionOperation not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildCreate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildCreate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildRemove\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildRemove\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildUpdate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupCriterionRequestBuilder\:\:buildUpdate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupCriteriaRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupCriterionRequestBuilder.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Call to method getGoogleAdsServiceClient\(\) on an unknown class Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Call to method setQuery\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Cannot call method getAdGroup\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Cannot call method iterateAllElements\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Cannot call method search\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Parameter \#1 \$remote of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\AdGroupExternalData\:\:fromGoogleResponse\(\) expects Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Parameter \$client of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupFinder\:\:findByName\(\) has invalid type Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupFinder.php
+
+		-
+			message: '#^Access to constant MUTABLE_RESOURCE on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\ResponseContentTypeEnum\\ResponseContentType\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Access to constant REMOVED on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupStatusEnum\\AdGroupStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Call to method setCreate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupOperation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdateMask\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Call to static method fromSet\(\) on an unknown class Google\\Ads\\GoogleAds\\Util\\V20\\FieldMasks\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setOperations\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setResponseContentType\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroup not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupOperation not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildCreate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildCreate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildRemove\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildRemove\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildUpdate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdGroupRequestBuilder\:\:buildUpdate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdGroupRequestBuilder.php
+
+		-
+			message: '#^Access to constant MUTABLE_RESOURCE on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\ResponseContentTypeEnum\\ResponseContentType\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Access to constant REMOVED on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\AdGroupAdStatusEnum\\AdGroupAdStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Call to method setCreate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupAdOperation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupAdOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdateMask\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupAdOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Call to static method fromSet\(\) on an unknown class Google\\Ads\\GoogleAds\\Util\\V20\\FieldMasks\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setOperations\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setResponseContentType\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupAd not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\AdGroupAdOperation not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildCreate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildCreate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildRemove\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildRemove\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildUpdate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildUpdate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateAdGroupAdsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Parameter \$adGroupAd of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildCreate\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupAd\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Parameter \$adGroupAd of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\AdRequestBuilder\:\:buildUpdate\(\) has invalid type Google\\Ads\\GoogleAds\\V20\\Resources\\AdGroupAd\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/AdRequestBuilder.php
+
+		-
+			message: '#^Access to constant STANDARD on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\BudgetDeliveryMethodEnum\\BudgetDeliveryMethod\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Call to method setCreate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignBudgetOperation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignBudgetsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setOperations\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Resources\\CampaignBudget not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignBudgetOperation not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignBudgetsRequest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\BudgetRequestBuilder\:\:buildCreate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignBudgetsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\BudgetRequestBuilder\:\:buildCreate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignBudgetsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/BudgetRequestBuilder.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Call to method getGoogleAdsServiceClient\(\) on an unknown class Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Call to method setQuery\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Cannot call method getCampaign\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Cannot call method iterateAllElements\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Cannot call method search\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\SearchGoogleAdsRequest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Parameter \#1 \$remote of static method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\DTO\\External\\CampaignExternalData\:\:fromGoogleResponse\(\) expects Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Parameter \$client of method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignFinder\:\:findByName\(\) has invalid type Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsClient\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignFinder.php
+
+		-
+			message: '#^Access to constant MUTABLE_RESOURCE on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\ResponseContentTypeEnum\\ResponseContentType\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Access to constant REMOVED on an unknown class Google\\Ads\\GoogleAds\\V20\\Enums\\CampaignStatusEnum\\CampaignStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Call to method setCreate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignOperation\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Call to method setCustomerId\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdate\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Call to method setUpdateMask\(\) on an unknown class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignOperation\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Call to static method fromSet\(\) on an unknown class Google\\Ads\\GoogleAds\\Util\\V20\\FieldMasks\.$#'
+			identifier: class.notFound
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setOperations\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Cannot call method setResponseContentType\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Resources\\Campaign not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\CampaignOperation not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Instantiated class Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest not found\.$#'
+			identifier: class.notFound
+			count: 3
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildCreate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildCreate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildRemove\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildRemove\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildUpdate\(\) has invalid return type Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\CampaignRequestBuilder\:\:buildUpdate\(\) should return Google\\Ads\\GoogleAds\\V20\\Services\\MutateCampaignsRequest but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/CampaignRequestBuilder.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\GeneratedServiceHelpers\:\:withLogging\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GeneratedServiceHelpers.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\GeneratedServiceHelpers\:\:withQueue\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GeneratedServiceHelpers.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsConfig.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Search\\Support\\GoogleAdsConfig\:\:defaultCustomerId\(\) should return string\|null but returns bool\|string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsConfig.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Call to method getGoogleAdsFailure\(\) on an unknown class Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Call to method getMessage\(\) on an unknown class Google\\ApiCore\\ApiException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Cannot call method getErrorCode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Cannot call method getErrors\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Cannot call method getMessage\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Class Google\\Ads\\GoogleAds\\Lib\\V20\\GoogleAdsException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Class Google\\ApiCore\\ApiException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Search/Support/GoogleAdsExceptionMapper.php
+
+		-
+			message: '#^Cannot access offset ''access_token'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Shared\\Auth\\GoogleAdsClientCredentials\:\:__construct\(\) has parameter \$scopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Shared\\Auth\\GoogleAdsClientCredentials\:\:getAccessToken\(\) has parameter \$scopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Shared\\Auth\\GoogleAdsClientCredentials\:\:getAccessToken\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Shared\\Auth\\GoogleAdsClientCredentials\:\:getHeaders\(\) has parameter \$scopes with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Shared\\Auth\\GoogleAdsClientCredentials\:\:getHeaders\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Google/Ads/Shared/Auth/GoogleAdsClientCredentials.php
+
+		-
+			message: '#^Method Plenipotentiary\\Laravel\\Pleni\\Jobs\\PlenipotentiaryJob\:\:__construct\(\) has parameter \$payload with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Jobs/PlenipotentiaryJob.php
+
+		-
+			message: '#^Parameter \#1 \$object_or_class of function method_exists expects object\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../../packages/plenipotentiary-laravel/src/Pleni/Jobs/PlenipotentiaryJob.php
+
+		-
 			message: '#^Method App\\Http\\Middleware\\TrustHosts\:\:hosts\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1

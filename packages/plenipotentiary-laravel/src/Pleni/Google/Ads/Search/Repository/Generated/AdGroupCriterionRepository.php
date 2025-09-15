@@ -10,6 +10,8 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\DTO\Domain\AdGroupCriterionD
 /**
  * Generated AdGroupCriterionRepository with stub methods.
  * This file may be overwritten by scaffolding.
+ *
+ * @implements RepositoryContract<AdGroupCriterionDomainData>
  */
 class AdGroupCriterionRepository implements RepositoryContract
 {
