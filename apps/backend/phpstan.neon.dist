@@ -1,9 +1,19 @@
 includes:
   - vendor/larastan/larastan/extension.neon
+  # Optional: better datetime types
+  # - vendor/nesbot/carbon/extension.neon
+  - phpstan-baseline.neon
 
 parameters:
+  bootstrapFiles:
+    - vendor/autoload.php
+
   paths:
     - app
     - database
+    - ../../packages/plenipotentiary-laravel/src   # <- correct relative path
+
   level: 6
-  tmpDir: storage/framework/cache/phpstan
+  tmpDir: .phpstan                                  # local, cacheable
+  checkModelProperties: true
+  inferPrivatePropertyTypeFromConstructor: true

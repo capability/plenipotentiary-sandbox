@@ -260,12 +260,14 @@ fe-store-clear:
 
 ci:
     just ci-pint
+    just ci-phpstan
     just ci-backend-sqlite
     just ci-package
     just ci-frontend
 
 ci-all:
     just ci-pint
+    just ci-phpstan
     just ci-backend-sqlite
     just ci-backend-mysql
     just ci-package
@@ -279,6 +281,40 @@ ci-pint:
     vendor/bin/pint --test . ../../packages/plenipotentiary-laravel \
     '
 
+ci-phpstan:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress \
+    '
+
+# Strict mode to catch new issues (baseline still applied if included in config)
+ci-phpstan-max:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --no-progress \
+    '
+
+# Regenerate the baseline at max (use when you’ve fixed stuff)
+ci-phpstan-baseline:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/phpstan analyse -c phpstan.neon.dist --level=max --generate-baseline=phpstan-baseline.neon --no-progress \
+    '
+
+ci-phpstan-package:
+    @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
+    set -eu; \
+    cd /workspaces/stack-root/apps/backend; \
+    [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
+    vendor/bin/phpstan analyse -c phpstan.neon.dist ../../packages/plenipotentiary-laravel/src --no-progress \
+    '
+    
 # Backend tests with sqlite (default, in-memory DB + array cache)
 ci-backend-sqlite:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\

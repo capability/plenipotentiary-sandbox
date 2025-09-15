@@ -16,13 +16,13 @@ jobs:
           php-version: '8.3'
           tools: composer
 
-      # Install app deps
       - name: Composer install (app)
         working-directory: apps/backend
         run: composer install --no-interaction --prefer-dist
 
-      # Run Pint across app and package (from repo root, avoid ../../)
+      # run from backend so vendor/bin/pint exists
       - name: Pint (app + package)
+        working-directory: apps/backend
         run: vendor/bin/pint --test . ../../packages/plenipotentiary-laravel
 
   pest:
@@ -35,20 +35,52 @@ jobs:
         with:
           php-version: '8.3'
           tools: composer
+          extensions: sqlite, sqlite3, pdo_sqlite
 
-      # Install app deps
       - name: Composer install (app)
         working-directory: apps/backend
         run: composer install --no-interaction --prefer-dist
 
-      # Run app tests
+      # minimal test env so /ready passes in CI
+      - name: Prepare test env
+        working-directory: apps/backend
+        run: |
+          cp .env.example .env
+          php -r "echo 'APP_ENV=testing\nAPP_DEBUG=true\nCACHE_STORE=array\nSESSION_DRIVER=array\nQUEUE_CONNECTION=sync\nBROADCAST_DRIVER=log\nMAIL_MAILER=array\nDB_CONNECTION=sqlite\nDB_DATABASE=:memory:\n' >> .env"
+          php artisan key:generate
+          php artisan config:clear
+
       - name: Pest (backend app)
         working-directory: apps/backend
         run: vendor/bin/pest --colors=always --testsuite=Feature
 
-      # Run package tests
       - name: Pest (package plenipotentiary-laravel)
         working-directory: packages/plenipotentiary-laravel
         run: |
           composer install --no-interaction --prefer-dist
           vendor/bin/pest --colors=always
+
+phpstan:
+  name: PHPStan (app + package)
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        tools: composer
+
+    - name: Install composer deps (app)
+      working-directory: apps/backend
+      run: composer install --no-interaction --prefer-dist
+
+    - name: Cache PHPStan results
+      uses: actions/cache@v4
+      with:
+        path: apps/backend/.phpstan
+        key: phpstan-${{ hashFiles('apps/backend/phpstan.neon.dist','apps/backend/phpstan-baseline.neon','apps/backend/composer.lock') }}
+
+    - name: Run PHPStan
+      working-directory: apps/backend
+      run: php vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress

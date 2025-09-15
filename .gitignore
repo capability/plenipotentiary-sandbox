@@ -124,6 +124,10 @@ packages/plenipotentiary-laravel/vendor
 # Repo-level tools
 # =============================================================================
 
+# Static analysis & test caches
+**/.phpstan/
+**/.phpunit.cache/
+
 # Prettier, ESLint, etc. caches (if created at root)
 .eslintcache
 *.tsbuildinfo
