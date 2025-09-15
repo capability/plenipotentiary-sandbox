@@ -152,57 +152,52 @@ test-cov:
 watch-app-tests:
     @{{ensure_host}}
     watchexec -e php -w apps/backend -- \
-      docker compose exec api vendor/bin/pest --colors=always
+      {{compose}} exec -T {{api_svc}} vendor/bin/pest --colors=always
 
 watch-package-tests:
     @{{ensure_host}}
     watchexec -e php -w packages/plenipotentiary-laravel -- \
-      docker compose exec api bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always"
+      {{compose}} exec -T {{api_svc}} bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always"
 
 # Watch BOTH in parallel with prefixed output
 watch-all-tests:
-	@{{ensure_host}}
-	bash -ceu '\
-	  prefix(){ stdbuf -oL sed -e "s/^/[$$1] /"; } ; \
-	  ( watchexec -e php -w apps/backend -- \
-	      docker compose exec api vendor/bin/pest --colors=always | prefix app ) & APP=$$! ; \
-	  ( watchexec -e php -w packages/plenipotentiary-laravel -- \
-	      docker compose exec api bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always" | prefix pkg ) & PKG=$$! ; \
-	  trap "kill $$APP $$PKG" INT TERM ; \
-	  wait \
-	'
+    @{{ensure_host}}
+    bash -ceu '\
+      prefix(){ stdbuf -oL sed -e "s/^/[$$1] /"; } ; \
+      ( watchexec -e php -w apps/backend -- \
+          {{compose}} exec -T {{api_svc}} vendor/bin/pest --colors=always | prefix app ) & APP=$$! ; \
+      ( watchexec -e php -w packages/plenipotentiary-laravel -- \
+          {{compose}} exec -T {{api_svc}} bash -lc "cd /workspaces/stack-root/packages/plenipotentiary-laravel && vendor/bin/pest --colors=always" | prefix pkg ) & PKG=$$! ; \
+      trap "kill $$APP $$PKG" INT TERM ; \
+      wait \
+    '
 
 # Pint (check) — run from anywhere. Optional args to restrict paths.
 pint *paths:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
-      set -eu; \
-      export XDEBUG_MODE=off; \
+      set -eu; export XDEBUG_MODE=off; \
       cd /workspaces/stack-root/apps/backend; \
       [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-      if [ -z "{{paths}}" ]; then \
-        set -- . ../../packages/plenipotentiary-laravel; \
-      else \
-        set -- {{paths}}; \
-      fi; \
-      echo "[pint --test] $@"; \
-      vendor/bin/pint --test "$@" \
+      if [ -z "{{paths}}" ]; then set -- . ../../packages/plenipotentiary-laravel; else set -- {{paths}}; fi; \
+      echo "[pint --test] $@"; vendor/bin/pint --test "$@" \
     '
 
-# Pint (fix) — same, but applies fixes.
+# Pint (fix)
 pint-fix *paths:
     @{{compose}} exec -T -u {{container_user}} {{api_svc}} bash -lc '\
-      set -eu; \
-      export XDEBUG_MODE=off; \
+      set -eu; export XDEBUG_MODE=off; \
       cd /workspaces/stack-root/apps/backend; \
       [ -f vendor/autoload.php ] || composer install --no-interaction --no-progress --prefer-dist; \
-      if [ -z "{{paths}}" ]; then \
-        set -- . ../../packages/plenipotentiary-laravel; \
-      else \
-        set -- {{paths}}; \
-      fi; \
-      echo "[pint --fix] $@"; \
-      vendor/bin/pint "$@" \
+      if [ -z "{{paths}}" ]; then set -- . ../../packages/plenipotentiary-laravel; else set -- {{paths}}; fi; \
+      echo "[pint --fix] $@"; vendor/bin/pint "$@" \
     '
+
+# Friendly aliases so old muscle-memory still works
+lint *paths:
+    just pint {{paths}}
+
+lint-fix *paths:
+    just pint-fix {{paths}}
 
 stan:
     @just run-backend 'composer stan'

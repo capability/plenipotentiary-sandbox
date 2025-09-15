@@ -92,7 +92,9 @@
 
   // Post-create ensures backend is bootstrapped
   "postCreateCommand": "sh -lc 'set -eux; \
-  # ensure dirs and perms
+  # frontend tooling (optional, harmless if missing)
+  if command -v corepack >/dev/null 2>&1; then corepack enable; corepack prepare pnpm@10.15.1 --activate || true; fi; \
+  # ensure dirs & perms for Laravel
   mkdir -p /home/app-user/.vscode-server \
            /workspaces/stack-root/apps/backend/storage \
            /workspaces/stack-root/apps/backend/bootstrap/cache; \
@@ -101,11 +103,13 @@
            /workspaces/stack-root/apps/backend/bootstrap/cache || true; \
   # backend bootstrap
   cd /workspaces/stack-root/apps/backend; \
-  if [ ! -f vendor/autoload.php ] && [ -f composer.json ]; then composer install --no-interaction --prefer-dist; fi; \
+  [ -f composer.json ] && [ ! -f vendor/autoload.php ] && composer install --no-interaction --prefer-dist || true; \
   [ -f .env ] || cp .env.example .env || true; \
   grep -qE \"^APP_KEY=base64:.+\" .env || php artisan key:generate --force; \
-  # run migrations if DB is reachable, no-op if already up-to-date
-  php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force --no-interaction || true \
+  # run migrations if DB is reachable (no-op if already up-to-date)
+  php -r \"exit(@fsockopen(\\\"db\\\",3306)?0:1);\" && php artisan migrate --force --no-interaction || true; \
+  # repo-level git nicety
+  cd /workspaces/stack-root && git config --local commit.template ~/.gitmessage.txt || true \
 '"
 
 

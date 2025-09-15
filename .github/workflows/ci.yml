@@ -1,8 +1,14 @@
 name: CI
+
 on:
   pull_request:
   push:
     branches: [main, "epic/**", "feature/**", "chore/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   pint:
@@ -10,16 +16,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           tools: composer
-
       - name: Composer install (app)
         working-directory: apps/backend
         run: composer install --no-interaction --prefer-dist
-
       # run from backend so vendor/bin/pint exists
       - name: Pint (app + package)
         working-directory: apps/backend
@@ -30,20 +33,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           tools: composer
           extensions: sqlite, sqlite3, pdo_sqlite
-
       - name: Composer install (app)
         working-directory: apps/backend
         run: composer install --no-interaction --prefer-dist
-
-      # minimal test env so /ready passes in CI
+      # minimal test env so view cache & app key exist
       - name: Prepare test env
         working-directory: apps/backend
+        shell: bash
         run: |
           set -eu
           rm -f .env
@@ -59,20 +60,18 @@ jobs:
           DB_CONNECTION=sqlite
           DB_DATABASE=:memory:
           ENV
-          # Key + view compile path
           echo "APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));")" >> .env
           echo "VIEW_COMPILED_PATH=$(pwd)/storage/framework/views" >> .env
-          # Ensure framework/cache & views + bootstrap/cache exist
           mkdir -p storage/framework/{cache,views} bootstrap/cache
-          php artisan key:generate --force
           php artisan config:clear
-
+          php artisan route:clear
       - name: Pest (backend app)
         working-directory: apps/backend
         run: vendor/bin/pest --colors=always --testsuite=Feature
-
       - name: Pest (package plenipotentiary-laravel)
         working-directory: packages/plenipotentiary-laravel
+        env:
+          EXAMPLES_ROOT: ${{ github.workspace }}/docs/openapi/examples
         run: |
           composer install --no-interaction --prefer-dist
           vendor/bin/pest --colors=always --testsuite=Contracts
@@ -85,22 +84,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           tools: composer
-
       - name: Install composer deps (app)
         working-directory: apps/backend
         run: composer install --no-interaction --prefer-dist
-
       - name: Cache PHPStan results
         uses: actions/cache@v4
         with:
           path: apps/backend/.phpstan
           key: phpstan-${{ hashFiles('apps/backend/phpstan.neon.dist','apps/backend/phpstan-baseline.neon','apps/backend/composer.lock') }}
-
       - name: Run PHPStan
         working-directory: apps/backend
         run: php vendor/bin/phpstan analyse -c phpstan.neon.dist --no-progress
