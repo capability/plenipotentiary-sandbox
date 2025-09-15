@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d6572f4928c202611fbab45d5354ceec",
+    "content-hash": "1be6871748566e6c1524dac61a175653",
     "packages": [
         {
             "name": "brick/math",
@@ -71,8 +71,8 @@
             "version": "dev-main",
             "dist": {
                 "type": "path",
-                "url": "/workspaces/stack-root/packages/plenipotentiary-laravel",
-                "reference": "8a3a69bb893fb5993cf55e35a455ea673fd551f1"
+                "url": "../../packages/plenipotentiary-laravel",
+                "reference": "42ee6263801b7bbc049e9c1e18125f3d2057e1a8"
             },
             "require": {
                 "illuminate/http": "^11.0",
@@ -84,8 +84,7 @@
                 "brianium/paratest": "^7.8.4",
                 "orchestra/testbench": "^9.0",
                 "pestphp/pest": "^3.0",
-                "pestphp/pest-plugin-laravel": "^3.0",
-                "pestphp/pest-plugin-watch": "^3.0"
+                "pestphp/pest-plugin-laravel": "^3.0"
             },
             "type": "library",
             "extra": {
@@ -116,7 +115,7 @@
             "description": "Opinionated integration/orchestration layer for Laravel.",
             "transport-options": {
                 "symlink": true,
-                "relative": false
+                "relative": true
             }
         },
         {
