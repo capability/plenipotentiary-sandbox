@@ -1,0 +1,9 @@
+{
+  "total": 3,
+  "items": [
+    { "id": "11001", "title": "Front Brake Pads Set - BMW 3 Series (2018)", "image": "https://via.placeholder.com/480x320?text=Brake+Pads", "price": "34.99", "currency": "GBP", "shipping": "3.99", "url": "https://www.ebay.co.uk/itm/11001" },
+    { "id": "11002", "title": "Oil Filter OEM - BMW 3 Series", "image": "https://via.placeholder.com/480x320?text=Oil+Filter", "price": "8.95", "currency": "GBP", "shipping": "Free", "url": "https://www.ebay.co.uk/itm/11002" },
+    { "id": "11003", "title": "Air Filter Performance - BMW 3 Series (F30)", "image": "https://via.placeholder.com/480x320?text=Air+Filter", "price": "24.50", "currency": "GBP", "shipping": "2.99", "url": "https://www.ebay.co.uk/itm/11003" }
+  ]
+}
+
