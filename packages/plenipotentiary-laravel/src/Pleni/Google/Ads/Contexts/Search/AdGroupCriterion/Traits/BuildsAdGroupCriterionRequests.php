@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Support;
+namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\AdGroupCriterion\Traits;
 
 use Google\Ads\GoogleAds\Util\V20\FieldMasks;
 use Google\Ads\GoogleAds\V20\Common\KeywordInfo;
@@ -12,11 +12,11 @@ use Google\Ads\GoogleAds\V20\Enums\ResponseContentTypeEnum\ResponseContentType;
 use Google\Ads\GoogleAds\V20\Resources\AdGroupCriterion;
 use Google\Ads\GoogleAds\V20\Services\AdGroupCriterionOperation;
 use Google\Ads\GoogleAds\V20\Services\MutateAdGroupCriteriaRequest;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\DTO\Domain\AdGroupCriterionDomainData;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\AdGroupCriterion\DTO\AdGroupCriterionDomainDTO;
 
-class AdGroupCriterionRequestBuilder
+trait BuildsAdGroupCriterionRequests
 {
-    public static function buildCreate(string $customerId, AdGroupCriterionDomainData $dto): MutateAdGroupCriteriaRequest
+    public static function buildCreate(string $customerId, AdGroupCriterionDomainDTO $dto): MutateAdGroupCriteriaRequest
     {
         $criterion = new AdGroupCriterion([
             'ad_group' => $dto->parentAdGroupResourceName,
@@ -36,7 +36,7 @@ class AdGroupCriterionRequestBuilder
             ->setResponseContentType(ResponseContentType::MUTABLE_RESOURCE);
     }
 
-    public static function buildUpdate(string $customerId, AdGroupCriterionDomainData $dto): MutateAdGroupCriteriaRequest
+    public static function buildUpdate(string $customerId, AdGroupCriterionDomainDTO $dto): MutateAdGroupCriteriaRequest
     {
         $criterion = new AdGroupCriterion([
             'resource_name' => $dto->resourceName,

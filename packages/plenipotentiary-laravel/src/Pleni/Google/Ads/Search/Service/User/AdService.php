@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Service\User;
 
-use Plenipotentiary\Laravel\Contracts\CrudServiceContract;
+use Plenipotentiary\Laravel\Contracts\ApiCrudServiceContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\DTO\Domain\AdDomainData;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Service\Generated\AdService as GeneratedService;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Support\GoogleAdsExceptionMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Search\Translate\AdExternalToDomainMapper;
 
-// todo: Add AdRequestBuilder + AdValidator support classes when request building/validation grows
-
 /**
- * User-level AdService (composition).
- * Implements CrudServiceContract and delegates to GeneratedService.
+ * Thin AdService implementing ApiCrudServiceContract.
+ * Delegates raw API operations to GeneratedService.
  */
-class AdService implements CrudServiceContract
+class AdService implements ApiCrudServiceContract
 {
     public function __construct(
         protected GeneratedService $generated
