@@ -18,4 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->withProviders([
+        App\Providers\AppServiceProvider::class,
+        // pleni core (from the package via auto-discovery or manual if you prefer)
+        Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class,
+        // your app-specific Google Ads wiring:
+        Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider::class,
+    ])->create();

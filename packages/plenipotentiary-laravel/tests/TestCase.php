@@ -3,7 +3,7 @@
 namespace Plenipotentiary\Laravel\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Plenipotentiary\Laravel\PleniServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
