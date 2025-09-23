@@ -8,8 +8,30 @@ use Plenipotentiary\Laravel\Contracts\Auth\AuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Token\TokenStoreContract;
 use Psr\Http\Message\RequestInterface;
 
+/**
+ * OAuth2 Client Credentials authentication strategy.
+ *
+ * This strategy fetches an OAuth2 access token using the
+ * "client_credentials" grant type and applies it as a Bearer token.
+ *
+ * Tokens are cached using the injected TokenStoreContract to avoid
+ * excess token requests. The default cache TTL is ~55 minutes.
+ *
+ * Supports optional scope and audience values, and allows a custom
+ * HTTP client callable to be provided for testing or alternative transport.
+ */
 final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
 {
+    /**
+     * @param string                 $clientId    OAuth2 client id
+     * @param string                 $clientSecret OAuth2 client secret
+     * @param string                 $tokenUrl    Token endpoint URL
+     * @param string|null             $scope       Optional OAuth2 scopes
+     * @param string|null             $audience    Optional audience value
+     * @param TokenStoreContract      $store       Token store implementation (cache)
+     * @param int                     $cacheTtl    TTL for tokens (seconds)
+     * @param callable(array):array|null $httpClient Optional HTTP client override, must return decoded JSON array
+     */
     public function __construct(
         private string $clientId,
         private string $clientSecret,
@@ -44,6 +66,11 @@ final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
         ]));
     }
 
+    /**
+     * Fetch a fresh access token from the OAuth2 server.
+     *
+     * @throws \RuntimeException if the request fails or token is missing
+     */
     private function fetchToken(): string
     {
         $payload = [

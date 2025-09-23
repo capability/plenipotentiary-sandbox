@@ -9,7 +9,7 @@ abstract class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app)
     {
-        return [PleniServiceProvider::class];
+        return [Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class];
     }
 
     protected function defineEnvironment($app)

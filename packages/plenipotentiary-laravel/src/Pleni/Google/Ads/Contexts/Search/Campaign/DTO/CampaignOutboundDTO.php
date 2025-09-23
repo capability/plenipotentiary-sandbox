@@ -9,7 +9,7 @@ readonly class CampaignOutboundDTO implements OutboundDTOContract
 {
     public function __construct(
         public ?string $name,
-        public int $budgetMicros,
+        public ?int $budgetMicros,
         public ?string $advertisingChannelType,
         public string $customerId,
         public string|int|null $id = null,
@@ -28,7 +28,7 @@ readonly class CampaignOutboundDTO implements OutboundDTOContract
 
     public static function newWithDefaults(
         ?string $name,
-        int $budgetMicros,
+        ?int $budgetMicros,
         ?string $advertisingChannelType,
         ?string $customerId,
         string|int|null $id = null

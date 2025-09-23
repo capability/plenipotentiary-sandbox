@@ -29,4 +29,12 @@ final class PleniCoreServiceProvider extends ServiceProvider
             }
         );
     }
+
+    public function boot(): void
+    {
+        // Ensure PSR-3 LoggerInterface resolves to Laravel logger globally
+        $this->app->bind(\Psr\Log\LoggerInterface::class, function ($app) {
+            return \Illuminate\Support\Facades\Log::getLogger();
+        });
+    }
 }

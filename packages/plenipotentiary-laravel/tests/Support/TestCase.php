@@ -10,7 +10,7 @@ abstract class TestCase extends Orchestra
 {
     protected function getPackageProviders($app): array
     {
-        return [PleniServiceProvider::class];
+        return [\Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class];
     }
 
     protected function getEnvironmentSetUp($app): void

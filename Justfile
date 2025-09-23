@@ -611,3 +611,11 @@ vs-code-both:
     just vs-code-be
     just vs-code-fe
 
+pleni-clear:
+    php apps/backend/artisan config:clear
+    php apps/backend/artisan cache:clear
+    php apps/backend/artisan route:clear
+    php apps/backend/artisan event:clear
+    php apps/backend/artisan clear-compiled
+    composer dump-autoload -o -d apps/backend
+

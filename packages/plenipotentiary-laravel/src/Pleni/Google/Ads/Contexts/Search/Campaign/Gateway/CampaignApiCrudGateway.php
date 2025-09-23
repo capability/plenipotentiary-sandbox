@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gate
 
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\DTO\OutboundDTOContract;
-use Plenipotentiary\Laravel\Contracts\DTO\InboundDTOContract;
+use Plenipotentiary\Laravel\Contracts\DTO\ContextualInboundDTOContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
 
 class CampaignApiCrudGateway implements ApiCrudGatewayContract
@@ -15,22 +15,22 @@ class CampaignApiCrudGateway implements ApiCrudGatewayContract
         private ApiCrudAdapterContract $adapter,
     ) {}
 
-    public function create(OutboundDTOContract $dto): InboundDTOContract
+    public function create(OutboundDTOContract $dto): ContextualInboundDTOContract
     {
         return $this->adapter->create($dto);
     }
 
-    public function read(OutboundDTOContract $dto): ?InboundDTOContract
+    public function read(OutboundDTOContract $dto): ?ContextualInboundDTOContract
     {
         return $this->adapter->read($dto);
     }
 
-    public function update(OutboundDTOContract $dto): InboundDTOContract
+    public function update(OutboundDTOContract $dto): ContextualInboundDTOContract
     {
         return $this->adapter->update($dto);
     }
 
-    public function delete(OutboundDTOContract $dto): InboundDTOContract
+    public function delete(OutboundDTOContract $dto): ContextualInboundDTOContract
     {
         return $this->adapter->delete($dto);
     }

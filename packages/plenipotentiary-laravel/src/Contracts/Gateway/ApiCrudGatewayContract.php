@@ -12,19 +12,20 @@ namespace Plenipotentiary\Laravel\Contracts\Gateway;
  */
 use Plenipotentiary\Laravel\Contracts\DTO\OutboundDTOContract;
 use Plenipotentiary\Laravel\Contracts\DTO\InboundDTOContract;
+use Plenipotentiary\Laravel\Contracts\DTO\ContextualInboundDTOContract;
 
 interface ApiCrudGatewayContract
 {
-    public function create(OutboundDTOContract $dto): InboundDTOContract;
+    public function create(OutboundDTOContract $dto): ContextualInboundDTOContract;
 
-    public function read(OutboundDTOContract $dto): ?InboundDTOContract;
+    public function read(OutboundDTOContract $dto): ?ContextualInboundDTOContract;
 
-    public function update(OutboundDTOContract $dto): InboundDTOContract;
+    public function update(OutboundDTOContract $dto): ContextualInboundDTOContract;
 
-    public function delete(OutboundDTOContract $dto): InboundDTOContract;
+    public function delete(OutboundDTOContract $dto): ContextualInboundDTOContract;
 
     /**
-     * @return iterable<InboundDTOContract>
+     * @return iterable<ContextualInboundDTOContract>
      */
     public function listAll(array $criteria = []): iterable;
 }

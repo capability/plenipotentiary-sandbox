@@ -7,7 +7,6 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers;
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Mapper\InboundMapperContract;
 use Plenipotentiary\Laravel\Contracts\Mapper\OutboundMapperContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
@@ -15,7 +14,6 @@ use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Mapper\CampaignInboundMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Mapper\CampaignOutboundMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\CampaignRepositoryContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\EloquentCampaignRepository;
@@ -46,7 +44,6 @@ final class GoogleAdsServiceProvider extends ServiceProvider
         });
 
         // Mappers
-        $this->app->singleton(InboundMapperContract::class, CampaignInboundMapper::class);
         $this->app->singleton(OutboundMapperContract::class, CampaignOutboundMapper::class);
 
         // Error Mapper

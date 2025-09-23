@@ -13,8 +13,11 @@ class CampaignOutboundMapper implements OutboundMapperContract
     {
         return [
             'name' => $dto->name,
-            'campaignBudget' => $dto->budgetMicros,
+            // map using budgetMicros; BudgetManager will resolve to a resource when creating
+            'budgetMicros' => $dto->budgetMicros,
             'advertisingChannelType' => $dto->advertisingChannelType,
+            'customerId' => $dto->customerId,
+            'id' => $dto->id,
         ];
     }
 }
