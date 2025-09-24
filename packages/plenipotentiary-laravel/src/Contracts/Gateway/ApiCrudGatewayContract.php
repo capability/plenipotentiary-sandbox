@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Gateway;
 
-/**
- * Contract for a CRUD API Gateway providing standard campaign operations.
- *
- * The ApiCrudGateway is the entrypoint to interact with external APIs
- * that support create, read, update, delete, and listAll operations.
- */
-use Plenipotentiary\Laravel\Contracts\DTO\OutboundDTOContract;
-use Plenipotentiary\Laravel\Contracts\DTO\InboundDTOContract;
-use Plenipotentiary\Laravel\Contracts\DTO\ContextualInboundDTOContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
+use Plenipotentiary\Laravel\Pleni\Support\Result;
 
+/**
+ * Provider-agnostic gateway contract for CRUD operations.
+ * 
+ * Acts as the central entry point where logging, jobs, and events can hook in.
+ * Delegates to a provider-specific ApiCrudAdapterContract behind the scenes.
+ */
 interface ApiCrudGatewayContract
 {
-    public function create(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result;
 
-    public function read(OutboundDTOContract $dto): ?ContextualInboundDTOContract;
+    public function find(CampaignSelector $sel): Result;
 
-    public function update(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function lookup(Lookup $criteria, string $customerId): Result;
 
-    public function delete(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result;
 
-    /**
-     * @return iterable<ContextualInboundDTOContract>
-     */
-    public function listAll(array $criteria = []): iterable;
+    public function delete(CampaignSelector $sel, bool $validateOnly = false): Result;
 }

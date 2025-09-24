@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Idempotency;
 
-use Plenipotentiary\Laravel\Contracts\DTO\OutboundDTOContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
 
 /**
- * Adapters can optionally implement this to provide idempotency hints.
+ * Defines how to generate idempotency fingerprints for CRUD operations.
  */
 interface IdempotencyHints
 {
-    public function inferExternalReference(OutboundDTOContract $dto): ?string;
+    public function fingerprintForCreate(CampaignCanonicalDTO $c): string;
 
-    public function fingerprintForCreate(OutboundDTOContract $dto): string;
+    public function fingerprintForUpdate(CampaignCanonicalDTO $c): string;
 
-    public function fingerprintForUpdate(string $externalRef, OutboundDTOContract $dto): string;
-
-    public function fingerprintForDelete(string $externalRef): string;
+    public function fingerprintForDelete(CampaignSelector $sel): string;
 }

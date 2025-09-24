@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Adapter;
 
-use Plenipotentiary\Laravel\Contracts\DTO\OutboundDTOContract;
-use Plenipotentiary\Laravel\Contracts\DTO\ContextualInboundDTOContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
+use Plenipotentiary\Laravel\Pleni\Support\Result;
 
 /**
- * Contract for any API CRUD Adapter that integrates with an external API.
- *
- * Adapters are responsible for the actual communication layer and translation
- * of DTOs into API-specific formats and back.
+ * New contract for provider adapters handling CampaignCanonicalDTO.
  */
 interface ApiCrudAdapterContract
 {
-    public function create(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result;
 
-    public function read(OutboundDTOContract $dto): ?ContextualInboundDTOContract;
+    public function find(CampaignSelector $sel): Result;
 
-    public function update(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function lookup(Lookup $criteria, string $customerId): Result;
 
-    public function delete(OutboundDTOContract $dto): ContextualInboundDTOContract;
+    public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result;
 
-    /**
-     * @return iterable<ContextualInboundDTOContract>
-     */
-    public function listAll(array $criteria = []): iterable;
+    public function delete(CampaignSelector $sel, bool $validateOnly = false): Result;
 }
