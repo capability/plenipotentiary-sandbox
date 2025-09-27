@@ -20,6 +20,7 @@
     "require": {
         "php": "^8.2",
         "capability/plenipotentiary-laravel": "dev-main",
+        "googleads/google-ads-php": "^31.0",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9"
     },
@@ -75,10 +76,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [],
-            "providers": [
-                "Plenipotentiary\\Laravel\\PleniServiceProvider"
-            ]
+            "dont-discover": []
         }
     },
     "config": {

@@ -22,7 +22,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Plenipotentiary\\Laravel\\PleniServiceProvider"
+        "Plenipotentiary\\Laravel\\Providers\\PleniCoreServiceProvider"
       ]
     }
   },
@@ -30,7 +30,8 @@
     "orchestra/testbench": "^9.0",
     "pestphp/pest": "^3.0",
     "pestphp/pest-plugin-laravel": "^3.0",
-    "brianium/paratest": "^7.8.4"
+    "brianium/paratest": "^7.8.4",
+    "googleads/google-ads-php": "^31.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

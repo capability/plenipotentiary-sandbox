@@ -4,13 +4,13 @@ namespace Plenipotentiary\Laravel\Tests\Support;
 
 use Illuminate\Routing\Router;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Plenipotentiary\Laravel\PleniServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
     protected function getPackageProviders($app): array
     {
-        return [PleniServiceProvider::class];
+        return [\Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class];
     }
 
     protected function getEnvironmentSetUp($app): void
