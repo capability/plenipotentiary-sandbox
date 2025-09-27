@@ -1,0 +1,26 @@
+.faqSection {
+  padding: 2rem 0 3rem;
+}
+.detail {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 0.5rem;
+  background: var(--ifm-background-surface-color);
+  padding: 0.5rem 0.75rem;
+}
+.summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.answer {
+  padding: 0.5rem 0.25rem 0.25rem;
+  color: var(--ifm-color-content-secondary);
+}
+
+.faqQuestion {
+  /* Apply the primary color variable */
+  color: var(--ifm-color-primary); 
+  
+  /* Optionally reduce the default h3 margin to tighten the Q&A block */
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
