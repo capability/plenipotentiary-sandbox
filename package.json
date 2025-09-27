@@ -1,5 +1,9 @@
 {
   "packageManager": "pnpm@10.15.1",
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@docusaurus/theme-live-codeblock": "^3.9.0"
+  }
 }
-

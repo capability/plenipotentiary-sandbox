@@ -3,13 +3,13 @@
 namespace Plenipotentiary\Laravel\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Plenipotentiary\Laravel\PleniServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app)
     {
-        return [PleniServiceProvider::class];
+        return [Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class];
     }
 
     protected function defineEnvironment($app)

@@ -22,6 +22,7 @@ web_svc     := "web"
 db_svc      := "db"
 cache_svc   := "cache"
 mail_svc    := "mail"
+docs_svc    := "docs"
 fe_svc      := "frontend"
 horizon_svc := "horizon"
 caddy_svc   := "caddy"
@@ -442,6 +443,20 @@ tier0-down:
     @{{ensure_host}}
     {{compose}} stop {{web_svc}} {{api_svc}} {{db_svc}} {{cache_svc}} {{mail_svc}}
 
+docs-up:
+	@{{ensure_host}}
+	{{compose}} up -d {{docs_svc}}
+	{{compose}} ps {{docs_svc}}
+
+docs-smoke:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -lc 'echo ok'
+	curl -sI "http://localhost:3001" | head -n 1 || true
+
+docs-down:
+	@{{ensure_host}}
+	{{compose}} stop {{docs_svc}}
+
 ui-up:
     @{{ensure_host}}
     {{compose}} up -d {{fe_svc}}
@@ -610,4 +625,12 @@ vs-code-fe:
 vs-code-both:
     just vs-code-be
     just vs-code-fe
+
+pleni-clear:
+    php apps/backend/artisan config:clear
+    php apps/backend/artisan cache:clear
+    php apps/backend/artisan route:clear
+    php apps/backend/artisan event:clear
+    php apps/backend/artisan clear-compiled
+    composer dump-autoload -o -d apps/backend
 

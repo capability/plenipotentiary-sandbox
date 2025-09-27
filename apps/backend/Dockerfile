@@ -16,7 +16,7 @@ RUN set -eux; \
 # PHP extensions
 RUN set -eux; \
   docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
-  docker-php-ext-install -j"$(nproc)" pdo_mysql intl zip gd; \
+  docker-php-ext-install -j"$(nproc)" pdo_mysql intl zip gd bcmath; \
   pecl install redis; \
   docker-php-ext-enable redis
 
