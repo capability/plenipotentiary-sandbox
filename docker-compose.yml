@@ -91,6 +91,22 @@ services:
       - "8025:8025"
       - "1025:1025"
 
+  docs:
+    build:
+      context: ./packages/plenipotentiary-laravel/docs-site
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - "3001:3000"  # host:container
+    # Mount source for hot reload, but keep node_modules inside container
+    volumes:
+      - ./packages/plenipotentiary-laravel/docs-site:/app
+      - /app/node_modules
+    environment:
+      CI: "false"
+    restart: unless-stopped
+
+
   frontend:
     image: node:18-alpine
     container_name: ${COMPOSE_PROJECT_NAME}_ui
@@ -115,7 +131,7 @@ services:
       - "${UI_PORT:-5173}:3000"
     volumes:
       - ./apps/frontend:/usr/src/app
-      - pnpm_store:/pnpm-store
+      - pnpm_store_ui:/pnpm-store
     profiles: ["ui"]
 
   horizon:
@@ -190,6 +206,7 @@ volumes:
   vendor_cache:
   composer_cache:
   grafana_data:
-  pnpm_store:
+  pnpm_store_docs:
+  pnpm_store_ui:
   caddy_data:
   caddy_config:

@@ -115,7 +115,7 @@ apps/frontend/.env
 apps/frontend/.env.*
 
 # If a local store ever lands in-tree by mistake
-apps/frontend/.pnpm-store/
+**/.pnpm-store/
 
 
 # =============================================================================
@@ -151,3 +151,4 @@ npm-debug.log*
 apps/backend/!.env.example
 apps/frontend/!.env.example
 .aider*
+node_modules
