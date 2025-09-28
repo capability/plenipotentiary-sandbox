@@ -4,42 +4,69 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key;
 
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelectorKind;
-
 final class CampaignSelector
 {
-    public function __construct(
-        private CampaignSelectorKind $kind,
-        private string $value,
-        private ?string $customerId = null
-    ) {}
+	/** @var array<string,string> provider account identifiers (e.g. google.customerId) */
+	private array $accountKeys;
 
-    public static function byResourceName(string $rn, ?string $customerId = null): self
-    {
-        return new self(CampaignSelectorKind::ResourceName, $rn, $customerId);
-    }
+	private function __construct(
+		private CampaignSelectorKind $kind,
+		private string $value,
+		array $accountKeys = []
+	) {
+		$this->accountKeys = $accountKeys ?: ['google.customerId' => env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '')];
+	}
 
-    public static function byId(string $id, ?string $customerId = null): self
-    {
-        return new self(CampaignSelectorKind::ExternalId, $id, $customerId);
-    }
+	public static function byResourceName(string $resourceName, array $accountKeys = []): self
+	{
+		return new self(CampaignSelectorKind::ResourceName, $resourceName, $accountKeys);
+	}
 
-    public function kind(): CampaignSelectorKind { return $this->kind; }
+	public static function byExternalId(string $id, array $accountKeys = []): self
+	{
+		return new self(CampaignSelectorKind::ExternalId, $id, $accountKeys);
+	}
 
-    public function value(): string { return $this->value; }
+	public static function byLocalId(string $id, array $accountKeys = []): self
+	{
+		return new self(CampaignSelectorKind::LocalId, $id, $accountKeys);
+	}
 
-    public function customerId(): string
-    {
-        return $this->customerId ?: (string) env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '');
-    }
+	public function kind(): CampaignSelectorKind { return $this->kind; }
+	public function value(): string { return $this->value; }
 
-    public function toResourceName(?string $customerId = null): string
-    {
-        $cid = $customerId ?: $this->customerId();
-        return match ($this->kind) {
-            CampaignSelectorKind::ResourceName => $this->value,
-            CampaignSelectorKind::ExternalId   => sprintf('customers/%s/campaigns/%s', $cid, $this->value),
-            CampaignSelectorKind::LocalId      => sprintf('customers/%s/campaigns/%s', $cid, $this->value),
-        };
-    }
+	/** Convenience for the common key; remains provider-aware in Google namespace */
+	public function customerId(): ?string
+	{
+		return $this->accountKeys['google.customerId'] ?? null;
+	}
+
+	/** Access entire bag for multi-provider consistency */
+	public function accountKeys(): array
+	{
+		return $this->accountKeys;
+	}
+
+	/** GA-specific: build a resource_name when kind != ResourceName */
+	public function resourceName(?string $overrideCustomerId = null): string
+	{
+		$cid = $overrideCustomerId ?: $this->customerId() ?: '';
+		return match ($this->kind) {
+			CampaignSelectorKind::ResourceName => $this->value,
+			CampaignSelectorKind::ExternalId,
+			CampaignSelectorKind::LocalId => sprintf('customers/%s/campaigns/%s', $cid, $this->value),
+		};
+	}
+
+	/** Build a minimal canonical DTO skeleton for status-only updates, etc. */
+	public function toCanonicalSkeleton(): \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO
+	{
+		return \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO::fromArray([
+			'accountKeys' => $this->accountKeys,
+			'externalId'  => $this->kind === CampaignSelectorKind::ExternalId ? $this->value : null,
+			'identifiers' => [
+				'resourceName' => $this->resourceName(),
+			],
+		]);
+	}
 }

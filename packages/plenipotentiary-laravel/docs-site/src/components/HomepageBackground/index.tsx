@@ -8,7 +8,7 @@ export default function HomepageBackground() {
   <div className="container">
     <div className="row">
       <div className="col col--12">
-        <Heading as="h2" className="margin-bottom--md">Why this exists</Heading>
+        <Heading as="h2" className="margin-bottom--md">Why Plenipotentiary exists</Heading>
         <p>
           I’ve spent my whole career making one system talk to another. Over those years PHP has improved,
           frameworks have matured, and our expectations of testing and code robustness have gone up. My earliest
