@@ -116,7 +116,7 @@ apps/frontend/.env.*
 
 # If a local store ever lands in-tree by mistake
 **/.pnpm-store/
-
+**/.npm/
 
 # =============================================================================
 # Packages
