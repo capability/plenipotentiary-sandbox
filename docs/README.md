@@ -35,25 +35,42 @@ This directory contains all project documentation for **plenipotentiary-laravel*
 
 ---
 
-## 📂 Directory Overview
+## 🏗️ Current Architecture
 
-docs/
-charter/ # Project charter & technical design
-adr/ # Architecture Decision Records
-delivery/ # Roadmap, milestones, WBS, epics
-guides/ # How-to guides for devs
-openapi/ # Contract-first OpenAPI specs
-stack-info/ # Sandbox stack-specific docs
+**Plenipotentiary** is a Laravel-first orchestration and anti-corruption layer for large APIs. It provides:
+
+### **Core Patterns**
+
+- **Gateway/Adapter Pattern**: Clean separation between your application and provider APIs
+- **Result Pattern**: Consistent error handling with `Result::ok()`, `Result::err()`, `Result::invalid()`
+- **Contract-Driven Development**: Provider-agnostic interfaces with concrete implementations
+
+### **Two-Tier Adapter Approach**
+
+1. **ApiCrudAdapterContract**: For traditional CRUD operations (create, find, update, delete)
+2. **ApiEndpointAdapterContract**: For flexible, operation-based API calls that don't fit CRUD patterns
+
+### **Built-in Capabilities**
+
+- **Idempotency**: Automatic retry/race protection with configurable storage
+- **Logging**: Structured logging with PSR-3 compatibility
+- **Error Mapping**: Provider-specific error translation
+- **Validation**: Pre-flight validation with detailed violation reporting
+- **Authentication**: Multiple auth strategies (OAuth2, HMAC, Token-based)
+
+### **Provider Examples**
+
+- **Google Ads**: Campaign management with CRUD operations
+- **OpenAI**: AI operations (completions, images, fine-tuning)
+- **eBay Browse**: Marketplace operations (search, items, offers)
 
 ---
 
-## 🛠️ Stack-Specific Docs
+## 📂 Directory Overview
 
-The following docs describe **only the sandbox stack setup**, not the package itself:
-
-- [Cheatsheet](stack-info/CHEATSHEET.md)
-- [Devcontainers Guide](stack-info/devcontainers-guide.md)
-- [Environment Variables](stack-info/ENV.md)
-- [Onboarding](stack-info/ONBOARDING.md)
-- [Smoke Tests](stack-info/SMOKE.md)
-- [SSL Setup](stack-info/SSL.md)
+docs/
+├── charter/ # Project charter & technical design
+├── adr/ # Architecture Decision Records
+├── delivery/ # Roadmap, milestones, WBS, epics
+├── guides/ # How-to guides for developers
+├── openapi/
