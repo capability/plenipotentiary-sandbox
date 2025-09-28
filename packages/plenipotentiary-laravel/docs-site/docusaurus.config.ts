@@ -7,8 +7,8 @@ const config = {
   title: "Plenipotentiary",
   tagline:
     "A Laravel-first orchestration and anti-corruption layer for large APIs - not a wrapper!",
-  url: "https://capability.github.io", // GitHub Pages URL for capability org
-  baseUrl: "/plenipotentiary-sandbox/", // Repository name as base path
+  url: "https://capability.github.io", // Just the domain
+  baseUrl: "/plenipotentiary-sandbox/", // The sub-path goes here
   favicon: "img/favicon.ico",
   organizationName: "capability", // GitHub organization
   projectName: "plenipotentiary-sandbox", // repo name
@@ -75,5 +75,8 @@ const config = {
       copyright: `© ${new Date().getFullYear()} Plenipotentiary`,
     },
   },
+  trailingSlash: false,
+  onBrokenLinks: "throw",
+  onBrokenMarkdownLinks: "warn",
 };
 export default config;
