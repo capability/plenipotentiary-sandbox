@@ -31,23 +31,15 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install pnpm
-        run: npm install -g pnpm@10
-
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: npm install
 
       - name: Build site
-        run: pnpm build
+        run: npm run build
 
-      - name: Move build files to root
+      - name: Check build output
         run: |
-          echo "Contents before move:"
-          ls -la build/
-          echo "Moving files from subfolder to root..."
-          mv build/plenipotentiary-sandbox/* build/
-          rmdir build/plenipotentiary-sandbox
-          echo "Contents after move:"
+          echo "Build contents:"
           ls -la build/
           echo "Checking for index.html:"
           ls -la build/index.html
