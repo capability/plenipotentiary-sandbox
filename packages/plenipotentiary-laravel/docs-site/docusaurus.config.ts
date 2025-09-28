@@ -24,6 +24,7 @@ const config = {
             "https://github.com/capability/plenipotentiary-sandbox/tree/main/packages/plenipotentiary-laravel/docs-site/",
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
+          routeBasePath: "docs",
         },
         blog: false,
         theme: { customCss: require.resolve("./src/css/custom.css") },
