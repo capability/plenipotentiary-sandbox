@@ -12,7 +12,7 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Your Domain, Predictable',
-    png: '/img/orchestration-layer.png',
+    png: '/plenipotentiary-sandbox/img/orchestration-layer.png',
     description: (
       <>
         Stable contracts, no SDK noise: Gateways give you a clean entry point -  
@@ -22,7 +22,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Adapters, Your Way',
-    png: '/img/anti-corruption-layer.png',
+    png: '/plenipotentiary-sandbox/img/anti-corruption-layer.png',
     description: (
       <>
         Expose just the surface you need: Write a small adapter around a single API 
@@ -33,7 +33,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: 'Built For Integrators',
-    png: '/img/the-integration-port.png',
+    png: '/plenipotentiary-sandbox/img/the-integration-port.png',
     description: (
       <>
         Solve real API pain: Aimed at Laravel teams working with large APIs (Google Ads, 
