@@ -41,6 +41,12 @@
     }
   },
   "scripts": {
-    "test": "vendor/bin/pest --colors=always"
+     "test": "vendor/bin/pest --colors=always",
+    "test:unit": "vendor/bin/pest --colors=always tests/Unit",
+    "test:feature": "vendor/bin/pest --colors=always tests/Feature",
+    "test:contracts": "vendor/bin/pest --colors=always tests/Contracts",
+    "test:package": "vendor/bin/pest --colors=always tests/Package",
+    "test:coverage": "vendor/bin/pest --coverage --colors=always",
+    "test:watch": "vendor/bin/pest --watch --colors=always"
   }
 }

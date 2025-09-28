@@ -5,8 +5,12 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import HomepageTldr from '@site/src/components/HomepageTldr';
+import MakeScaffoldSection from '@site/src/components/MakeScaffoldSection';
+import PausePatternsSection from '@site/src/components/PausePatternsSection';
+import ApiEndpointAdapterSection from '@site/src/components/ApiEndpointAdapterSection';
 import HomepageFAQ from '@site/src/components/HomepageFAQ';
 import HomepageBackground from '@site/src/components/HomepageBackground';
+import SectionDivider from '@site/src/components/SectionDivider';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
@@ -21,7 +25,32 @@ function HomepageHeader() {
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
+
+        {/* State of the project banner */}
+            <div
+              style={{
+                background: 'var(--ifm-background-surface-color)',
+                color: 'var(--ifm-font-color-base)',
+                border: '1px solid var(--ifm-color-emphasis-200)',
+                borderRadius: '0.5rem',
+                padding: '1rem',
+                margin: '1rem auto',
+                maxWidth: '640px',
+                textAlign: 'left',
+              }}
+            >
+              <strong>Project Status:</strong>  
+              <p style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+                This project is in an <em>early sandbox phase</em>. Right now, the focus is on defining
+                scaffolding files, folder structure, and generation commands.  
+                <br />
+                It’s not yet available as a Composer package. The examples you see here demonstrate the
+                direction of travel and the developer experience we’re aiming for.
+              </p>
+            </div>
+        {/* End status banner */}
+
+        <div className={styles.buttons} style={{ display: 'none' }}>
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
@@ -37,13 +66,21 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
+      title={`${siteConfig.title} - Built for Laravel Integrators`}
       description="Description will go into a meta tag in <head />">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
         <HomepageTldr />
+        <SectionDivider />
+        <MakeScaffoldSection />
+        <SectionDivider />
+        <PausePatternsSection />
+        <SectionDivider />
+        <ApiEndpointAdapterSection />
+        <SectionDivider />
 		    <HomepageFAQ />
+        <SectionDivider />
 		    <HomepageBackground />
 		
       </main>
