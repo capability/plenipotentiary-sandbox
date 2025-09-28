@@ -35,10 +35,20 @@ jobs:
         run: npm install -g pnpm@10
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build site
         run: pnpm build
+
+      - name: Move build files to root
+        run: |
+          echo "Contents before move:"
+          ls -la build/
+          echo "Moving files from subfolder to root..."
+          mv build/plenipotentiary-sandbox/* build/
+          rmdir build/plenipotentiary-sandbox
+          echo "Contents after move:"
+          ls -la build/
 
       - uses: actions/upload-pages-artifact@v3
         with:
