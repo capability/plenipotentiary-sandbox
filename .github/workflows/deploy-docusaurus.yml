@@ -33,9 +33,16 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: "packages/plenipotentiary-laravel/docs-site/pnpm-lock.yaml"
 
-      - run: corepack enable
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build site
+        run: pnpm build
 
       - uses: actions/upload-pages-artifact@v3
         with:
