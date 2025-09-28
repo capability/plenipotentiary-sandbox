@@ -8,7 +8,7 @@ const config = {
   tagline:
     "A Laravel-first orchestration and anti-corruption layer for large APIs - not a wrapper!",
   url: "https://capability.github.io", // Just the domain
-  baseUrl: "/", // Root path - no subfolder
+  baseUrl: "/plenipotentiary-sandbox/", // The sub-path for GitHub Pages
   favicon: "img/favicon.ico",
   organizationName: "capability", // GitHub organization
   projectName: "plenipotentiary-sandbox", // repo name
