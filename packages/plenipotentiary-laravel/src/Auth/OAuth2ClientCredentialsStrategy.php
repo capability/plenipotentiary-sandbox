@@ -22,6 +22,9 @@ use Psr\Http\Message\RequestInterface;
  */
 final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
 {
+    /** @var callable(array):array|null */
+    private $httpClient;
+
     /**
      * @param  string  $clientId  OAuth2 client id
      * @param  string  $clientSecret  OAuth2 client secret
@@ -41,7 +44,9 @@ final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
         private TokenStoreContract $store,
         private int $cacheTtl = 3300,
         ?callable $httpClient = null
-    ) {}
+    ) {
+        $this->httpClient = $httpClient;
+    }
 
     public function apply(RequestInterface $request, array $context = []): RequestInterface
     {
