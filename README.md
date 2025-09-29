@@ -13,6 +13,18 @@ The sandbox provides:
 
 ---
 
+## Package Documentation
+
+For detailed package documentation, see the [Docusaurus site](https://pleni.dev) which includes:
+
+- **Introduction**: What Plenipotentiary is and what it trying to achieve (and not achieve)
+- **TODO Concepts**: Contracts, DTOs, Gateways, Workflows
+- **TODO Providers**: Google Ads, OpenAI, eBay implementations
+- **TODO Getting Started**: Installation and quickstart guides
+- **TODO Examples**: Real-world usage patterns
+
+---
+
 ## What is `plenipotentiary-laravel`?
 
 A **Laravel-first orchestration and anti-corruption layer** for large APIs - not a wrapper! It makes it faster and safer to integrate with third-party APIs by:
@@ -77,17 +89,6 @@ These guides relate to the **sandbox stack setup only**:
 - [Onboarding](docs/stack-info/ONBOARDING.md)
 - [Smoke Tests](docs/stack-info/SMOKE.md)
 - [SSL Setup](docs/stack-info/SSL.md)
-
----
-
-## Package Documentation
-
-For detailed package documentation, see the [Docusaurus site](https://capability.github.io/plenipotentiary-sandbox/) which includes:
-
-- **Concepts**: Contracts, DTOs, Gateways, Workflows
-- **Providers**: Google Ads, OpenAI, eBay implementations
-- **Getting Started**: Installation and quickstart guides
-- **Examples**: Real-world usage patterns
 
 ---
 

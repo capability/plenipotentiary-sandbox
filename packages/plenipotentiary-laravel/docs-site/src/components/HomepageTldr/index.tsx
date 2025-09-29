@@ -6,24 +6,32 @@ export default function HomepageTldr() {
   return (
     <section className={styles.bg}>
   <div className="container">
-    <div className="row">
-      <div className="col col--5">
 
-      <Heading as="h2" className="margin-bottom--md">TL;DR:</Heading>
-        <p>
-          Think of it like <code>artisan:make</code> for third-party APIs: you declare the
-          provider, service, context and resource (e.g. Google / Ads / Search|PMax|Demand / Campaign),
-          and it scaffolds the contracts, DTOs, adapters, and gateways you need, so you can
-          focus on the API quirks instead of rewriting boilerplate.
-        </p>
+    <div className="row">
+      <div className="col col--12">
+
+       
         
       </div>
+    </div>
+    <div className="row">
+      <div className="col col--9"> 
 
-      <div className="col col--1">  </div>
+        <Heading as="h2" className="margin-bottom--md"></Heading>
+        <p>
+          <strong>TL;DR:</strong> Think of it like <code>artisan:make</code> for third-party APIs: declare the provider, domain, context and resource and instantly scaffold the contracts, DTOs, gateways and test harness you need. You still implement the Adapter (its not magic), but the code now sits in a consistent, testable, tool-friendly structure. Flysystem-style consistency for APIs, while recognising not everything should be abstracted.
+        </p>
+        <p>
+          Packages like Flysystem work because filesystems expose a timeless, minimal set of verbs (read, write, delete, list) that haven't changed in decades. That makes a thin abstraction viable. APIs are different, they evolve, deprecate and fragment. The right approach isn’t to pretend they can be abstracted as neatly, accept that churn is unavoidable but still provide guardrails and tools.
+        </p>
 
-      <div className="col col--6">
+      </div>
+
+    
+      
+
+      <div className="col col--3">
         
-
 
         <div className="card" style={{ maxWidth: 520 }}>
           <div className="card__header">
@@ -41,6 +49,8 @@ export default function HomepageTldr() {
 
 
       </div>
+
+
     </div>
   </div>
 </section>

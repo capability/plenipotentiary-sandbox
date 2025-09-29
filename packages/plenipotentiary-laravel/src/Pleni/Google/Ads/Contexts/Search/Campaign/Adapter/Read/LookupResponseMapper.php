@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Read;
+
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Page;
 
@@ -7,7 +11,6 @@ final class LookupResponseMapper
 {
     public function toPage(object $resp): Page
     {
-        // map rows → CampaignCanonical[], extract nextPageToken if available
         $items = [];
         foreach ($resp->iterateAllElements() as $row) {
             $c = new CampaignCanonicalDTO;

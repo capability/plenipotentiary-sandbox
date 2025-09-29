@@ -6,24 +6,18 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Ga
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
-use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
+use Plenipotentiary\Laravel\Contracts\Idempotency\EndpointIdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Pleni\Support\Result;
 use Psr\Log\LoggerInterface;
 
-/**
- * eBay Browse API Gateway
- *
- * Domain layer gateway for eBay Browse API operations.
- * Handles cross-cutting concerns like logging, idempotency, and caching.
- */
 final class eBayBrowseGateway implements ApiEndpointGatewayContract
 {
     public function __construct(
         private ApiEndpointAdapterContract $adapter,
         private LoggerInterface $logger,
         private IdempotencyStore $idempotencyStore,
-        private IdempotencyHints $idempotencyHints,
+        private EndpointIdempotencyHints $idempotencyHints,
     ) {}
 
     public function call(string $operation, array $payload = [], array $options = []): Result
@@ -34,9 +28,8 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
             'payload_size' => count($payload),
         ]);
 
-        // Idempotency for state-changing operations
         if ($this->isStateChangingOperation($operation)) {
-            $fp = $this->idempotencyHints->fingerprintForCall($operation, $payload);
+            $fp = $this->idempotencyHints->fingerprintForCall($operation, $payload, $options);
             $scope = "ebay.{$operation}";
 
             if ($this->idempotencyStore->isTombstoned($scope, $fp)) {
@@ -50,9 +43,8 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
 
         $result = $this->adapter->call($operation, $payload, $options);
 
-        // Cache successful state-changing operations
         if ($result->isOk() && $this->isStateChangingOperation($operation)) {
-            $fp = $this->idempotencyHints->fingerprintForCall($operation, $payload);
+            $fp = $this->idempotencyHints->fingerprintForCall($operation, $payload, $options);
             $scope = "ebay.{$operation}";
             $this->idempotencyStore->put($scope, $fp, json_encode($result->unwrap()));
         }
@@ -70,9 +62,6 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
         return $this->adapter->validate($operation, $payload);
     }
 
-    /**
-     * Determine if an operation changes state and should be idempotent
-     */
     private function isStateChangingOperation(string $operation): bool
     {
         return in_array($operation, [
