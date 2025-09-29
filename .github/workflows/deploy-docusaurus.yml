@@ -37,19 +37,6 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Move build files to root
-        run: |
-          echo "Contents before move:"
-          ls -la build/
-          echo "Moving files from subfolder to root..."
-          mv build/plenipotentiary-sandbox/* build/
-          mv build/plenipotentiary-sandbox/.* build/ 2>/dev/null || true
-          rm -rf build/plenipotentiary-sandbox
-          echo "Contents after move:"
-          ls -la build/
-          echo "Checking for index.html:"
-          ls -la build/index.html
-
       - uses: actions/upload-pages-artifact@v3
         with:
           path: packages/plenipotentiary-laravel/docs-site/build
