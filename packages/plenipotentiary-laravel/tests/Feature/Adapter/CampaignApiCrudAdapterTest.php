@@ -54,7 +54,7 @@ describe('Campaign API CRUD Adapter', function () {
 
         $this->createSpec->shouldReceive('preflight')
             ->with($dto)
-            ->andThrow(new \Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException('campaign.create', []));
+            ->andThrow(new \Plenipotentiary\Laravel\Support\Operation\ValidationException('campaign.create', []));
 
         $result = $this->adapter->create($dto, false);
 

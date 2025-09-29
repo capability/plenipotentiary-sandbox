@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Ac
 
 use Lorisleiva\Actions\Concerns\AsAction;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Search Items Action

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support\Operation;
+namespace Plenipotentiary\Laravel\Support\Operation;
 
 /**
  * Thrown when local preflight validation fails.

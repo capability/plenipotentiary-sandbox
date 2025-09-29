@@ -1,6 +1,6 @@
 <?php
 
-namespace Plenipotentiary\Laravel\Pleni\Support\Logging;
+namespace Plenipotentiary\Laravel\Support\Logging;
 
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;

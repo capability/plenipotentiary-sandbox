@@ -13,7 +13,7 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Cr
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateResponseMapperContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Spec as CreateSpec;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
 final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
@@ -69,7 +69,7 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
             // 5) Map response → canonical
             return Result::ok($this->createResponseMapper->toCanonical($response));
 
-        } catch (\Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException $e) {
+        } catch (\Plenipotentiary\Laravel\Support\Operation\ValidationException $e) {
             return Result::invalid($e->toArray());
         } catch (\Throwable $e) {
             return Result::err($this->errorMapper->map($e));

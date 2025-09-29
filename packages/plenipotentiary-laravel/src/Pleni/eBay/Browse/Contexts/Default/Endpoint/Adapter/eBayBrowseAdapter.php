@@ -7,7 +7,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Ad
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
 final class eBayBrowseAdapter implements ApiEndpointAdapterContract

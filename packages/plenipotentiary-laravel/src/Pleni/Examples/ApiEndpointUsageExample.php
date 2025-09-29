@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Examples;
 
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Example usage of the ApiEndpointGateway pattern

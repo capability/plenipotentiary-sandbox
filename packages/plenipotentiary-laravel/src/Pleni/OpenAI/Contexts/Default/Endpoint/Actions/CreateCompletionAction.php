@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\Endpoint\Actions
 
 use Lorisleiva\Actions\Concerns\AsAction;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Create Completion Action

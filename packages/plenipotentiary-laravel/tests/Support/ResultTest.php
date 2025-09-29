@@ -1,6 +1,6 @@
 <?php
 
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 describe('Result', function () {
     it('creates ok result with value', function () {

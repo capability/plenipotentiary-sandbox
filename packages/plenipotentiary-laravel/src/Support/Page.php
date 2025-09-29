@@ -1,6 +1,6 @@
 <?php
 
-namespace Plenipotentiary\Laravel\Pleni\Support;
+namespace Plenipotentiary\Laravel\Support;
 
 final class Page
 {

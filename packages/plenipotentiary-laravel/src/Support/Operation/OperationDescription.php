@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support\Operation;
+namespace Plenipotentiary\Laravel\Support\Operation;
 
 /**
  * Structured description of validation rules for a given operation.

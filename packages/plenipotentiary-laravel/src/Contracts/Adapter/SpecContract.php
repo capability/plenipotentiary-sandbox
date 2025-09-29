@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Adapter;
 
-use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\Operation\OperationDescription;
+use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 /**
  * Contract shared by all lifecycle Specs (Create/Update/Delete/Read).

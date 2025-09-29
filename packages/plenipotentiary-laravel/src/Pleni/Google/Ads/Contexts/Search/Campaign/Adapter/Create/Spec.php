@@ -6,8 +6,8 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adap
 
 use Plenipotentiary\Laravel\Contracts\Adapter\SpecContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\Operation\OperationDescription;
+use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 /**
  * Thin preflight, provider-agnostic. Real business validation happens via validateOnly on the API.
