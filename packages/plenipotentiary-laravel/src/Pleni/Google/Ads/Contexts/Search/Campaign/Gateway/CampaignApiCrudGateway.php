@@ -11,7 +11,7 @@ use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
 /**

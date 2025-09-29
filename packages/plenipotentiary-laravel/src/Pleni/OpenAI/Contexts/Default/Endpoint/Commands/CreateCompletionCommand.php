@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\Endpoint\Command
 
 use Illuminate\Console\Command;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\Endpoint\Actions\CreateCompletionAction;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 class CreateCompletionCommand extends Command
 {

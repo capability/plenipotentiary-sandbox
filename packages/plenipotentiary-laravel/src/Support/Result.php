@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support;
+namespace Plenipotentiary\Laravel\Support;
 
 final class Result implements \JsonSerializable
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Adapter;
 
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Adapter contract for flexible API endpoint operations.

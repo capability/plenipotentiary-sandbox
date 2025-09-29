@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Gateway;
 
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Gateway contract for flexible API endpoint operations.
