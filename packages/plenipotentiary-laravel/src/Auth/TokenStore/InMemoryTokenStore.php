@@ -30,6 +30,7 @@ final class InMemoryTokenStore implements TokenStoreContract
             return $this->cache[$key]['value'];
         }
         unset($this->cache[$key]);
+
         return null;
     }
 

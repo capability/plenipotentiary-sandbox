@@ -21,12 +21,12 @@ use Psr\Http\Message\RequestInterface;
 final class HmacAuthStrategy implements AuthStrategyContract
 {
     /**
-     * @param string   $keyId         Public key identifier/client ID
-     * @param string   $secret        Shared secret for HMAC signing
-     * @param string   $algo          Hash algorithm, default 'sha256'
-     * @param string   $header        Header name to set, default 'Authorization'
-     * @param string   $prefix        Prefix before auth value, default 'HMAC '
-     * @param string[] $signedHeaders List of headers included in the signature
+     * @param  string  $keyId  Public key identifier/client ID
+     * @param  string  $secret  Shared secret for HMAC signing
+     * @param  string  $algo  Hash algorithm, default 'sha256'
+     * @param  string  $header  Header name to set, default 'Authorization'
+     * @param  string  $prefix  Prefix before auth value, default 'HMAC '
+     * @param  string[]  $signedHeaders  List of headers included in the signature
      */
     public function __construct(
         private string $keyId,
@@ -40,20 +40,20 @@ final class HmacAuthStrategy implements AuthStrategyContract
     public function apply(RequestInterface $request, array $context = []): RequestInterface
     {
         $signature = $this->sign($request);
+
         return $request->withHeader($this->header, $this->prefix.$this->keyId.':'.$signature);
     }
 
     /**
      * Build the HMAC signature string for a request.
      *
-     * @param RequestInterface $req
      * @return string base64-encoded signature
      */
     private function sign(RequestInterface $req): string
     {
         $method = strtolower($req->getMethod());
-        $path   = (string) $req->getUri()->withScheme('')->withHost('')->withPort(null);
-        $lines  = [];
+        $path = (string) $req->getUri()->withScheme('')->withHost('')->withPort(null);
+        $lines = [];
 
         foreach ($this->signedHeaders as $h) {
             if ($h === '(request-target)') {
@@ -64,6 +64,7 @@ final class HmacAuthStrategy implements AuthStrategyContract
         }
 
         $stringToSign = implode("\n", $lines);
+
         return base64_encode(hash_hmac($this->algo, $stringToSign, $this->secret, true));
     }
 }

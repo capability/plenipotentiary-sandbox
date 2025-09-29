@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup;
@@ -41,9 +42,10 @@ final class Criterion
     /** @param array{0:mixed,1:mixed} $range */
     public static function between(string $field, array $range): self
     {
-        if (!array_key_exists(0, $range) || !array_key_exists(1, $range)) {
+        if (! array_key_exists(0, $range) || ! array_key_exists(1, $range)) {
             throw new \InvalidArgumentException('Between expects [min, max]');
         }
+
         return new self($field, Op::Between, [$range[0], $range[1]]);
     }
 }

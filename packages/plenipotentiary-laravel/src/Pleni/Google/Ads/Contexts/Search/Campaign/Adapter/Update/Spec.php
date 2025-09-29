@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update;
 
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Contracts\Adapter\SpecContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
+use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
 
 final class Spec implements SpecContract
 {
@@ -15,11 +15,11 @@ final class Spec implements SpecContract
     {
         $violations = [];
 
-        if (!$c->resourceName) {
+        if (! $c->resourceName) {
             $violations[] = ['field' => 'resourceName', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name'];
         }
 
-        if (!$c->name && !$c->status) {
+        if (! $c->name && ! $c->status) {
             $violations[] = ['field' => '(name|status)', 'rule' => 'at least one updatable field required', 'mapsTo' => 'campaign'];
         }
 

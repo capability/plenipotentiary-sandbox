@@ -19,47 +19,53 @@ final class Redactor
 
     /**
      * Redact sensitive headers. Header names are compared case-insensitively.
-     * @param array<string,mixed> $headers
+     *
+     * @param  array<string,mixed>  $headers
      * @return array<string,mixed>
      */
     public static function headers(array $headers): array
     {
         $out = [];
         foreach ($headers as $k => $v) {
-            $lk = strtolower((string)$k);
+            $lk = strtolower((string) $k);
             if (in_array($lk, self::$SENSITIVE_HEADERS, true)) {
                 $out[$k] = '***REDACTED***';
             } else {
                 $out[$k] = $v;
             }
         }
+
         return $out;
     }
 
     /**
      * Redact sensitive body keys; optionally hash specific fields.
-     * @param array<string,mixed> $body
-     * @param string[] $fieldsToHash
+     *
+     * @param  array<string,mixed>  $body
+     * @param  string[]  $fieldsToHash
      * @return array<string,mixed>
      */
     public static function body(array $body, array $fieldsToHash = []): array
     {
         $out = [];
         foreach ($body as $k => $v) {
-            $lk = strtolower((string)$k);
+            $lk = strtolower((string) $k);
 
             if (in_array($lk, self::$SENSITIVE_KEYS, true)) {
                 $out[$k] = '***REDACTED***';
+
                 continue;
             }
 
             if (in_array($k, $fieldsToHash, true) && is_scalar($v)) {
-                $out[$k] = self::hash((string)$v);
+                $out[$k] = self::hash((string) $v);
+
                 continue;
             }
 
             $out[$k] = is_array($v) ? '[array]' : (is_object($v) ? '[object]' : $v);
         }
+
         return $out;
     }
 

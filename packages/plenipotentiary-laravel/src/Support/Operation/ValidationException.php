@@ -10,8 +10,7 @@ namespace Plenipotentiary\Laravel\Pleni\Support\Operation;
 final class ValidationException extends \RuntimeException implements \JsonSerializable
 {
     /**
-     * @param string $operation
-     * @param array<int,array<string,mixed>> $violations
+     * @param  array<int,array<string,mixed>>  $violations
      */
     private function __construct(
         private readonly string $operation,
@@ -21,8 +20,7 @@ final class ValidationException extends \RuntimeException implements \JsonSerial
     }
 
     /**
-     * @param string $operation
-     * @param array<int,array<string,mixed>> $violations
+     * @param  array<int,array<string,mixed>>  $violations
      */
     public static function fromArray(string $operation, array $violations): self
     {
@@ -38,7 +36,7 @@ final class ValidationException extends \RuntimeException implements \JsonSerial
     public function toArray(): array
     {
         return [
-            'operation'  => $this->operation,
+            'operation' => $this->operation,
             'violations' => $this->violations,
         ];
     }

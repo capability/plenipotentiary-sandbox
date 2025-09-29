@@ -10,8 +10,8 @@ namespace Plenipotentiary\Laravel\Pleni\Support\Operation;
 final class OperationDescription implements \JsonSerializable
 {
     /**
-     * @param string $operation identifier (e.g. 'campaign.create')
-     * @param array<int,array<string,mixed>> $rules validation rules metadata
+     * @param  string  $operation  identifier (e.g. 'campaign.create')
+     * @param  array<int,array<string,mixed>>  $rules  validation rules metadata
      */
     private function __construct(
         public readonly string $operation,
@@ -21,8 +21,7 @@ final class OperationDescription implements \JsonSerializable
     /**
      * Convenience factory.
      *
-     * @param string $op
-     * @param array<int,array<string,mixed>> $rules
+     * @param  array<int,array<string,mixed>>  $rules
      */
     public static function make(string $op, array $rules): self
     {
@@ -33,7 +32,7 @@ final class OperationDescription implements \JsonSerializable
     {
         return [
             'operation' => $this->operation,
-            'rules'     => $this->rules,
+            'rules' => $this->rules,
         ];
     }
 

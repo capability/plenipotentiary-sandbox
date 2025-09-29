@@ -25,7 +25,7 @@ class SearchItemsCommand extends Command
     public function handle(): int
     {
         $query = $this->argument('query');
-        
+
         $filters = [
             'limit' => (int) $this->option('limit'),
         ];
@@ -54,7 +54,7 @@ class SearchItemsCommand extends Command
         }
 
         $this->info("Searching eBay for: {$query}");
-        
+
         if ($this->option('validate-only')) {
             $this->warn('Running in validate-only mode (dry run)');
         }
@@ -68,14 +68,14 @@ class SearchItemsCommand extends Command
     {
         if ($result->isOk()) {
             $data = $result->unwrap();
-            
+
             $this->info('✅ Search completed successfully!');
             $this->newLine();
-            
+
             if (isset($data['itemSummaries']) && count($data['itemSummaries']) > 0) {
-                $this->info('Found ' . count($data['itemSummaries']) . ' items:');
+                $this->info('Found '.count($data['itemSummaries']).' items:');
                 $this->newLine();
-                
+
                 foreach ($data['itemSummaries'] as $item) {
                     $this->line("• {$item['title']}");
                     $this->line("  Price: {$item['price']['value']} {$item['price']['currency']}");
@@ -86,7 +86,7 @@ class SearchItemsCommand extends Command
             } else {
                 $this->info('No items found matching your search criteria.');
             }
-            
+
             return Command::SUCCESS;
         }
 
@@ -95,6 +95,7 @@ class SearchItemsCommand extends Command
             foreach ($result->violations() as $violation) {
                 $this->line("   • {$violation['field']}: {$violation['message']}");
             }
+
             return Command::FAILURE;
         }
 
@@ -104,6 +105,7 @@ class SearchItemsCommand extends Command
             if (isset($error['message'])) {
                 $this->line("   Details: {$error['message']}");
             }
+
             return Command::FAILURE;
         }
 

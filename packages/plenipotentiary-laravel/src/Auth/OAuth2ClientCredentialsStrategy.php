@@ -23,24 +23,24 @@ use Psr\Http\Message\RequestInterface;
 final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
 {
     /**
-     * @param string                 $clientId    OAuth2 client id
-     * @param string                 $clientSecret OAuth2 client secret
-     * @param string                 $tokenUrl    Token endpoint URL
-     * @param string|null             $scope       Optional OAuth2 scopes
-     * @param string|null             $audience    Optional audience value
-     * @param TokenStoreContract      $store       Token store implementation (cache)
-     * @param int                     $cacheTtl    TTL for tokens (seconds)
-     * @param callable(array):array|null $httpClient Optional HTTP client override, must return decoded JSON array
+     * @param  string  $clientId  OAuth2 client id
+     * @param  string  $clientSecret  OAuth2 client secret
+     * @param  string  $tokenUrl  Token endpoint URL
+     * @param  string|null  $scope  Optional OAuth2 scopes
+     * @param  string|null  $audience  Optional audience value
+     * @param  TokenStoreContract  $store  Token store implementation (cache)
+     * @param  int  $cacheTtl  TTL for tokens (seconds)
+     * @param  callable(array):array|null  $httpClient  Optional HTTP client override, must return decoded JSON array
      */
     public function __construct(
         private string $clientId,
         private string $clientSecret,
         private string $tokenUrl,
-        private ?string $scope = null,
-        private ?string $audience = null,
+        private ?string $scope,
+        private ?string $audience,
         private TokenStoreContract $store,
         private int $cacheTtl = 3300,
-        private ?callable $httpClient = null
+        ?callable $httpClient = null
     ) {}
 
     public function apply(RequestInterface $request, array $context = []): RequestInterface
@@ -48,7 +48,7 @@ final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
         $cacheKey = $this->cacheKey();
         $token = $this->store->get($cacheKey);
 
-        if (!$token) {
+        if (! $token) {
             $token = $this->fetchToken();
             $this->store->put($cacheKey, $token, $this->cacheTtl);
         }
@@ -78,13 +78,17 @@ final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
         ];
-        if ($this->scope)    $payload['scope'] = $this->scope;
-        if ($this->audience) $payload['audience'] = $this->audience;
+        if ($this->scope) {
+            $payload['scope'] = $this->scope;
+        }
+        if ($this->audience) {
+            $payload['audience'] = $this->audience;
+        }
 
-        $client = $this->httpClient ?? function(array $form) {
+        $client = $this->httpClient ?? function (array $form) {
             $opts = ['http' => [
-                'method'  => 'POST',
-                'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
                 'content' => http_build_query($form),
                 'timeout' => 10,
             ]];
@@ -93,13 +97,15 @@ final class OAuth2ClientCredentialsStrategy implements AuthStrategyContract
                 throw new \RuntimeException('OAuth2 token request failed');
             }
             $data = json_decode($resp, true) ?? [];
-            if (!isset($data['access_token'])) {
+            if (! isset($data['access_token'])) {
                 throw new \RuntimeException('OAuth2 token response missing access_token');
             }
+
             return $data;
         };
 
         $res = $client($payload);
+
         return (string) $res['access_token'];
     }
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Auth;
 
-use Bricre\EbaySdkBuyBrowse\Configuration;
-use Bricre\EbaySdkBuyBrowse\Api\ItemSummaryApi;
 use Bricre\EbaySdkBuyBrowse\Api\ItemApi;
+use Bricre\EbaySdkBuyBrowse\Api\ItemSummaryApi;
 use Bricre\EbaySdkBuyBrowse\Api\OfferApi;
+use Bricre\EbaySdkBuyBrowse\Configuration;
 use GuzzleHttp\Client as GuzzleClient;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 
@@ -20,9 +20,13 @@ use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 final class eBaySdkClient implements ProviderClientContract
 {
     private Configuration $config;
+
     private GuzzleClient $httpClient;
+
     private ItemSummaryApi $itemSummaryApi;
+
     private ItemApi $itemApi;
+
     private OfferApi $offerApi;
 
     public function __construct(Configuration $config)
@@ -56,7 +60,7 @@ final class eBaySdkClient implements ProviderClientContract
     public function request(string $method, string $endpoint, array $options = []): \Psr\Http\Message\ResponseInterface
     {
         $requestOptions = $this->prepareRequestOptions($options);
-        
+
         return $this->httpClient->request($method, $endpoint, $requestOptions);
     }
 
@@ -173,7 +177,7 @@ final class eBaySdkClient implements ProviderClientContract
 
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay search failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay search failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -184,9 +188,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->itemApi->getItem($itemId);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay get item failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay get item failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -197,9 +202,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->itemApi->getItemByLegacyId($legacyId, $legacyVariants);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay get item by legacy ID failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay get item by legacy ID failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -226,7 +232,7 @@ final class eBaySdkClient implements ProviderClientContract
 
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay search by image failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay search by image failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -237,9 +243,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->itemApi->getItemAspectsForCategory($categoryId);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay get item aspects failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay get item aspects failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -250,9 +257,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->offerApi->createOffer($offerData);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay create offer failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay create offer failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -263,9 +271,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->offerApi->updateOffer($offerId, $offerData);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay update offer failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay update offer failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -276,9 +285,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->offerApi->deleteOffer($offerId);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay delete offer failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay delete offer failed: '.$e->getMessage(), 0, $e);
         }
     }
 
@@ -289,9 +299,10 @@ final class eBaySdkClient implements ProviderClientContract
     {
         try {
             $result = $this->offerApi->getOffer($offerId);
+
             return $result->toArray();
         } catch (\Exception $e) {
-            throw new \RuntimeException("eBay get offer failed: " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('eBay get offer failed: '.$e->getMessage(), 0, $e);
         }
     }
 }

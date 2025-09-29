@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete;
 
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
 use Plenipotentiary\Laravel\Contracts\Adapter\SpecContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
+use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
 
 final class Spec implements SpecContract
 {
     public function preflight(CampaignSelector $sel): void
     {
         $violations = [];
-        if (!$sel->value()) {
+        if (! $sel->value()) {
             $violations[] = ['field' => 'selector', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name or id'];
         }
         if ($violations) {

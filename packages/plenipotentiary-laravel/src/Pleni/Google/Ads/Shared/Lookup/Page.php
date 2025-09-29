@@ -22,12 +22,14 @@ final class Page
 
     /**
      * @template U
-     * @param callable(T):U $fn
+     *
+     * @param  callable(T):U  $fn
      * @return Page<U>
      */
     public function mapItems(callable $fn): self
     {
         $mapped = array_map($fn, $this->items);
+
         return new self($mapped, $this->nextCursor);
     }
 

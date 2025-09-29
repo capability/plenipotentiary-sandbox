@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * OpenAI API Adapter
- * 
+ *
  * Provider-specific implementation for OpenAI API operations.
  * Handles API communication, request building, and response mapping.
  */
@@ -28,9 +28,9 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
     {
         try {
             $endpointConfig = $this->getEndpointConfig($operation);
-            
+
             $request = $this->buildRequest($endpointConfig, $payload, $options);
-            
+
             $this->logger->info('OpenAI API call', [
                 'operation' => $operation,
                 'method' => $endpointConfig['method'],
@@ -54,7 +54,7 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
     {
         try {
             $endpointConfig = $this->getEndpointConfig($operation);
-            
+
             // OpenAI-specific validation logic
             $violations = $this->validatePayload($operation, $payload);
             if ($violations) {
@@ -78,67 +78,67 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
         return match ($operation) {
             'createCompletion' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/completions'
+                'endpoint' => '/v1/completions',
             ],
             'createChatCompletion' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/chat/completions'
+                'endpoint' => '/v1/chat/completions',
             ],
             'createEdit' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/edits'
+                'endpoint' => '/v1/edits',
             ],
             'createImage' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/images/generations'
+                'endpoint' => '/v1/images/generations',
             ],
             'createImageEdit' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/images/edits'
+                'endpoint' => '/v1/images/edits',
             ],
             'createImageVariation' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/images/variations'
+                'endpoint' => '/v1/images/variations',
             ],
             'createEmbedding' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/embeddings'
+                'endpoint' => '/v1/embeddings',
             ],
             'createModeration' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/moderations'
+                'endpoint' => '/v1/moderations',
             ],
             'listModels' => [
                 'method' => 'GET',
-                'endpoint' => '/v1/models'
+                'endpoint' => '/v1/models',
             ],
             'retrieveModel' => [
                 'method' => 'GET',
-                'endpoint' => '/v1/models/{modelId}'
+                'endpoint' => '/v1/models/{modelId}',
             ],
             'deleteModel' => [
                 'method' => 'DELETE',
-                'endpoint' => '/v1/models/{modelId}'
+                'endpoint' => '/v1/models/{modelId}',
             ],
             'createFineTune' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/fine-tunes'
+                'endpoint' => '/v1/fine-tunes',
             ],
             'listFineTunes' => [
                 'method' => 'GET',
-                'endpoint' => '/v1/fine-tunes'
+                'endpoint' => '/v1/fine-tunes',
             ],
             'retrieveFineTune' => [
                 'method' => 'GET',
-                'endpoint' => '/v1/fine-tunes/{fineTuneId}'
+                'endpoint' => '/v1/fine-tunes/{fineTuneId}',
             ],
             'cancelFineTune' => [
                 'method' => 'POST',
-                'endpoint' => '/v1/fine-tunes/{fineTuneId}/cancel'
+                'endpoint' => '/v1/fine-tunes/{fineTuneId}/cancel',
             ],
             'listFineTuneEvents' => [
                 'method' => 'GET',
-                'endpoint' => '/v1/fine-tunes/{fineTuneId}/events'
+                'endpoint' => '/v1/fine-tunes/{fineTuneId}/events',
             ],
             default => throw new \InvalidArgumentException("Unknown operation: {$operation}")
         };
@@ -157,67 +157,67 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
                     $violations[] = [
                         'field' => 'model',
                         'rule' => 'required',
-                        'message' => 'Model is required'
+                        'message' => 'Model is required',
                     ];
                 }
                 if (empty($payload['prompt'])) {
                     $violations[] = [
                         'field' => 'prompt',
                         'rule' => 'required',
-                        'message' => 'Prompt is required'
+                        'message' => 'Prompt is required',
                     ];
                 }
                 break;
-                
+
             case 'createChatCompletion':
                 if (empty($payload['model'])) {
                     $violations[] = [
                         'field' => 'model',
                         'rule' => 'required',
-                        'message' => 'Model is required'
+                        'message' => 'Model is required',
                     ];
                 }
-                if (empty($payload['messages']) || !is_array($payload['messages'])) {
+                if (empty($payload['messages']) || ! is_array($payload['messages'])) {
                     $violations[] = [
                         'field' => 'messages',
                         'rule' => 'required|array',
-                        'message' => 'Messages array is required'
+                        'message' => 'Messages array is required',
                     ];
                 }
                 break;
-                
+
             case 'createEmbedding':
                 if (empty($payload['model'])) {
                     $violations[] = [
                         'field' => 'model',
                         'rule' => 'required',
-                        'message' => 'Model is required'
+                        'message' => 'Model is required',
                     ];
                 }
                 if (empty($payload['input'])) {
                     $violations[] = [
                         'field' => 'input',
                         'rule' => 'required',
-                        'message' => 'Input is required'
+                        'message' => 'Input is required',
                     ];
                 }
                 break;
-                
+
             case 'createImage':
                 if (empty($payload['prompt'])) {
                     $violations[] = [
                         'field' => 'prompt',
                         'rule' => 'required',
-                        'message' => 'Prompt is required for image generation'
+                        'message' => 'Prompt is required for image generation',
                     ];
                 }
                 break;
-                
+
             case 'retrieveModel':
             case 'deleteModel':
                 // Model ID should be provided in options
                 break;
-                
+
             case 'createFineTune':
             case 'retrieveFineTune':
             case 'cancelFineTune':
@@ -237,7 +237,7 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
         $request = [
             'headers' => array_merge([
                 'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . ($options['api_key'] ?? env('OPENAI_API_KEY')),
+                'Authorization' => 'Bearer '.($options['api_key'] ?? env('OPENAI_API_KEY')),
             ], $options['headers'] ?? []),
         ];
 

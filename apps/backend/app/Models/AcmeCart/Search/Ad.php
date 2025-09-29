@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Ad extends Model
 {
     protected $table = 'acmecart_search_ad';
+
     public $timestamps = false;
 
     protected $fillable = [

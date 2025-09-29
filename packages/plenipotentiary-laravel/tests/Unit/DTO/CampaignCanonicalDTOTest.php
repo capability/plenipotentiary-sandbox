@@ -5,7 +5,7 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\Campai
 describe('CampaignCanonicalDTO', function () {
     it('creates from array with defaults', function () {
         $dto = CampaignCanonicalDTO::fromArray([]);
-        
+
         expect($dto->accountKeys)->toHaveKey('google.customerId')
             ->and($dto->internalId)->toBeNull()
             ->and($dto->externalId)->toBeNull()
@@ -29,9 +29,9 @@ describe('CampaignCanonicalDTO', function () {
             'cpcBidMicros' => '1000000',
             'budgetMicros' => '5000000',
         ];
-        
+
         $dto = CampaignCanonicalDTO::fromArray($data);
-        
+
         expect($dto->accountKeys)->toBe($data['accountKeys'])
             ->and($dto->internalId)->toBe('internal-123')
             ->and($dto->externalId)->toBe('external-456')
@@ -48,9 +48,9 @@ describe('CampaignCanonicalDTO', function () {
             'name' => 'Test Campaign',
             'status' => 'ENABLED',
         ]);
-        
+
         $array = $dto->toArray();
-        
+
         expect($array)->toHaveKey('name', 'Test Campaign')
             ->and($array)->toHaveKey('status', 'ENABLED')
             ->and($array)->toHaveKey('accountKeys')
@@ -63,7 +63,7 @@ describe('CampaignCanonicalDTO', function () {
             'internalId' => 'internal-456',
             'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
         ]);
-        
+
         expect($dto->externalId())->toBe('external-123')
             ->and($dto->internalId())->toBe('internal-456')
             ->and($dto->identifier('resourceName'))->toBe('customers/123/campaigns/456')

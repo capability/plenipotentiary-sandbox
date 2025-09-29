@@ -12,10 +12,10 @@ final class RequestMapper
 {
     public function toDeleteRequest(string $customerId, CampaignSelector $sel, bool $validateOnly = false): MutateCampaignsRequest
     {
-        $op = new CampaignOperation();
+        $op = new CampaignOperation;
         $op->setRemove($sel->toResourceName($customerId));
 
-        return (new MutateCampaignsRequest())
+        return (new MutateCampaignsRequest)
             ->setCustomerId($customerId)
             ->setOperations([$op])
             ->setValidateOnly($validateOnly);

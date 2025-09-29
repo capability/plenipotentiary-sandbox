@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup;
@@ -10,14 +11,17 @@ final class Lookup
 {
     /** @var list<Criterion> */
     private array $where = [];
+
     /** @var list<Sort> */
     private array $order = [];
+
     private ?int $limit = 50;
+
     private ?string $cursor = null; // provider page token
 
     public static function make(): self
     {
-        return new self();
+        return new self;
     }
 
     /** @param list<Criterion> $criteria */
@@ -25,6 +29,7 @@ final class Lookup
     {
         $clone = clone $this;
         $clone->where = array_values($criteria);
+
         return $clone;
     }
 
@@ -32,6 +37,7 @@ final class Lookup
     {
         $clone = clone $this;
         $clone->where[] = $c;
+
         return $clone;
     }
 
@@ -39,6 +45,7 @@ final class Lookup
     {
         $clone = clone $this;
         $clone->order[] = new Sort($field, $dir);
+
         return $clone;
     }
 
@@ -49,6 +56,7 @@ final class Lookup
         }
         $clone = clone $this;
         $clone->limit = $limit;
+
         return $clone;
     }
 
@@ -56,13 +64,29 @@ final class Lookup
     {
         $clone = clone $this;
         $clone->cursor = $cursor;
+
         return $clone;
     }
 
     /** @return list<Criterion> */
-    public function whereClauses(): array { return $this->where; }
+    public function whereClauses(): array
+    {
+        return $this->where;
+    }
+
     /** @return list<Sort> */
-    public function orderClauses(): array { return $this->order; }
-    public function limit(): ?int { return $this->limit; }
-    public function cursor(): ?string { return $this->cursor; }
+    public function orderClauses(): array
+    {
+        return $this->order;
+    }
+
+    public function limit(): ?int
+    {
+        return $this->limit;
+    }
+
+    public function cursor(): ?string
+    {
+        return $this->cursor;
+    }
 }

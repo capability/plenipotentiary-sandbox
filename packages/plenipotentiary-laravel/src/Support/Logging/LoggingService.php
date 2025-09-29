@@ -2,8 +2,8 @@
 
 namespace Plenipotentiary\Laravel\Pleni\Support\Logging;
 
-use Psr\Log\LoggerInterface;
 use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 /**
  * Generic logging service wrapper.
