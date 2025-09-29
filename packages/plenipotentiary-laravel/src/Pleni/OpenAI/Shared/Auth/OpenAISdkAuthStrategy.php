@@ -16,13 +16,14 @@ use Psr\Http\Message\RequestInterface;
 final class OpenAISdkAuthStrategy implements SdkAuthStrategyContract
 {
     private string $apiKey;
+
     private string $organizationId;
 
     public function __construct()
     {
         $this->apiKey = env('OPENAI_API_KEY', '');
         $this->organizationId = env('OPENAI_ORGANIZATION_ID', '');
-        
+
         if (empty($this->apiKey)) {
             throw new \RuntimeException('OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.');
         }
@@ -62,7 +63,7 @@ final class OpenAISdkAuthStrategy implements SdkAuthStrategyContract
 
 /**
  * OpenAI Client Configuration
- * 
+ *
  * Simple configuration object to hold OpenAI API credentials
  * and provide methods for building authenticated requests.
  */
@@ -95,7 +96,7 @@ final class OpenAIClientConfig
     public function getHeaders(): array
     {
         $headers = [
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ];

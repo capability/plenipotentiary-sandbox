@@ -17,7 +17,9 @@ use Psr\Http\Message\RequestInterface;
 final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
 {
     private Configuration $config;
+
     private ?string $accessToken = null;
+
     private ?int $tokenExpiresAt = null;
 
     public function __construct()
@@ -68,14 +70,14 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
         $refreshToken = env('EBAY_REFRESH_TOKEN');
         $redirectUri = env('EBAY_REDIRECT_URI');
 
-        if (!$clientId || !$clientSecret) {
+        if (! $clientId || ! $clientSecret) {
             throw new \RuntimeException('eBay client credentials not configured. Please set EBAY_CLIENT_ID and EBAY_CLIENT_SECRET environment variables.');
         }
 
         // Set up OAuth configuration
         $this->config->setClientId($clientId);
         $this->config->setClientSecret($clientSecret);
-        
+
         if ($redirectUri) {
             $this->config->setRedirectUri($redirectUri);
         }
@@ -96,9 +98,9 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
     {
         $clientId = env('EBAY_CLIENT_ID');
         $clientSecret = env('EBAY_CLIENT_SECRET');
-        
-        $credentials = base64_encode($clientId . ':' . $clientSecret);
-        
+
+        $credentials = base64_encode($clientId.':'.$clientSecret);
+
         $response = $this->makeTokenRequest([
             'grant_type' => 'refresh_token',
             'refresh_token' => $refreshToken,
@@ -114,7 +116,7 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     private function shouldRefreshToken(): bool
     {
-        if (!$this->accessToken || !$this->tokenExpiresAt) {
+        if (! $this->accessToken || ! $this->tokenExpiresAt) {
             return true;
         }
 
@@ -128,8 +130,8 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
     private function refreshAccessToken(): void
     {
         $refreshToken = env('EBAY_REFRESH_TOKEN');
-        
-        if (!$refreshToken) {
+
+        if (! $refreshToken) {
             throw new \RuntimeException('Cannot refresh token: EBAY_REFRESH_TOKEN not configured');
         }
 
@@ -142,14 +144,14 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
     private function makeTokenRequest(array $data, string $credentials): array
     {
         $ch = curl_init();
-        
+
         curl_setopt_array($ch, [
             CURLOPT_URL => 'https://api.ebay.com/identity/v1/oauth2/token',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => http_build_query($data),
             CURLOPT_HTTPHEADER => [
-                'Authorization: Basic ' . $credentials,
+                'Authorization: Basic '.$credentials,
                 'Content-Type: application/x-www-form-urlencoded',
                 'Accept: application/json',
             ],
@@ -158,7 +160,7 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
-        
+
         curl_close($ch);
 
         if ($error) {
@@ -170,7 +172,7 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
         }
 
         $decodedResponse = json_decode($response, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new \RuntimeException('Invalid JSON response from eBay token endpoint');
         }
@@ -181,12 +183,12 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
     /**
      * Get OAuth authorization URL for user consent (if needed)
      */
-    public function getAuthorizationUrl(string $state = null): string
+    public function getAuthorizationUrl(?string $state = null): string
     {
         $clientId = env('EBAY_CLIENT_ID');
         $redirectUri = env('EBAY_REDIRECT_URI');
-        
-        if (!$clientId || !$redirectUri) {
+
+        if (! $clientId || ! $redirectUri) {
             throw new \RuntimeException('eBay OAuth configuration incomplete');
         }
 
@@ -198,7 +200,7 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
             'state' => $state ?: bin2hex(random_bytes(16)),
         ];
 
-        return 'https://auth.ebay.com/oauth2/authorize?' . http_build_query($params);
+        return 'https://auth.ebay.com/oauth2/authorize?'.http_build_query($params);
     }
 
     /**
@@ -209,13 +211,13 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
         $clientId = env('EBAY_CLIENT_ID');
         $clientSecret = env('EBAY_CLIENT_SECRET');
         $redirectUri = env('EBAY_REDIRECT_URI');
-        
-        if (!$clientId || !$clientSecret || !$redirectUri) {
+
+        if (! $clientId || ! $clientSecret || ! $redirectUri) {
             throw new \RuntimeException('eBay OAuth configuration incomplete');
         }
 
-        $credentials = base64_encode($clientId . ':' . $clientSecret);
-        
+        $credentials = base64_encode($clientId.':'.$clientSecret);
+
         $response = $this->makeTokenRequest([
             'grant_type' => 'authorization_code',
             'code' => $authorizationCode,

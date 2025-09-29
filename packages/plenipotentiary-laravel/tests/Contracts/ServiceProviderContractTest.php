@@ -1,11 +1,11 @@
 <?php
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
-use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
+use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
+use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 
 describe('Service Provider Contracts', function () {
     it('binds core contracts', function () {

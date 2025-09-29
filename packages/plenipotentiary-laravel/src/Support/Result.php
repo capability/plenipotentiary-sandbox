@@ -21,13 +21,14 @@ final class Result implements \JsonSerializable
     {
         if ($error instanceof \Throwable) {
             $error = [
-                'error'   => 'Exception',
-                'class'   => $error::class,
+                'error' => 'Exception',
+                'class' => $error::class,
                 'message' => $error->getMessage(),
             ];
         } elseif (is_string($error)) {
             $error = ['error' => $error];
         }
+
         return new self('err', $error);
     }
 
@@ -37,16 +38,28 @@ final class Result implements \JsonSerializable
         return new self('invalid', ['violations' => array_values($violations)]);
     }
 
-    public function isOk(): bool      { return $this->kind === 'ok'; }
-    public function isErr(): bool     { return $this->kind === 'err'; }
-    public function isInvalid(): bool { return $this->kind === 'invalid'; }
+    public function isOk(): bool
+    {
+        return $this->kind === 'ok';
+    }
+
+    public function isErr(): bool
+    {
+        return $this->kind === 'err';
+    }
+
+    public function isInvalid(): bool
+    {
+        return $this->kind === 'invalid';
+    }
 
     /** Unwrap ok value, throws if not ok */
     public function unwrap(): mixed
     {
-        if (!$this->isOk()) {
+        if (! $this->isOk()) {
             throw new \LogicException('Attempted to unwrap a non-ok Result');
         }
+
         return $this->payload;
     }
 
@@ -71,8 +84,13 @@ final class Result implements \JsonSerializable
     /** Map error payload when err|invalid, passthrough ok */
     public function mapError(callable $fn): self
     {
-        if ($this->isErr())     return self::err($fn($this->payload));
-        if ($this->isInvalid()) return self::invalid($fn($this->payload['violations'] ?? []));
+        if ($this->isErr()) {
+            return self::err($fn($this->payload));
+        }
+        if ($this->isInvalid()) {
+            return self::invalid($fn($this->payload['violations'] ?? []));
+        }
+
         return $this;
     }
 

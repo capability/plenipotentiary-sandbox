@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Gateway;
 
-use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
+use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
+use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Pleni\Support\Result;
 use Psr\Log\LoggerInterface;
 
 /**
  * eBay Browse API Gateway
- * 
+ *
  * Domain layer gateway for eBay Browse API operations.
  * Handles cross-cutting concerns like logging, idempotency, and caching.
  */
@@ -28,7 +28,7 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
 
     public function call(string $operation, array $payload = [], array $options = []): Result
     {
-        $this->logger->info("Gateway: call operation", [
+        $this->logger->info('Gateway: call operation', [
             'operation' => $operation,
             'provider' => 'eBay Browse',
             'payload_size' => count($payload),
@@ -62,7 +62,7 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
 
     public function validate(string $operation, array $payload = []): Result
     {
-        $this->logger->info("Gateway: validate operation", [
+        $this->logger->info('Gateway: validate operation', [
             'operation' => $operation,
             'provider' => 'eBay Browse',
         ]);
@@ -77,7 +77,7 @@ final class eBayBrowseGateway implements ApiEndpointGatewayContract
     {
         return in_array($operation, [
             'createOffer',
-            'updateOffer', 
+            'updateOffer',
             'deleteOffer',
             'createListing',
             'updateListing',

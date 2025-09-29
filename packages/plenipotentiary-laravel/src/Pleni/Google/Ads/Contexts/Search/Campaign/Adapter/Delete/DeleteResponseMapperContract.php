@@ -10,6 +10,5 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\Campai
 
 interface DeleteResponseMapperContract
 {
-    /** @param MutateCampaignsResponse|MutateGoogleAdsResponse $resp */
     public function toCanonical(MutateCampaignsResponse|MutateGoogleAdsResponse $resp): CampaignCanonicalDTO;
 }

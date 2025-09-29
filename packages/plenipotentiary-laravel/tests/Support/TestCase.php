@@ -4,8 +4,8 @@ namespace Plenipotentiary\Laravel\Tests\Support;
 
 use Illuminate\Routing\Router;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -23,7 +23,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('pleni.observability.enabled', false);
         $app['config']->set('pleni.auth.default', 'noop');
         $app['config']->set('cache.default', 'array');
-        
+
         // Google Ads test environment
         $app['config']->set('google_ads', [
             'client_id' => 'test-client-id',

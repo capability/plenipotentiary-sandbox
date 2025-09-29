@@ -9,10 +9,10 @@ use Plenipotentiary\Laravel\Pleni\Support\Result;
 
 /**
  * Example usage of the ApiEndpointGateway pattern
- * 
+ *
  * This demonstrates how to use the flexible gateway/adapter pattern
  * for non-CRUD APIs like eBay Browse and OpenAI.
- * 
+ *
  * Structure: Pleni/Provider/Domain/Contexts/Default/Endpoint/
  */
 class ApiEndpointUsageExample
@@ -41,7 +41,7 @@ class ApiEndpointUsageExample
     public function getEBayItem(string $itemId): Result
     {
         return $this->gateway->call('getItem', [], [
-            'itemId' => $itemId
+            'itemId' => $itemId,
         ]);
     }
 
@@ -54,7 +54,7 @@ class ApiEndpointUsageExample
             'listingDuration' => 'GTC', // Good 'Til Cancelled
             'quantity' => 1,
             'pricingSummary' => [
-                'price' => ['value' => '99.99', 'currency' => 'USD']
+                'price' => ['value' => '99.99', 'currency' => 'USD'],
             ],
             'merchantLocationKey' => 'default',
             'format' => 'FIXED_PRICE',
@@ -83,7 +83,7 @@ class ApiEndpointUsageExample
         return $this->gateway->call('createChatCompletion', [
             'model' => 'gpt-3.5-turbo',
             'messages' => [
-                ['role' => 'user', 'content' => 'Hello! How are you?']
+                ['role' => 'user', 'content' => 'Hello! How are you?'],
             ],
             'max_tokens' => 100,
             'temperature' => 0.7,

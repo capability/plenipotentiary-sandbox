@@ -10,7 +10,7 @@ use Plenipotentiary\Laravel\Pleni\Support\Result;
 
 /**
  * Search Items Action
- * 
+ *
  * Business operation for searching eBay items.
  */
 class SearchItemsAction
@@ -29,11 +29,11 @@ class SearchItemsAction
         ];
 
         // Add optional filters
-        if (!empty($filters['categories'])) {
+        if (! empty($filters['categories'])) {
             $payload['category_ids'] = $filters['categories'];
         }
 
-        if (!empty($filters['price_range'])) {
+        if (! empty($filters['price_range'])) {
             if (isset($filters['price_range']['min'])) {
                 $payload['filter'] = $payload['filter'] ?? [];
                 $payload['filter'][] = "price:[{$filters['price_range']['min']}..]";
@@ -44,12 +44,12 @@ class SearchItemsAction
             }
         }
 
-        if (!empty($filters['condition'])) {
+        if (! empty($filters['condition'])) {
             $payload['filter'] = $payload['filter'] ?? [];
             $payload['filter'][] = "conditionIds:{$filters['condition']}";
         }
 
-        if (!empty($filters['sort'])) {
+        if (! empty($filters['sort'])) {
             $payload['sort'] = $filters['sort'];
         }
 

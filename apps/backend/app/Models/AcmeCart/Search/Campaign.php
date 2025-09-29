@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Campaign extends Model
 {
     protected $table = 'acmecart_search_campaign';
+
     public $timestamps = false;
 
     protected $fillable = [

@@ -27,7 +27,7 @@ class CreateCompletionCommand extends Command
     public function handle(): int
     {
         $prompt = $this->argument('prompt');
-        
+
         $options = [
             'max_tokens' => (int) $this->option('max-tokens'),
             'temperature' => (float) $this->option('temperature'),
@@ -67,26 +67,26 @@ class CreateCompletionCommand extends Command
     {
         if ($result->isOk()) {
             $data = $result->unwrap();
-            
+
             $this->info('✅ Completion created successfully!');
             $this->newLine();
-            
+
             if (isset($data['choices']) && count($data['choices']) > 0) {
                 foreach ($data['choices'] as $index => $choice) {
-                    $this->line("Choice " . ($index + 1) . ":");
+                    $this->line('Choice '.($index + 1).':');
                     $this->line($choice['text']);
                     $this->newLine();
                 }
-                
+
                 if (isset($data['usage'])) {
                     $usage = $data['usage'];
-                    $this->line("Token usage:");
+                    $this->line('Token usage:');
                     $this->line("  Prompt tokens: {$usage['prompt_tokens']}");
                     $this->line("  Completion tokens: {$usage['completion_tokens']}");
                     $this->line("  Total tokens: {$usage['total_tokens']}");
                 }
             }
-            
+
             return Command::SUCCESS;
         }
 
@@ -95,6 +95,7 @@ class CreateCompletionCommand extends Command
             foreach ($result->violations() as $violation) {
                 $this->line("   • {$violation['field']}: {$violation['message']}");
             }
+
             return Command::FAILURE;
         }
 
@@ -104,6 +105,7 @@ class CreateCompletionCommand extends Command
             if (isset($error['message'])) {
                 $this->line("   Details: {$error['message']}");
             }
+
             return Command::FAILURE;
         }
 

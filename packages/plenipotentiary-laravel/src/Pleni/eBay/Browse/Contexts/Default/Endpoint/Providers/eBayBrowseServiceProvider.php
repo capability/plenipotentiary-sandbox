@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-
-use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Gateway\eBayBrowseGateway;
+use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
+use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Adapter\eBayBrowseAdapter;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Gateway\eBayBrowseGateway;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkClient;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Support\eBayErrorMapper;

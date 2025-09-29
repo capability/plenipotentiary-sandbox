@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class AdGroup extends Model
 {
     protected $table = 'acmecart_search_adgroup';
+
     public $timestamps = false;
 
     protected $fillable = [

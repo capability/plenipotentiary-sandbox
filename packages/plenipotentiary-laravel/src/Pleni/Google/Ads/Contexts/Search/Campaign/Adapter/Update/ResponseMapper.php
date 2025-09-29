@@ -10,18 +10,17 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\Campai
 
 final class ResponseMapper
 {
-    /** @param MutateCampaignsResponse|MutateGoogleAdsResponse $resp */
     public function toCanonical(MutateCampaignsResponse|MutateGoogleAdsResponse $resp): CampaignCanonicalDTO
     {
         $results = $resp->getResults();
         $resource = $results[0]?->getCampaign();
-        $c = new CampaignCanonicalDTO();
+        $c = new CampaignCanonicalDTO;
 
         if ($resource) {
-            $c->resourceName       = $resource->getResourceName();
-            $c->id                 = (string) $resource->getId();
-            $c->name               = $resource->getName();
-            $c->status             = $resource->getStatus();
+            $c->resourceName = $resource->getResourceName();
+            $c->id = (string) $resource->getId();
+            $c->name = $resource->getName();
+            $c->status = $resource->getStatus();
             $c->budgetResourceName = $resource->getCampaignBudget();
         }
 

@@ -14,9 +14,9 @@ describe('Cache Idempotency Store', function () {
         $scope = 'test.scope';
         $fingerprint = 'test-fingerprint';
         $value = 'test-value';
-        
+
         $this->store->put($scope, $fingerprint, $value);
-        
+
         expect($this->store->get($scope, $fingerprint))->toBe($value);
     });
 
@@ -27,9 +27,9 @@ describe('Cache Idempotency Store', function () {
     it('tombstones values', function () {
         $scope = 'test.scope';
         $fingerprint = 'test-fingerprint';
-        
+
         $this->store->tombstone($scope, $fingerprint);
-        
+
         expect($this->store->isTombstoned($scope, $fingerprint))->toBeTrue()
             ->and($this->store->get($scope, $fingerprint))->toBeNull();
     });
@@ -38,10 +38,10 @@ describe('Cache Idempotency Store', function () {
         $scope1 = 'scope1';
         $scope2 = 'scope2';
         $fingerprint = 'same-fingerprint';
-        
+
         $this->store->put($scope1, $fingerprint, 'value1');
         $this->store->put($scope2, $fingerprint, 'value2');
-        
+
         expect($this->store->get($scope1, $fingerprint))->toBe('value1')
             ->and($this->store->get($scope2, $fingerprint))->toBe('value2');
     });
