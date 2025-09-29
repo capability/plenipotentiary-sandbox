@@ -6,8 +6,8 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adap
 
 use Plenipotentiary\Laravel\Contracts\Adapter\SpecContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\OperationDescription;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\Operation\OperationDescription;
+use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 final class Spec implements SpecContract
 {

@@ -2,7 +2,7 @@
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Spec;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 describe('Create Spec', function () {
     it('validates valid campaign data', function () {

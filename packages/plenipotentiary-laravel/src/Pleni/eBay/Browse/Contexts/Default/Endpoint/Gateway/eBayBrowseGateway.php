@@ -8,7 +8,7 @@ use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\EndpointIdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
 final class eBayBrowseGateway implements ApiEndpointGatewayContract

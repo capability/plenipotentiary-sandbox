@@ -6,7 +6,7 @@ use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 describe('Campaign API CRUD Gateway', function () {
     beforeEach(function () {

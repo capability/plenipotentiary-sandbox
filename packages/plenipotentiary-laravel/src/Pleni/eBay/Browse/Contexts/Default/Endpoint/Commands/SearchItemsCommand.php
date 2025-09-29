@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Co
 
 use Illuminate\Console\Command;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Actions\SearchItemsAction;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Support\Result;
 
 class SearchItemsCommand extends Command
 {
