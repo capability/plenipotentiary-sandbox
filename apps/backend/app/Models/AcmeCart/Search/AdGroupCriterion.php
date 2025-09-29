@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AdGroupCriterion extends Model
 {
     protected $table = 'acmecart_search_adgroup_criterion';
+
     public $timestamps = false;
 
     protected $fillable = [

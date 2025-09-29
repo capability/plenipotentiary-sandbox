@@ -41,10 +41,9 @@ final class GoogleAdsHelper
             'status' => CampaignStatus::value(config('googleads.default_campaign_status', 'PAUSED')),
         ];
     }
+
     /**
      * Fetch the configured Login Customer ID (MCC) for Google Ads.
-     *
-     * @return string
      */
     public static function loginCustomerId(): string
     {
@@ -53,8 +52,6 @@ final class GoogleAdsHelper
 
     /**
      * Fetch the configured Linked Customer ID (child account) for Google Ads.
-     *
-     * @return string
      */
     public static function linkedCustomerId(): string
     {

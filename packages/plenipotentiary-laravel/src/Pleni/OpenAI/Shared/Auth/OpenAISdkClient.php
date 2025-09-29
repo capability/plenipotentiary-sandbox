@@ -16,6 +16,7 @@ use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 final class OpenAISdkClient implements ProviderClientContract
 {
     private GuzzleClient $httpClient;
+
     private OpenAIClientConfig $config;
 
     public function __construct(OpenAIClientConfig $config)
@@ -34,7 +35,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function request(string $method, string $endpoint, array $options = []): \Psr\Http\Message\ResponseInterface
     {
         $requestOptions = $this->prepareRequestOptions($options);
-        
+
         return $this->httpClient->request($method, $endpoint, $requestOptions);
     }
 
@@ -60,7 +61,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createCompletion(array $params): array
     {
         $response = $this->request('POST', '/completions', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -72,7 +73,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createChatCompletion(array $params): array
     {
         $response = $this->request('POST', '/chat/completions', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -84,7 +85,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createEdit(array $params): array
     {
         $response = $this->request('POST', '/edits', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -96,7 +97,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createImage(array $params): array
     {
         $response = $this->request('POST', '/images/generations', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -108,7 +109,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createImageEdit(array $params): array
     {
         $response = $this->request('POST', '/images/edits', [
-            'multipart' => $this->buildMultipartData($params)
+            'multipart' => $this->buildMultipartData($params),
         ]);
 
         return $response->json();
@@ -120,7 +121,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createImageVariation(array $params): array
     {
         $response = $this->request('POST', '/images/variations', [
-            'multipart' => $this->buildMultipartData($params)
+            'multipart' => $this->buildMultipartData($params),
         ]);
 
         return $response->json();
@@ -132,7 +133,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createEmbedding(array $params): array
     {
         $response = $this->request('POST', '/embeddings', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -144,7 +145,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createModeration(array $params): array
     {
         $response = $this->request('POST', '/moderations', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -156,6 +157,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function listModels(): array
     {
         $response = $this->request('GET', '/models');
+
         return $response->json();
     }
 
@@ -165,6 +167,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function retrieveModel(string $modelId): array
     {
         $response = $this->request('GET', "/models/{$modelId}");
+
         return $response->json();
     }
 
@@ -174,6 +177,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function deleteModel(string $modelId): array
     {
         $response = $this->request('DELETE', "/models/{$modelId}");
+
         return $response->json();
     }
 
@@ -183,7 +187,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function createFineTune(array $params): array
     {
         $response = $this->request('POST', '/fine-tunes', [
-            'json' => $params
+            'json' => $params,
         ]);
 
         return $response->json();
@@ -195,6 +199,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function listFineTunes(): array
     {
         $response = $this->request('GET', '/fine-tunes');
+
         return $response->json();
     }
 
@@ -204,6 +209,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function retrieveFineTune(string $fineTuneId): array
     {
         $response = $this->request('GET', "/fine-tunes/{$fineTuneId}");
+
         return $response->json();
     }
 
@@ -213,6 +219,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function cancelFineTune(string $fineTuneId): array
     {
         $response = $this->request('POST', "/fine-tunes/{$fineTuneId}/cancel");
+
         return $response->json();
     }
 
@@ -222,6 +229,7 @@ final class OpenAISdkClient implements ProviderClientContract
     public function listFineTuneEvents(string $fineTuneId): array
     {
         $response = $this->request('GET', "/fine-tunes/{$fineTuneId}/events");
+
         return $response->json();
     }
 

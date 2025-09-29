@@ -4,9 +4,8 @@ namespace Plenipotentiary\Laravel\Tests\Support;
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelectorKind;
 
-if (!function_exists('createTestCampaignDTO')) {
+if (! function_exists('createTestCampaignDTO')) {
     function createTestCampaignDTO(array $overrides = []): CampaignCanonicalDTO
     {
         $defaults = [
@@ -21,9 +20,9 @@ if (!function_exists('createTestCampaignDTO')) {
     }
 }
 
-if (!function_exists('createTestCampaignSelector')) {
-	function createTestCampaignSelector(string $value = '123'): CampaignSelector
-	{
-		return CampaignSelector::byExternalId($value, ['google.customerId' => '1234567890']);
-	}
+if (! function_exists('createTestCampaignSelector')) {
+    function createTestCampaignSelector(string $value = '123'): CampaignSelector
+    {
+        return CampaignSelector::byExternalId($value, ['google.customerId' => '1234567890']);
+    }
 }

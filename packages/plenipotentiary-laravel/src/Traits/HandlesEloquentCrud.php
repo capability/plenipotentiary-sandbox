@@ -40,6 +40,7 @@ trait HandlesEloquentCrud
     {
         $instance = $this->find($id);
         $instance->update($attributes);
+
         return $instance;
     }
 

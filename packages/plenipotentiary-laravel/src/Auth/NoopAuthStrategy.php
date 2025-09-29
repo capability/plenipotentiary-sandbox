@@ -18,10 +18,6 @@ final class NoopAuthStrategy implements AuthStrategyContract
 {
     /**
      * Simply return the incoming request unmodified.
-     *
-     * @param RequestInterface $request
-     * @param array $context
-     * @return RequestInterface
      */
     public function apply(RequestInterface $request, array $context = []): RequestInterface
     {

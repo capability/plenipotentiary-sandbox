@@ -197,20 +197,35 @@ return new class extends Migration
         // Drop in reverse FK dependency order
         Schema::table('acmecart_search_adgroup_criterion', function (Blueprint $table) {
             // Guarded drops (FKs may or may not exist depending on partial runs)
-            try { $table->dropForeign(['adgroup_id']); } catch (\Throwable $e) {}
-            try { $table->dropForeign(['priority_adgroup_id']); } catch (\Throwable $e) {}
+            try {
+                $table->dropForeign(['adgroup_id']);
+            } catch (\Throwable $e) {
+            }
+            try {
+                $table->dropForeign(['priority_adgroup_id']);
+            } catch (\Throwable $e) {
+            }
         });
 
         Schema::table('acmecart_search_ad', function (Blueprint $table) {
-            try { $table->dropForeign(['adgroup_id']); } catch (\Throwable $e) {}
+            try {
+                $table->dropForeign(['adgroup_id']);
+            } catch (\Throwable $e) {
+            }
         });
 
         Schema::table('acmecart_search_adgroup', function (Blueprint $table) {
-            try { $table->dropForeign(['campaign_id']); } catch (\Throwable $e) {}
+            try {
+                $table->dropForeign(['campaign_id']);
+            } catch (\Throwable $e) {
+            }
         });
 
         // Drop prefix index via raw SQL before dropping table
-        try { DB::statement('DROP INDEX idx_crit_text_25 ON acmecart_search_adgroup_criterion'); } catch (\Throwable $e) {}
+        try {
+            DB::statement('DROP INDEX idx_crit_text_25 ON acmecart_search_adgroup_criterion');
+        } catch (\Throwable $e) {
+        }
 
         Schema::dropIfExists('acmecart_search_adgroup_criterion');
         Schema::dropIfExists('acmecart_search_ad');
@@ -218,4 +233,3 @@ return new class extends Migration
         Schema::dropIfExists('acmecart_search_campaign');
     }
 };
-

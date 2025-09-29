@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter;
 
-use Google\Ads\GoogleAds\V21\Services\CampaignServiceClient;
-use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Support\Result;
+use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Spec as CreateSpec;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Budget\RequestMapper as BudgetRequestMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateRequestMapperContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateResponseMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Budget\RequestMapper as BudgetRequestMapper;
-
-use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Spec as CreateSpec;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Support\Result;
 use Psr\Log\LoggerInterface;
 
 final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
@@ -29,7 +27,6 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
         private BudgetRequestMapper $budgetRequestMapper,
         private LoggerInterface $logger,
     ) {}
-
 
     /**
      * Create a campaign. Set $validateOnly=true for dry-run validation.
@@ -62,7 +59,7 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
             }
 
             $this->logger->info('Creating Google Ads campaign', [
-                'name'       => $dto->name,
+                'name' => $dto->name,
             ]);
 
             if ($validateOnly) {
@@ -94,33 +91,34 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
             }
 
             $query = sprintf(
-                "SELECT campaign.resource_name, campaign.id, campaign.name, campaign.status, campaign.campaign_budget
+                'SELECT campaign.resource_name, campaign.id, campaign.name, campaign.status, campaign.campaign_budget
                  FROM campaign
                  WHERE campaign.id = %d
-                 LIMIT 1",
+                 LIMIT 1',
                 (int) $sel->value()
             );
 
             $gaClient = $this->client->raw();
-            $request = (new SearchGoogleAdsRequest())
+            $request = (new SearchGoogleAdsRequest)
                 ->setCustomerId($cid)
                 ->setQuery($query);
 
             $this->logger->info('Executing Google Ads campaign read', [
                 'customerId' => $cid,
-                'query'      => $query,
+                'query' => $query,
             ]);
 
             $resp = $gaClient->getGoogleAdsServiceClient()->search($request);
 
             foreach ($resp->iterateAllElements() as $row) {
-                $canonical = new CampaignCanonicalDTO();
+                $canonical = new CampaignCanonicalDTO;
                 $canonical->accountKeys['google.customerId'] = $cid;
-                $canonical->externalId        = (string) $row->getCampaign()->getId();
+                $canonical->externalId = (string) $row->getCampaign()->getId();
                 $canonical->identifiers['resourceName'] = $row->getCampaign()->getResourceName();
-                $canonical->name              = $row->getCampaign()->getName();
-                $canonical->status            = $row->getCampaign()->getStatus();
-                $canonical->budgetResourceName= $row->getCampaign()->getCampaignBudget();
+                $canonical->name = $row->getCampaign()->getName();
+                $canonical->status = $row->getCampaign()->getStatus();
+                $canonical->budgetResourceName = $row->getCampaign()->getCampaignBudget();
+
                 return Result::ok($canonical);
             }
 
@@ -136,22 +134,23 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
     public function lookup(\Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup $criteria, string $customerId): Result
     {
         try {
-            $mapper = new \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Read\LookupRequestMapper();
+            $mapper = new \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Read\LookupRequestMapper;
             $queryArr = $mapper->toQuery($customerId, $criteria);
 
             $gaClient = $this->client->raw();
-            $request = (new SearchGoogleAdsRequest())
+            $request = (new SearchGoogleAdsRequest)
                 ->setCustomerId($customerId)
                 ->setQuery($queryArr['query']);
 
             $this->logger->info('Executing Google Ads campaign lookup', [
                 'customerId' => $customerId,
-                'query'      => $queryArr['query'],
+                'query' => $queryArr['query'],
             ]);
 
             $resp = $gaClient->getGoogleAdsServiceClient()->search($request);
 
-            $responseMapper = new \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Read\LookupResponseMapper();
+            $responseMapper = new \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Read\LookupResponseMapper;
+
             return Result::ok($responseMapper->toPage($resp));
         } catch (\Throwable $e) {
             return Result::err($this->errorMapper->map($e));

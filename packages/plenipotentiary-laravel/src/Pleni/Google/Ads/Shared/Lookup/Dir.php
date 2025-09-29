@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup;

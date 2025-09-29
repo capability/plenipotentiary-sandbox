@@ -9,7 +9,7 @@ describe('Package Configuration', function () {
 
     it('registers service providers', function () {
         $providers = app()->getLoadedProviders();
-        
+
         expect($providers)->toHaveKey(\Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider::class)
             ->and($providers)->toHaveKey(\Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider::class);
     });

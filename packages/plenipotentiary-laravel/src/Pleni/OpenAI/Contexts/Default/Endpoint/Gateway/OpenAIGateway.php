@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\Endpoint\Gateway;
 
-use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
+use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
+use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Pleni\Support\Result;
 use Psr\Log\LoggerInterface;
 
 /**
  * OpenAI API Gateway
- * 
+ *
  * Domain layer gateway for OpenAI API operations.
  * Handles cross-cutting concerns like logging, idempotency, and caching.
  */
@@ -28,7 +28,7 @@ final class OpenAIGateway implements ApiEndpointGatewayContract
 
     public function call(string $operation, array $payload = [], array $options = []): Result
     {
-        $this->logger->info("Gateway: call operation", [
+        $this->logger->info('Gateway: call operation', [
             'operation' => $operation,
             'provider' => 'OpenAI',
             'model' => $payload['model'] ?? 'unknown',
@@ -62,7 +62,7 @@ final class OpenAIGateway implements ApiEndpointGatewayContract
 
     public function validate(string $operation, array $payload = []): Result
     {
-        $this->logger->info("Gateway: validate operation", [
+        $this->logger->info('Gateway: validate operation', [
             'operation' => $operation,
             'provider' => 'OpenAI',
         ]);

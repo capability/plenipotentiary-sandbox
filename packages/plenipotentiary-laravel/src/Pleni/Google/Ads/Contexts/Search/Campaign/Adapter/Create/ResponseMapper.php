@@ -6,22 +6,21 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adap
 
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateResponseMapperContract;
 
 final class ResponseMapper implements CreateResponseMapperContract
 {
     public function toCanonical(MutateCampaignsResponse $resp): CampaignCanonicalDTO
     {
         // With MUTABLE_RESOURCE you get the created Campaign back on results[0]->getCampaign()
-        $result   = $resp->getResults()[0] ?? null;
+        $result = $resp->getResults()[0] ?? null;
         $resource = $result?->getCampaign();
-        $c = new CampaignCanonicalDTO();
+        $c = new CampaignCanonicalDTO;
 
         if ($resource) {
-            $c->resourceName       = $resource->getResourceName();
-            $c->id                 = (string) $resource->getId();
-            $c->name               = $resource->getName();
-            $c->status             = $resource->getStatus();
+            $c->resourceName = $resource->getResourceName();
+            $c->id = (string) $resource->getId();
+            $c->name = $resource->getName();
+            $c->status = $resource->getStatus();
             $c->budgetResourceName = $resource->getCampaignBudget();
         } else {
             // Fallback to resource name only

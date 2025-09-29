@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Auth;
 
+use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClient;
 use Google\Ads\GoogleAds\Lib\V21\GoogleAdsClientBuilder;
-use Google\Ads\GoogleAds\Lib\OAuth2TokenBuilder;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Psr\Http\Message\RequestInterface;
 
@@ -23,13 +23,13 @@ final class GoogleAdsSdkAuthStrategy implements SdkAuthStrategyContract
 
     public function __construct()
     {
-        $oAuth2Credential = (new OAuth2TokenBuilder())
+        $oAuth2Credential = (new OAuth2TokenBuilder)
             ->withClientId(env('GOOGLE_ADS_CLIENT_ID'))
             ->withClientSecret(env('GOOGLE_ADS_CLIENT_SECRET'))
             ->withRefreshToken(env('GOOGLE_ADS_REFRESH_TOKEN'))
             ->build();
 
-        $this->client = (new GoogleAdsClientBuilder())
+        $this->client = (new GoogleAdsClientBuilder)
             ->withOAuth2Credential($oAuth2Credential)
             ->withDeveloperToken(env('GOOGLE_ADS_DEVELOPER_TOKEN'))
             ->withLoginCustomerId((int) env('GOOGLE_ADS_LOGIN_CUSTOMER_ID'))

@@ -17,22 +17,20 @@ use Psr\Http\Message\RequestInterface;
 final class TokenAuthStrategy implements AuthStrategyContract
 {
     /**
-     * @param string $header Header name to use, defaults to "Authorization"
-     * @param string $prefix Prefix before token value, defaults to "Bearer "
-     * @param string $value  Optional default token value
+     * @param  string  $header  Header name to use, defaults to "Authorization"
+     * @param  string  $prefix  Prefix before token value, defaults to "Bearer "
+     * @param  string  $value  Optional default token value
      */
     public function __construct(
         private string $header = 'Authorization',
         private string $prefix = 'Bearer ',
-        private string $value  = ''
+        private string $value = ''
     ) {}
 
     /**
      * Apply token authentication header to the request.
      *
-     * @param RequestInterface $request
-     * @param array $context May contain 'token' key to override default
-     * @return RequestInterface
+     * @param  array  $context  May contain 'token' key to override default
      */
     public function apply(RequestInterface $request, array $context = []): RequestInterface
     {
@@ -40,6 +38,7 @@ final class TokenAuthStrategy implements AuthStrategyContract
         if ($token === '') {
             return $request;
         }
+
         return $request->withHeader($this->header, $this->prefix.$token);
     }
 }

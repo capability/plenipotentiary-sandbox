@@ -10,7 +10,7 @@ use Plenipotentiary\Laravel\Pleni\Support\Result;
 
 /**
  * Create Completion Action
- * 
+ *
  * Business operation for creating OpenAI completions.
  */
 class CreateCompletionAction
@@ -37,23 +37,23 @@ class CreateCompletionAction
         ];
 
         // Add optional parameters
-        if (!empty($options['stop'])) {
+        if (! empty($options['stop'])) {
             $payload['stop'] = $options['stop'];
         }
 
-        if (!empty($options['suffix'])) {
+        if (! empty($options['suffix'])) {
             $payload['suffix'] = $options['suffix'];
         }
 
-        if (!empty($options['echo'])) {
+        if (! empty($options['echo'])) {
             $payload['echo'] = $options['echo'];
         }
 
-        if (!empty($options['best_of'])) {
+        if (! empty($options['best_of'])) {
             $payload['best_of'] = $options['best_of'];
         }
 
-        if (!empty($options['user'])) {
+        if (! empty($options['user'])) {
             $payload['user'] = $options['user'];
         }
 

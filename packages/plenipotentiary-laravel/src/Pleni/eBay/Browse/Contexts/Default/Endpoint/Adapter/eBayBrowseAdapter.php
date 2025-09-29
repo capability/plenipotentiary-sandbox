@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * eBay Browse API Adapter
- * 
+ *
  * Provider-specific implementation for eBay Browse API operations.
  * Handles API communication, request building, and response mapping.
  */
@@ -28,9 +28,9 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
     {
         try {
             $endpointConfig = $this->getEndpointConfig($operation);
-            
+
             $request = $this->buildRequest($endpointConfig, $payload, $options);
-            
+
             $this->logger->info('eBay API call', [
                 'operation' => $operation,
                 'method' => $endpointConfig['method'],
@@ -54,7 +54,7 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
     {
         try {
             $endpointConfig = $this->getEndpointConfig($operation);
-            
+
             // eBay-specific validation logic
             $violations = $this->validatePayload($operation, $payload);
             if ($violations) {
@@ -84,39 +84,39 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
         return match ($operation) {
             'searchItems' => [
                 'method' => 'GET',
-                'endpoint' => '/buy/browse/v1/item_summary/search'
+                'endpoint' => '/buy/browse/v1/item_summary/search',
             ],
             'getItem' => [
-                'method' => 'GET', 
-                'endpoint' => '/buy/browse/v1/item/{itemId}'
+                'method' => 'GET',
+                'endpoint' => '/buy/browse/v1/item/{itemId}',
             ],
             'getItemByLegacyId' => [
                 'method' => 'GET',
-                'endpoint' => '/buy/browse/v1/item/get_item_by_legacy_id'
+                'endpoint' => '/buy/browse/v1/item/get_item_by_legacy_id',
             ],
             'searchByImage' => [
                 'method' => 'POST',
-                'endpoint' => '/buy/browse/v1/item_summary/search_by_image'
+                'endpoint' => '/buy/browse/v1/item_summary/search_by_image',
             ],
             'getItemAspectsForCategory' => [
                 'method' => 'GET',
-                'endpoint' => '/buy/browse/v1/item_aspect_search_by_category'
+                'endpoint' => '/buy/browse/v1/item_aspect_search_by_category',
             ],
             'createOffer' => [
                 'method' => 'POST',
-                'endpoint' => '/sell/offer/v1_beta/offer'
+                'endpoint' => '/sell/offer/v1_beta/offer',
             ],
             'updateOffer' => [
                 'method' => 'PUT',
-                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}'
+                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}',
             ],
             'deleteOffer' => [
                 'method' => 'DELETE',
-                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}'
+                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}',
             ],
             'getOffer' => [
                 'method' => 'GET',
-                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}'
+                'endpoint' => '/sell/offer/v1_beta/offer/{offerId}',
             ],
             default => throw new \InvalidArgumentException("Unknown operation: {$operation}")
         };
@@ -135,32 +135,32 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
                     $violations[] = [
                         'field' => 'q_or_category_ids',
                         'rule' => 'required',
-                        'message' => 'Either search query (q) or category_ids is required'
+                        'message' => 'Either search query (q) or category_ids is required',
                     ];
                 }
                 break;
-                
+
             case 'getItem':
                 // Item ID should be provided in options, not payload
                 break;
-                
+
             case 'createOffer':
                 if (empty($payload['listingDuration'])) {
                     $violations[] = [
                         'field' => 'listingDuration',
                         'rule' => 'required',
-                        'message' => 'Listing duration is required'
+                        'message' => 'Listing duration is required',
                     ];
                 }
                 if (empty($payload['quantity'])) {
                     $violations[] = [
                         'field' => 'quantity',
                         'rule' => 'required',
-                        'message' => 'Quantity is required'
+                        'message' => 'Quantity is required',
                     ];
                 }
                 break;
-                
+
             case 'updateOffer':
             case 'deleteOffer':
             case 'getOffer':

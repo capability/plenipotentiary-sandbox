@@ -10,9 +10,7 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsHelper;
 
 final class GoogleAdsSdkClient implements ProviderClientContract
 {
-    public function __construct(private GoogleAdsClient $client)
-    {
-    }
+    public function __construct(private GoogleAdsClient $client) {}
 
     /**
      * Expose the authenticated GoogleAdsClient for adapters

@@ -3,10 +3,8 @@
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\AdapterSupport\CampaignApiInboundDTOMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignInboundDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignOutboundDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Mapper\CampaignOutboundMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
-use Psr\Log\NullLogger;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Mapper\CampaignOutboundMapper;
 
 it('maps a campaign object to inbound dto', function () {
     $campaign = Mockery::mock(\Google\Ads\GoogleAds\V20\Resources\Campaign::class);
@@ -33,7 +31,7 @@ it('maps outbound dto into array', function () {
         customerId: '999'
     );
 
-    $mapper = new CampaignOutboundMapper();
+    $mapper = new CampaignOutboundMapper;
     $arr = $mapper->map($out);
 
     expect($arr)->toHaveKey('name', 'Outbound Test')
