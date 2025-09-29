@@ -9,24 +9,15 @@ use Bricre\EbaySdkBuyBrowse\Api\ItemSummaryApi;
 use Bricre\EbaySdkBuyBrowse\Api\OfferApi;
 use Bricre\EbaySdkBuyBrowse\Configuration;
 use GuzzleHttp\Client as GuzzleClient;
-use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
+use Psr\Http\Message\ResponseInterface;
 
-/**
- * eBay Browse SDK Client Wrapper
- *
- * Provides a unified interface to eBay Browse API services.
- * Wraps the official eBay Browse SDK with consistent error handling and logging.
- */
-final class eBaySdkClient implements ProviderClientContract
+final class eBaySdkClient implements HttpProviderClientContract
 {
     private Configuration $config;
-
     private GuzzleClient $httpClient;
-
     private ItemSummaryApi $itemSummaryApi;
-
     private ItemApi $itemApi;
-
     private OfferApi $offerApi;
 
     public function __construct(Configuration $config)
@@ -44,24 +35,16 @@ final class eBaySdkClient implements ProviderClientContract
         $this->initializeApiClients();
     }
 
-    /**
-     * Initialize all eBay Browse API clients
-     */
-    private function initializeApiClients(): void
-    {
-        $this->itemSummaryApi = new ItemSummaryApi($this->httpClient, $this->config);
-        $this->itemApi = new ItemApi($this->httpClient, $this->config);
-        $this->offerApi = new OfferApi($this->httpClient, $this->config);
-    }
-
-    /**
-     * Get the raw HTTP client for direct API calls
-     */
-    public function request(string $method, string $endpoint, array $options = []): \Psr\Http\Message\ResponseInterface
+    public function request(string $method, string $endpoint, array $options = []): ResponseInterface
     {
         $requestOptions = $this->prepareRequestOptions($options);
 
         return $this->httpClient->request($method, $endpoint, $requestOptions);
+    }
+
+    public function raw(): object
+    {
+        return $this->httpClient;
     }
 
     /**

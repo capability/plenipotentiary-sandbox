@@ -5,15 +5,10 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Auth;
 
 use GuzzleHttp\Client as GuzzleClient;
-use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
+use Psr\Http\Message\ResponseInterface;
 
-/**
- * OpenAI SDK Client Wrapper
- *
- * Provides a unified interface to OpenAI API services.
- * Uses Guzzle HTTP client for direct API communication.
- */
-final class OpenAISdkClient implements ProviderClientContract
+final class OpenAISdkClient implements HttpProviderClientContract
 {
     private GuzzleClient $httpClient;
 
@@ -24,35 +19,31 @@ final class OpenAISdkClient implements ProviderClientContract
         $this->config = $config;
         $this->httpClient = new GuzzleClient([
             'base_uri' => $this->config->getBaseUrl(),
-            'timeout' => 60, // OpenAI can take longer for completions
+            'timeout' => 60,
             'headers' => $this->config->getHeaders(),
         ]);
     }
 
-    /**
-     * Get the raw HTTP client for direct API calls
-     */
-    public function request(string $method, string $endpoint, array $options = []): \Psr\Http\Message\ResponseInterface
+    public function request(string $method, string $endpoint, array $options = []): ResponseInterface
     {
         $requestOptions = $this->prepareRequestOptions($options);
 
         return $this->httpClient->request($method, $endpoint, $requestOptions);
     }
 
-    /**
-     * Get the raw HTTP client
-     */
     public function getHttpClient(): GuzzleClient
     {
         return $this->httpClient;
     }
 
-    /**
-     * Get the OpenAI client configuration
-     */
     public function getConfiguration(): OpenAIClientConfig
     {
         return $this->config;
+    }
+
+    public function raw(): object
+    {
+        return $this->httpClient;
     }
 
     /**
