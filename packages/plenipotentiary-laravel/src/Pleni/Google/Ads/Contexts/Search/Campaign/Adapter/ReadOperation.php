@@ -8,7 +8,6 @@ use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelectorKind;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 use Plenipotentiary\Laravel\Support\Result;
@@ -56,12 +55,12 @@ final class ReadOperation
             $violations[] = ['field' => 'selector.value', 'rule' => 'required', 'mapsTo' => 'campaign.id'];
         }
 
-        if ($selector->kind() !== CampaignSelectorKind::ExternalId) {
+        if ($selector->type() !== 'external_id') {
             $violations[] = ['field' => 'selector.kind', 'rule' => 'ExternalId only', 'mapsTo' => 'campaign.id'];
         }
 
         $context = GoogleAdsDefaults::apply($selector->providerContext());
-        $customerId = $context['google.customerId'] ?? null;
+        $customerId = $selector->getProviderContextValue('google.customerId') ?? $context['google.customerId'] ?? null;
         if (! $customerId) {
             $violations[] = ['field' => 'providerContext.google.customerId', 'rule' => 'required', 'mapsTo' => 'customerId'];
         }
@@ -95,16 +94,13 @@ final class ReadOperation
 
             return CampaignCanonicalDTO::fromArray([
                 'externalId' => (string) $campaign->getId(),
-                'identifiers' => [
-                    'resourceName' => $campaign->getResourceName(),
-                ],
                 'name' => $campaign->getName(),
                 'status' => $campaign->getStatus(),
                 'budgetResourceName' => $campaign->getCampaignBudget(),
-                'providerContext' => [
+                'providerContext' => array_filter([
                     'google.customerId' => $customerId,
                     'resourceName' => $campaign->getResourceName(),
-                ],
+                ], static fn ($value) => $value !== null && $value !== ''),
             ]);
         }
 

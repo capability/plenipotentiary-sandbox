@@ -1,48 +1,94 @@
 <?php
 
+use Google\Ads\GoogleAds\V21\Resources\Campaign;
+use Google\Ads\GoogleAds\V21\Services\MutateCampaignResult;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
-use Google\Ads\GoogleAds\V21\Services\MutateGoogleAdsRequest;
-use Google\Ads\GoogleAds\V21\Services\MutateGoogleAdsResponse;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateSupport\CreateBudgetOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Psr\Log\LoggerInterface;
 
 beforeEach(function () {
-    GoogleAdsDefaults::set('google.customerId', '1234567890');
-
     $this->googleAdsClient = Mockery::mock();
     $this->campaignService = Mockery::mock();
-    $this->googleAdsService = Mockery::mock();
 
-    $this->googleAdsClient->shouldReceive('getCampaignServiceClient')->andReturn($this->campaignService);
-    $this->googleAdsClient->shouldReceive('getGoogleAdsServiceClient')->andReturn($this->googleAdsService);
+    $this->googleAdsClient
+        ->shouldReceive('getCampaignServiceClient')
+        ->andReturn($this->campaignService);
 
     $this->client = Mockery::mock(ProviderClientContract::class);
     $this->client->shouldReceive('raw')->andReturn($this->googleAdsClient);
 
     $this->logger = Mockery::mock(LoggerInterface::class);
+    $this->budgetOperation = Mockery::mock(CreateBudgetOperation::class);
 
     $this->operation = new CreateOperation(
         $this->client,
         $this->logger,
+        $this->budgetOperation,
     );
 });
 
 afterEach(function () {
     Mockery::close();
-    GoogleAdsDefaults::set('google.customerId', null);
 });
 
 describe('CreateOperation::perform', function () {
-    it('returns ok when validation only and budget resource provided', function () {
+    it('returns ok in validateOnly mode when an existing budget is supplied', function () {
         $dto = CampaignCanonicalDTO::fromArray([
-            'providerContext' => ['google.customerId' => '1234567890'],
             'name' => 'Test Campaign',
             'status' => 'ENABLED',
             'budgetResourceName' => 'customers/1234567890/campaignBudgets/42',
+            'providerContext' => ['google.customerId' => '1234567890'],
+        ]);
+
+        $this->budgetOperation->shouldReceive('create')->never();
+
+        $this->campaignService
+            ->shouldReceive('mutateCampaigns')
+            ->once()
+            ->with(Mockery::on(fn ($request) => $request instanceof MutateCampaignsRequest
+                && $request->getCustomerId() === '1234567890'
+                && $request->getValidateOnly() === true
+                && count($request->getOperations()) === 1))
+            ->andReturn(new MutateCampaignsResponse);
+
+        $this->logger->shouldReceive('info')->once();
+
+        $result = $this->operation->perform($dto, true);
+
+        expect($result->isOk())->toBeTrue();
+    });
+
+    it('creates a budget when none supplied and returns canonical dto', function () {
+        $dto = CampaignCanonicalDTO::fromArray([
+            'name' => 'Budgetless Campaign',
+            'status' => 'PAUSED',
+            'budgetMicros' => 1_500_000,
+            'providerContext' => ['google.customerId' => '1234567890'],
+        ]);
+
+        $this->budgetOperation
+            ->shouldReceive('create')
+            ->once()
+            ->with('1234567890', Mockery::on(fn ($arg) => $arg === $dto), 1_500_000, false)
+            ->andReturn('customers/1234567890/campaignBudgets/777');
+
+        $campaign = new Campaign([
+            'resource_name' => 'customers/1234567890/campaigns/999',
+            'id' => 999,
+            'name' => 'Budgetless Campaign',
+            'status' => 2,
+            'campaign_budget' => 'customers/1234567890/campaignBudgets/777',
+        ]);
+
+        $response = new MutateCampaignsResponse([
+            'results' => [new MutateCampaignResult([
+                'resource_name' => 'customers/1234567890/campaigns/999',
+                'campaign' => $campaign,
+            ])],
         ]);
 
         $this->campaignService
@@ -50,45 +96,30 @@ describe('CreateOperation::perform', function () {
             ->once()
             ->with(Mockery::on(fn ($request) => $request instanceof MutateCampaignsRequest
                 && $request->getCustomerId() === '1234567890'
-                && $request->getValidateOnly() === true))
-            ->andReturn(new MutateCampaignsResponse);
+                && $request->getValidateOnly() === false
+                && count($request->getOperations()) === 1))
+            ->andReturn($response);
 
-        $this->googleAdsService->shouldReceive('mutate')->never();
         $this->logger->shouldReceive('info')->once();
 
-        $result = $this->operation->perform($dto, true);
+        $result = $this->operation->perform($dto, false);
 
         expect($result->isOk())->toBeTrue();
+
+        $canonical = $result->unwrap();
+        expect($canonical)->toBeInstanceOf(CampaignCanonicalDTO::class)
+            ->and($canonical->getProviderContextValue('resourceName'))->toBe('customers/1234567890/campaigns/999')
+            ->and($canonical->budgetResourceName)->toBe('customers/1234567890/campaignBudgets/777')
+            ->and($canonical->providerContext)->toHaveKey('google.customerId', '1234567890');
     });
 
-    it('dispatches unified mutate when budgetMicros provided', function () {
-        $dto = CampaignCanonicalDTO::fromArray([
-            'providerContext' => ['google.customerId' => '1234567890'],
-            'name' => 'Unified Campaign',
-            'status' => 'PAUSED',
-            'budgetMicros' => 1_500_000,
-        ]);
-
-        $this->googleAdsService
-            ->shouldReceive('mutate')
-            ->once()
-            ->with(Mockery::on(fn ($request) => $request instanceof MutateGoogleAdsRequest
-                && $request->getCustomerId() === '1234567890'))
-            ->andReturn(new MutateGoogleAdsResponse);
-
-        $this->campaignService->shouldReceive('mutateCampaigns')->never();
-        $this->logger->shouldReceive('info')->once();
-
-        $result = $this->operation->perform($dto, true);
-
-        expect($result->isOk())->toBeTrue();
-    });
-
-    it('returns invalid result with dev hints when payload incomplete', function () {
+    it('returns invalid structure when minimum fields missing', function () {
         $dto = CampaignCanonicalDTO::fromArray([
             'status' => 'ENABLED',
         ]);
 
+        $this->budgetOperation->shouldReceive('create')->never();
+        $this->campaignService->shouldReceive('mutateCampaigns')->never();
         $this->logger->shouldReceive('info')->never();
 
         $result = $this->operation->perform($dto);
@@ -96,7 +127,9 @@ describe('CreateOperation::perform', function () {
         expect($result->isInvalid())->toBeTrue();
         $violations = $result->violations();
         expect($violations)->not->toBeNull();
-        $fields = array_map(fn ($violation) => $violation['field'] ?? null, $violations);
-        expect(in_array('_dev', $fields, true))->toBeTrue();
+
+        $fields = array_map(static fn ($violation) => $violation['field'] ?? null, $violations);
+        expect(in_array('_expected', $fields, true))->toBeTrue();
+        expect(in_array('name', $fields, true))->toBeTrue();
     });
 });

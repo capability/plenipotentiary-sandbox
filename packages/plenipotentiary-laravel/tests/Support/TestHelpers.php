@@ -23,6 +23,6 @@ if (! function_exists('createTestCampaignDTO')) {
 if (! function_exists('createTestCampaignSelector')) {
     function createTestCampaignSelector(string $value = '123'): CampaignSelector
     {
-        return CampaignSelector::byExternalId($value, ['google.customerId' => '1234567890']);
+        return CampaignSelector::make('external_id', $value, ['google.customerId' => '1234567890']);
     }
 }
