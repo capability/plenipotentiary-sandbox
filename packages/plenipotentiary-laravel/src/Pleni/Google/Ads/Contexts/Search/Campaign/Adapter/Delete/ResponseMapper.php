@@ -13,11 +13,15 @@ final class ResponseMapper
     public function toCanonical(MutateCampaignsResponse|MutateGoogleAdsResponse $resp): CampaignCanonicalDTO
     {
         $result = $resp->getResults()[0] ?? null;
-        $c = new CampaignCanonicalDTO;
-        if ($result) {
-            $c->resourceName = $result->getResourceName();
-        }
+        $resourceName = $result?->getResourceName();
 
-        return $c;
+        return CampaignCanonicalDTO::fromArray([
+            'identifiers' => array_filter([
+                'resourceName' => $resourceName,
+            ], fn ($value) => $value !== null && $value !== ''),
+            'providerContext' => array_filter([
+                'resourceName' => $resourceName,
+            ], fn ($value) => $value !== null && $value !== ''),
+        ]);
     }
 }

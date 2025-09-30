@@ -5,7 +5,11 @@ namespace Plenipotentiary\Laravel\Tests\Support;
 use Illuminate\Routing\Router;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
+use App\Models\AcmeCart\Search\Campaign;
+use App\Models\AcmeCart\Search\AdGroup;
+use App\Models\AcmeCart\Search\Ad;
 
 abstract class TestCase extends Orchestra
 {
@@ -15,6 +19,27 @@ abstract class TestCase extends Orchestra
             PleniCoreServiceProvider::class,
             GoogleAdsServiceProvider::class,
         ];
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        GoogleAdsDefaults::set('google.customerId', '1234567890');
+
+        if (! class_exists(\App\Models\AcmeCart\Search\Campaign::class)) {
+            require_once __DIR__.'/../Stubs/Models/Campaign.php';
+        }
+        if (! class_exists(\App\Models\AcmeCart\Search\AdGroup::class)) {
+            require_once __DIR__.'/../Stubs/Models/AdGroup.php';
+        }
+        if (! class_exists(\App\Models\AcmeCart\Search\Ad::class)) {
+            require_once __DIR__.'/../Stubs/Models/Ad.php';
+        }
+
+        $this->app->instance(\App\Models\AcmeCart\Search\Campaign::class, new \App\Models\AcmeCart\Search\Campaign);
+        $this->app->instance(\App\Models\AcmeCart\Search\AdGroup::class, new \App\Models\AcmeCart\Search\AdGroup);
+        $this->app->instance(\App\Models\AcmeCart\Search\Ad::class, new \App\Models\AcmeCart\Search\Ad);
     }
 
     protected function getEnvironmentSetUp($app): void
@@ -54,7 +79,7 @@ abstract class TestCase extends Orchestra
     protected function createTestCampaignDTO(array $overrides = []): \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO
     {
         $defaults = [
-            'accountKeys' => ['google.customerId' => '1234567890'],
+            'providerContext' => ['google.customerId' => '1234567890'],
             'name' => 'Test Campaign',
             'status' => 'ENABLED',
             'budgetResourceName' => 'customers/1234567890/campaignBudgets/123',

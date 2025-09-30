@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO;
 
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
+
 final class CampaignCanonicalDTO
 {
     /** @var array<string,string> */
-    public array $accountKeys = [];    // provider account identifiers (google.customerId, fb.adAccountId, etc.)
+    public array $providerContext = []; // provider hints (google.customerId, resourceName, etc.)
 
     public ?string $internalId = null;  // our own system id
 
@@ -29,7 +31,8 @@ final class CampaignCanonicalDTO
     public static function fromArray(array $data): self
     {
         $c = new self;
-        $c->accountKeys = $data['accountKeys'] ?? ['google.customerId' => env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '')];
+        $context = $data['providerContext'] ?? $data['accountKeys'] ?? [];
+        $c->providerContext = GoogleAdsDefaults::hydrate($context);
         $c->internalId = $data['internalId'] ?? null;
         $c->externalId = $data['externalId'] ?? null;
         $c->identifiers = $data['identifiers'] ?? [];
@@ -57,10 +60,35 @@ final class CampaignCanonicalDTO
         return $this->identifiers[$key] ?? null;
     }
 
+    public function providerContextValue(string $key): ?string
+    {
+        return $this->providerContext[$key] ?? GoogleAdsDefaults::get($key);
+    }
+
+    public function providerContext(): array
+    {
+        return $this->providerContext;
+    }
+
+    public function mergeProviderContext(array $context): void
+    {
+        $this->providerContext = GoogleAdsDefaults::hydrate(array_merge($this->providerContext, $context));
+    }
+
+    public function customerId(): ?string
+    {
+        return $this->providerContextValue('google.customerId');
+    }
+
+    public function resourceName(): ?string
+    {
+        return $this->identifier('resourceName') ?? $this->providerContextValue('resourceName');
+    }
+
     public function toArray(): array
     {
         return [
-            'accountKeys' => $this->accountKeys,
+            'providerContext' => $this->providerContext,
             'internalId' => $this->internalId,
             'externalId' => $this->externalId,
             'identifiers' => $this->identifiers,

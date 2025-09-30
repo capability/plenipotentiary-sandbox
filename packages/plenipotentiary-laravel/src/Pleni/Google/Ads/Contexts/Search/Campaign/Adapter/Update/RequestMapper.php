@@ -15,8 +15,14 @@ final class RequestMapper
 {
     public function toRequest(CampaignCanonicalDTO $c, bool $validateOnly = false): MutateCampaignsRequest
     {
+        $resourceName = $c->resourceName();
+
+        if (! $resourceName) {
+            throw new \InvalidArgumentException('Campaign update requires providerContext["resourceName"] or identifiers["resourceName"].');
+        }
+
         $campaign = new Campaign([
-            'resource_name' => $c->resourceName,
+            'resource_name' => $resourceName,
             'name' => $c->name,
             'status' => $c->status,
         ]);
@@ -26,7 +32,7 @@ final class RequestMapper
         $op->setUpdateMask(FieldMasks::allSetFieldsOf($campaign));
 
         return (new MutateCampaignsRequest)
-            ->setCustomerId($c->accountKeys['google.customerId'] ?? '')
+            ->setCustomerId($c->customerId() ?? '')
             ->setOperations([$op])
             ->setValidateOnly($validateOnly)
             ->setResponseContentType(ResponseContentType::MUTABLE_RESOURCE);
