@@ -13,6 +13,7 @@ use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateSupport\CreateBudgetOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadManyOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation;
@@ -53,6 +54,7 @@ final class GoogleAdsServiceProvider extends ServiceProvider
         $this->app->singleton(ApiCrudAdapterContract::class, CampaignApiCrudAdapter::class);
 
         // Adapter operations
+        $this->app->singleton(CreateBudgetOperation::class);
         $this->app->singleton(CreateOperation::class);
         $this->app->singleton(UpdateOperation::class);
         $this->app->singleton(DeleteOperation::class);

@@ -29,8 +29,10 @@ afterEach(function () {
 describe('UpdateOperation::requestMapper', function () {
     it('builds update request with field mask', function () {
         $dto = CampaignCanonicalDTO::fromArray([
-            'providerContext' => ['google.customerId' => '1234567890'],
-            'identifiers' => ['resourceName' => 'customers/1234567890/campaigns/456'],
+            'providerContext' => [
+                'google.customerId' => '1234567890',
+                'resourceName' => 'customers/1234567890/campaigns/456',
+            ],
             'name' => 'Renamed Campaign',
             'status' => 'PAUSED',
         ]);
@@ -64,7 +66,7 @@ describe('UpdateOperation::requestMapper', function () {
         GoogleAdsDefaults::set('google.customerId', null);
 
         $dto = CampaignCanonicalDTO::fromArray([
-            'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
+            'providerContext' => ['resourceName' => 'customers/123/campaigns/456'],
             'name' => 'Renamed Campaign',
         ]);
 
@@ -76,7 +78,7 @@ describe('UpdateOperation::requestMapper', function () {
 describe('UpdateOperation::spec', function () {
     it('accepts resource name with at least one field', function () {
         $dto = CampaignCanonicalDTO::fromArray([
-            'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
+            'providerContext' => ['resourceName' => 'customers/123/campaigns/456'],
             'name' => 'Renamed',
         ]);
 
@@ -94,7 +96,7 @@ describe('UpdateOperation::spec', function () {
 
     it('requires at least one mutable field', function () {
         $dto = CampaignCanonicalDTO::fromArray([
-            'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
+            'providerContext' => ['resourceName' => 'customers/123/campaigns/456'],
         ]);
 
         expect(fn () => $this->operation->spec($dto))

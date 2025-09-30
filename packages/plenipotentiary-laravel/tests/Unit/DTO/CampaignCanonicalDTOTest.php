@@ -7,6 +7,10 @@ beforeEach(function () {
     GoogleAdsDefaults::set('google.customerId', '1234567890');
 });
 
+afterEach(function () {
+    GoogleAdsDefaults::set('google.customerId', null);
+});
+
 describe('CampaignCanonicalDTO', function () {
     it('creates from array with defaults applied lazily', function () {
         $dto = CampaignCanonicalDTO::fromArray([]);
@@ -14,13 +18,11 @@ describe('CampaignCanonicalDTO', function () {
         expect($dto->providerContext)->toBeEmpty()
             ->and($dto->internalId)->toBeNull()
             ->and($dto->externalId)->toBeNull()
-            ->and($dto->identifiers)->toBe([])
             ->and($dto->name)->toBeNull()
             ->and($dto->status)->toBeNull()
             ->and($dto->budgetResourceName)->toBeNull()
             ->and($dto->cpcBidMicros)->toBeNull()
-            ->and($dto->budgetMicros)->toBeNull()
-            ->and($dto->providerContextValue('google.customerId'))->toBe('1234567890');
+            ->and($dto->budgetMicros)->toBeNull();
     });
 
     it('creates from array with data', function () {
@@ -28,7 +30,6 @@ describe('CampaignCanonicalDTO', function () {
             'providerContext' => ['google.customerId' => '1234567890'],
             'internalId' => 'internal-123',
             'externalId' => 'external-456',
-            'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
             'name' => 'Test Campaign',
             'status' => 'ENABLED',
             'budgetResourceName' => 'customers/123/budgets/789',
@@ -41,7 +42,6 @@ describe('CampaignCanonicalDTO', function () {
         expect($dto->providerContext)->toBe($data['providerContext'])
             ->and($dto->internalId)->toBe('internal-123')
             ->and($dto->externalId)->toBe('external-456')
-            ->and($dto->identifiers)->toBe($data['identifiers'])
             ->and($dto->name)->toBe('Test Campaign')
             ->and($dto->status)->toBe('ENABLED')
             ->and($dto->budgetResourceName)->toBe('customers/123/budgets/789')
@@ -59,20 +59,18 @@ describe('CampaignCanonicalDTO', function () {
 
         expect($array)->toHaveKey('name', 'Test Campaign')
             ->and($array)->toHaveKey('status', 'ENABLED')
-            ->and($array)->toHaveKey('providerContext')
-            ->and($array)->toHaveKey('identifiers');
+            ->and($array)->toHaveKey('providerContext');
     });
 
-    it('provides accessor methods', function () {
+    it('exposes provider context values via accessor', function () {
         $dto = CampaignCanonicalDTO::fromArray([
             'externalId' => 'external-123',
             'internalId' => 'internal-456',
-            'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
+            'providerContext' => ['resourceName' => 'customers/123/campaigns/456'],
         ]);
 
-        expect($dto->externalId())->toBe('external-123')
-            ->and($dto->internalId())->toBe('internal-456')
-            ->and($dto->identifier('resourceName'))->toBe('customers/123/campaigns/456')
-            ->and($dto->identifier('nonexistent'))->toBeNull();
+        expect($dto->externalId)->toBe('external-123')
+            ->and($dto->internalId)->toBe('internal-456')
+            ->and($dto->getProviderContextValue('resourceName'))->toBe('customers/123/campaigns/456');
     });
 });
