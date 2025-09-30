@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support\InputSource;
+namespace Plenipotentiary\Laravel\Support\InputSource;
 
 use Symfony\Component\Console\Input\InputInterface;
 

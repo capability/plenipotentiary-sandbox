@@ -38,8 +38,8 @@ const FeatureList: FeatureItem[] = [
     description: (
       <>
         Solve real API pain: Aimed at Laravel teams working with large APIs (Google Ads, 
-        eBay, Xero). Not a “universal wrapper” - just the integration 
-        contract layer you’d end up writing anyway.
+        eBay, Xero). Not a "universal wrapper" - just the integration 
+        contract layer you'd end up writing anyway.
       </>
     ),
   },
