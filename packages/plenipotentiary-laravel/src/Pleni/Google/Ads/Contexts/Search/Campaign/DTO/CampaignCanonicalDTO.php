@@ -32,7 +32,7 @@ final class CampaignCanonicalDTO
     {
         $c = new self;
         $context = $data['providerContext'] ?? $data['accountKeys'] ?? [];
-        $c->providerContext = GoogleAdsDefaults::hydrate($context);
+        $c->providerContext = array_filter($context, fn ($value) => $value !== null && $value !== '');
         $c->internalId = $data['internalId'] ?? null;
         $c->externalId = $data['externalId'] ?? null;
         $c->identifiers = $data['identifiers'] ?? [];
@@ -62,7 +62,9 @@ final class CampaignCanonicalDTO
 
     public function providerContextValue(string $key): ?string
     {
-        return $this->providerContext[$key] ?? GoogleAdsDefaults::get($key);
+        $context = GoogleAdsDefaults::apply($this->providerContext);
+
+        return $context[$key] ?? null;
     }
 
     public function providerContext(): array
@@ -72,7 +74,10 @@ final class CampaignCanonicalDTO
 
     public function mergeProviderContext(array $context): void
     {
-        $this->providerContext = GoogleAdsDefaults::hydrate(array_merge($this->providerContext, $context));
+        $this->providerContext = array_filter(
+            array_merge($this->providerContext, $context),
+            fn ($value) => $value !== null && $value !== ''
+        );
     }
 
     public function customerId(): ?string
