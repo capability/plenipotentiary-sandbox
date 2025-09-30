@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key;
+namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector;
 
 use Plenipotentiary\Laravel\Contracts\Selector\SelectorContract;
 

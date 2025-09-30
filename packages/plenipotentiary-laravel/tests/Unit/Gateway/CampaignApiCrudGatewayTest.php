@@ -1,25 +1,31 @@
 <?php
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
+use Plenipotentiary\Laravel\Exceptions\DomainException;
+use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Support\Result;
+use Psr\Log\LoggerInterface;
 
 describe('Campaign API CRUD Gateway', function () {
     beforeEach(function () {
         $this->adapter = Mockery::mock(ApiCrudAdapterContract::class);
         $this->idempotencyStore = Mockery::mock(IdempotencyStore::class);
         $this->idempotencyHints = Mockery::mock(IdempotencyHints::class);
-        $this->logger = Mockery::mock(\Psr\Log\LoggerInterface::class);
+        $this->logger = Mockery::mock(LoggerInterface::class);
+        $this->errorMapper = Mockery::mock(ErrorMapperContract::class);
 
         $this->gateway = new CampaignApiCrudGateway(
             $this->adapter,
             $this->logger,
             $this->idempotencyStore,
-            $this->idempotencyHints
+            $this->idempotencyHints,
+            $this->errorMapper
         );
     });
 
@@ -32,6 +38,9 @@ describe('Campaign API CRUD Gateway', function () {
         $this->idempotencyHints->shouldReceive('fingerprintForCreate')
             ->with($dto)
             ->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')
+            ->with('campaign.create', $fingerprint)
+            ->andReturn(false);
         $this->idempotencyStore->shouldReceive('get')
             ->with('campaign.create', $fingerprint)
             ->andReturn(null);
@@ -55,6 +64,9 @@ describe('Campaign API CRUD Gateway', function () {
         $this->idempotencyHints->shouldReceive('fingerprintForCreate')
             ->with($dto)
             ->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')
+            ->with('campaign.create', $fingerprint)
+            ->andReturn(false);
         $this->idempotencyStore->shouldReceive('get')
             ->with('campaign.create', $fingerprint)
             ->andReturn($cachedData);
@@ -106,6 +118,9 @@ describe('Campaign API CRUD Gateway', function () {
         $this->idempotencyHints->shouldReceive('fingerprintForUpdate')
             ->with($dto)
             ->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')
+            ->with('campaign.update', $fingerprint)
+            ->andReturn(false);
         $this->idempotencyStore->shouldReceive('get')
             ->with('campaign.update', $fingerprint)
             ->andReturn(null);
@@ -129,6 +144,9 @@ describe('Campaign API CRUD Gateway', function () {
         $this->idempotencyHints->shouldReceive('fingerprintForDelete')
             ->with($selector)
             ->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')
+            ->with('campaign.delete', $fingerprint)
+            ->andReturn(false);
         $this->idempotencyStore->shouldReceive('get')
             ->with('campaign.delete', $fingerprint)
             ->andReturn(null);
@@ -141,5 +159,62 @@ describe('Campaign API CRUD Gateway', function () {
         $result = $this->gateway->delete($selector);
 
         expect($result)->toBe($expectedResult);
+    });
+
+    it('maps adapter exceptions to invalid results via error mapper', function () {
+        $dto = $this->createTestCampaignDTO();
+        $fingerprint = 'fp-invalid';
+        $exception = new \RuntimeException('boom');
+
+        $this->logger->shouldReceive('info')->once();
+        $this->idempotencyHints->shouldReceive('fingerprintForCreate')->with($dto)->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')->with('campaign.create', $fingerprint)->andReturn(false);
+        $this->idempotencyStore->shouldReceive('get')->with('campaign.create', $fingerprint)->andReturn(null);
+        $this->adapter->shouldReceive('create')->with($dto, false)->andThrow($exception);
+
+        $domainInvalid = new DomainInvalidException([
+            ['field' => 'name', 'message' => 'Required'],
+        ]);
+
+        $this->errorMapper->shouldReceive('map')->once()->with($exception)->andReturn($domainInvalid);
+
+        $result = $this->gateway->create($dto);
+
+        expect($result->isInvalid())->toBeTrue()
+            ->and($result->violations())->toBe($domainInvalid->violations());
+    });
+
+    it('maps adapter exceptions to err results via error mapper', function () {
+        $dto = $this->createTestCampaignDTO();
+        $fingerprint = 'fp-rate-limit';
+        $exception = new \RuntimeException('boom');
+
+        $this->logger->shouldReceive('info')->once();
+        $this->idempotencyHints->shouldReceive('fingerprintForCreate')->with($dto)->andReturn($fingerprint);
+        $this->idempotencyStore->shouldReceive('isTombstoned')->with('campaign.create', $fingerprint)->andReturn(false);
+        $this->idempotencyStore->shouldReceive('get')->with('campaign.create', $fingerprint)->andReturn(null);
+        $this->adapter->shouldReceive('create')->with($dto, false)->andThrow($exception);
+
+        $domainException = new DomainException(
+            'RateLimited',
+            'Too many requests',
+            429,
+            true,
+            ['retryAfter' => 30]
+        );
+
+        $this->errorMapper->shouldReceive('map')->once()->with($exception)->andReturn($domainException);
+
+        $result = $this->gateway->create($dto);
+
+        expect($result->isErr())->toBeTrue();
+        $payload = $result->error();
+        expect($payload)->toMatchArray([
+            'code' => 'RateLimited',
+            'message' => 'Too many requests',
+            'httpStatus' => 429,
+            'retryable' => true,
+        ]);
+        expect($payload['meta'])->toHaveKey('retryAfter', 30);
     });
 });

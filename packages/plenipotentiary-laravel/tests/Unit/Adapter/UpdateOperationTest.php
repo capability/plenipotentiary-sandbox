@@ -1,9 +1,8 @@
 <?php
 
+use Google\Ads\GoogleAds\V21\Enums\CampaignStatusEnum\CampaignStatus;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
-use Mockery;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
@@ -14,12 +13,10 @@ beforeEach(function () {
     GoogleAdsDefaults::set('google.customerId', '1234567890');
 
     $this->client = Mockery::mock(ProviderClientContract::class);
-    $this->errorMapper = Mockery::mock(ErrorMapperContract::class);
     $this->logger = Mockery::mock(LoggerInterface::class);
 
     $this->operation = new UpdateOperation(
         $this->client,
-        $this->errorMapper,
         $this->logger,
     );
 });
@@ -49,7 +46,7 @@ describe('UpdateOperation::requestMapper', function () {
             ->and($request->getValidateOnly())->toBeTrue()
             ->and($campaign->getResourceName())->toBe('customers/1234567890/campaigns/456')
             ->and($campaign->getName())->toBe('Renamed Campaign')
-            ->and($campaign->getStatus())->toBe('PAUSED')
+            ->and($campaign->getStatus())->toBe(CampaignStatus::value('PAUSED'))
             ->and($mask->getPaths())->toContain('name', 'status');
     });
 

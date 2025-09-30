@@ -14,6 +14,8 @@ use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadManyOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\CampaignRepositoryContract;
@@ -54,6 +56,8 @@ final class GoogleAdsServiceProvider extends ServiceProvider
         $this->app->singleton(CreateOperation::class);
         $this->app->singleton(UpdateOperation::class);
         $this->app->singleton(DeleteOperation::class);
+        $this->app->singleton(ReadOperation::class);
+        $this->app->singleton(ReadManyOperation::class);
 
         // Gateways
         $this->app->singleton(ApiCrudGatewayContract::class, CampaignApiCrudGateway::class);
