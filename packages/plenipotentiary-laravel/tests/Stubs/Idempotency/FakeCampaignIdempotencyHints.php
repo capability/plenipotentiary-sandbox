@@ -17,7 +17,9 @@ final class FakeCampaignIdempotencyHints implements IdempotencyHints
 
     public function fingerprintForUpdate(CampaignCanonicalDTO $c): string
     {
-        return 'update:'.($c->resourceName() ?? $c->externalId() ?? '');
+        $resourceName = $c->getProviderContextValue('resourceName');
+
+        return 'update:'.($resourceName ?? $c->externalId ?? '');
     }
 
     public function fingerprintForDelete(CampaignSelector $sel): string

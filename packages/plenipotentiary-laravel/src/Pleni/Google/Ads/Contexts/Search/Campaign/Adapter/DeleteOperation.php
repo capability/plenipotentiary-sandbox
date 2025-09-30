@@ -11,7 +11,6 @@ use InvalidArgumentException;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelectorKind;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 use Plenipotentiary\Laravel\Support\Result;
@@ -78,8 +77,8 @@ final class DeleteOperation
     public function requestMapper(string $customerId, CampaignSelector $selector, bool $validateOnly = false): MutateCampaignsRequest
     {
         $context = $selector->providerContext();
-        $resourceName = $context['resourceName']
-            ?? ($selector->kind() === CampaignSelectorKind::ResourceName
+        $resourceName = $selector->getProviderContextValue('resourceName')
+            ?? (($selector->type() === 'resource_name')
                 ? $selector->value()
                 : sprintf('customers/%s/campaigns/%s', $customerId, $selector->value()));
 
@@ -102,10 +101,14 @@ final class DeleteOperation
         $resourceName = $result?->getResourceName();
 
         return CampaignCanonicalDTO::fromArray([
-            'identifiers' => array_filter([
-                'resourceName' => $resourceName,
-            ], fn ($value) => $value !== null && $value !== ''),
-            'providerContext' => array_merge($context, $selector->providerContext()),
+            'providerContext' => array_filter(
+                array_merge(
+                    $context,
+                    $selector->providerContext(),
+                    ['resourceName' => $resourceName]
+                ),
+                fn ($value) => $value !== null && $value !== ''
+            ),
         ]);
     }
 }

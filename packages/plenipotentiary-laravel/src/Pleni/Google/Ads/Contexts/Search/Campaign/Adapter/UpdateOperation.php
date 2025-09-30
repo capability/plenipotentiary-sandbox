@@ -46,9 +46,12 @@ final class UpdateOperation
             ]);
         }
 
+        $resourceName = $dto->getProviderContextValue('resourceName');
+        $customerId = GoogleAdsDefaults::apply($dto->providerContext)['google.customerId'] ?? null;
+
         $this->logger->info('Updating Google Ads campaign', [
-            'resourceName' => $dto->resourceName(),
-            'customerId' => GoogleAdsDefaults::apply($dto->providerContext())['google.customerId'] ?? null,
+            'resourceName' => $resourceName,
+            'customerId' => $customerId,
         ]);
 
         $response = $this->client->raw()
@@ -68,7 +71,9 @@ final class UpdateOperation
     {
         $violations = [];
 
-        if (! $dto->resourceName()) {
+        $resourceName = $dto->getProviderContextValue('resourceName');
+
+        if (! $resourceName) {
             $violations[] = ['field' => 'resourceName', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name'];
         }
 
@@ -83,9 +88,9 @@ final class UpdateOperation
 
     public function requestMapper(CampaignCanonicalDTO $dto, bool $validateOnly = false): MutateCampaignsRequest
     {
-        $resourceName = $dto->resourceName();
+        $resourceName = $dto->getProviderContextValue('resourceName');
         if (! $resourceName) {
-            throw new InvalidArgumentException('Campaign update requires providerContext["resourceName"] or identifiers["resourceName"].');
+            throw new InvalidArgumentException('Campaign update requires providerContext["resourceName"].');
         }
 
         $campaignPayload = ['resource_name' => $resourceName];
@@ -102,8 +107,8 @@ final class UpdateOperation
         $operation->setUpdate($campaign);
         $operation->setUpdateMask(FieldMasks::allSetFieldsOf($campaign));
 
-        $context = GoogleAdsDefaults::require($dto->providerContext(), 'google.customerId');
-        $dto->mergeProviderContext($context);
+        $context = GoogleAdsDefaults::require($dto->providerContext, 'google.customerId');
+        $dto->setProviderContext($context);
         $customerId = $context['google.customerId'];
 
         return (new MutateCampaignsRequest)
@@ -119,15 +124,18 @@ final class UpdateOperation
         $resource = $result?->getCampaign();
         $resourceName = $resource?->getResourceName() ?? $result?->getResourceName();
 
-        return CampaignCanonicalDTO::fromArray([
-            'externalId' => $resource ? (string) $resource->getId() : $source->externalId(),
+        return CampaignCanonicalDTO::fromArray(array_filter([
+            'externalId' => $resource ? (string) $resource->getId() : $source->externalId,
             'name' => $resource?->getName() ?? $source->name,
             'status' => $resource?->getStatus() ?? $source->status,
             'budgetResourceName' => $resource?->getCampaignBudget() ?? $source->budgetResourceName,
-            'identifiers' => array_filter([
-                'resourceName' => $resourceName,
-            ], fn ($value) => $value !== null && $value !== ''),
-            'providerContext' => $source->providerContext(),
-        ]);
+            'providerContext' => array_filter(
+                array_merge(
+                    $source->providerContext,
+                    ['resourceName' => $resourceName]
+                ),
+                fn ($value) => $value !== null && $value !== ''
+            ),
+        ]));
     }
 }

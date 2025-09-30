@@ -30,7 +30,7 @@ afterEach(function () {
 
 describe('DeleteOperation::requestMapper', function () {
     it('builds remove request when selector carries resource name', function () {
-        $selector = CampaignSelector::byResourceName('customers/1234567890/campaigns/999', [
+        $selector = CampaignSelector::make('resource_name', 'customers/1234567890/campaigns/999', [
             'google.customerId' => '1234567890',
         ]);
 
@@ -44,7 +44,7 @@ describe('DeleteOperation::requestMapper', function () {
     });
 
     it('derives resource name from external id when not provided', function () {
-        $selector = CampaignSelector::byExternalId('777', [
+        $selector = CampaignSelector::make('external_id', '777', [
             'google.customerId' => '1234567890',
         ]);
 
@@ -57,14 +57,14 @@ describe('DeleteOperation::requestMapper', function () {
 
 describe('DeleteOperation::spec', function () {
     it('accepts selectors with values', function () {
-        $selector = CampaignSelector::byExternalId('777');
+        $selector = CampaignSelector::make('external_id', '777');
 
         expect(fn () => $this->operation->spec($selector))
             ->not->toThrow(ValidationException::class);
     });
 
     it('rejects selectors without values', function () {
-        $selector = CampaignSelector::byExternalId('');
+        $selector = CampaignSelector::make('external_id', '');
 
         expect(fn () => $this->operation->spec($selector))
             ->toThrow(ValidationException::class);
@@ -73,7 +73,7 @@ describe('DeleteOperation::spec', function () {
 
 describe('DeleteOperation::responseMapper', function () {
     it('returns canonical dto with merged provider context', function () {
-        $selector = CampaignSelector::byExternalId('777', [
+        $selector = CampaignSelector::make('external_id', '777', [
             'google.customerId' => '1234567890',
         ]);
 
@@ -88,7 +88,7 @@ describe('DeleteOperation::responseMapper', function () {
         ]);
 
         expect($canonical)->toBeInstanceOf(CampaignCanonicalDTO::class)
-            ->and($canonical->providerContext())->toHaveKey('google.customerId', '1234567890')
-            ->and($canonical->identifier('resourceName'))->toBe('customers/1234567890/campaigns/777');
+            ->and($canonical->providerContext)->toHaveKey('google.customerId', '1234567890')
+            ->and($canonical->getProviderContextValue('resourceName'))->toBe('customers/1234567890/campaigns/777');
     });
 });

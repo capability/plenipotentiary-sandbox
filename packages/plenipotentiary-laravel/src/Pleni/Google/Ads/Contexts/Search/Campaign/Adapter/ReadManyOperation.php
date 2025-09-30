@@ -58,7 +58,7 @@ final class ReadManyOperation
             ->getGoogleAdsServiceClient()
             ->search($request);
 
-        return Result::ok($this->responseMapper($response));
+        return Result::ok($this->responseMapper($response, $customerId));
     }
 
     public function spec(string $customerId): void
@@ -91,7 +91,7 @@ final class ReadManyOperation
         return $request;
     }
 
-    private function responseMapper(object $response): Page
+    private function responseMapper(object $response, string $customerId): Page
     {
         $items = [];
         foreach ($response->iterateAllElements() as $row) {
@@ -102,12 +102,10 @@ final class ReadManyOperation
                 'name' => $campaign->getName(),
                 'status' => $campaign->getStatus(),
                 'budgetResourceName' => $campaign->getCampaignBudget(),
-                'identifiers' => [
+                'providerContext' => array_filter([
+                    'google.customerId' => $customerId,
                     'resourceName' => $campaign->getResourceName(),
-                ],
-                'providerContext' => [
-                    'resourceName' => $campaign->getResourceName(),
-                ],
+                ], static fn ($value) => $value !== null && $value !== ''),
             ]);
         }
 
