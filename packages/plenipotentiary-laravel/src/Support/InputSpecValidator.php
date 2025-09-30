@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support;
+namespace Plenipotentiary\Laravel\Support;
 
 /**
  * Helper to validate INPUT_SPEC arrays without pulling heavy validation deps.

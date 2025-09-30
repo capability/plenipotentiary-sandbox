@@ -21,8 +21,8 @@ use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Pleni\Support\CanonicalFactory;
-use Plenipotentiary\Laravel\Pleni\Support\InputSpecValidator;
+use Plenipotentiary\Laravel\Support\CanonicalFactory;
+use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 

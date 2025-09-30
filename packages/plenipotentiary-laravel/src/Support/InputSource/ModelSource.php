@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support\InputSource;
+namespace Plenipotentiary\Laravel\Support\InputSource;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
