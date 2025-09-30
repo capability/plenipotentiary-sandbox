@@ -1,3 +1,8 @@
+# Iteration Spike
+
+This version aims for robust contracts and testing by seperating each operation and having Request and Response Mappers. I think this is too hard of a sell 
+to onboard developers who are already happy enough to shove all the operations into a single service layer. Parking if I need to come back to it.
+
 # Plenipotentiary Sandbox
 
 This repository is a **sandbox environment** for developing the [`plenipotentiary-laravel`](packages/plenipotentiary-laravel) package.
