@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Contracts\Idempotency;
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 
 /**
  * Defines how to generate idempotency fingerprints for CRUD operations.

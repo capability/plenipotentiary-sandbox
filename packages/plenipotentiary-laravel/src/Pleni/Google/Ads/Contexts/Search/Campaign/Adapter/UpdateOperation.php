@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter;
 
-use Google\Ads\GoogleAds\Util\V21\FieldMasks;
+use Google\Ads\GoogleAds\Util\FieldMasks;
+use Google\Ads\GoogleAds\V21\Enums\CampaignStatusEnum\CampaignStatus;
 use Google\Ads\GoogleAds\V21\Enums\ResponseContentTypeEnum\ResponseContentType;
 use Google\Ads\GoogleAds\V21\Resources\Campaign;
 use Google\Ads\GoogleAds\V21\Services\CampaignOperation;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
+use InvalidArgumentException;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Support\Operation\ValidationException;
@@ -22,7 +23,6 @@ final class UpdateOperation
 {
     public function __construct(
         private ProviderClientContract $client,
-        private ErrorMapperContract $errorMapper,
         private LoggerInterface $logger,
     ) {}
 
@@ -30,30 +30,38 @@ final class UpdateOperation
     {
         try {
             $this->spec($dto);
-
-            $request = $this->requestMapper($dto, $validateOnly);
-
-            $this->logger->info('Updating Google Ads campaign', [
-                'resourceName' => $dto->resourceName(),
-                'customerId' => GoogleAdsDefaults::apply($dto->providerContext())['google.customerId'] ?? null,
-            ]);
-
-            $response = $this->client->raw()
-                ->getCampaignServiceClient()
-                ->mutateCampaigns($request);
-
-            if ($validateOnly) {
-                return Result::ok();
-            }
-
-            $canonical = $this->responseMapper($response, $dto);
-
-            return Result::ok($canonical);
         } catch (ValidationException $e) {
             return Result::invalid($e->toArray());
-        } catch (\Throwable $e) {
-            return Result::err($this->errorMapper->map($e));
         }
+
+        try {
+            $request = $this->requestMapper($dto, $validateOnly);
+        } catch (InvalidArgumentException $e) {
+            return Result::invalid([
+                [
+                    'field' => 'providerContext.google.customerId',
+                    'rule' => 'required',
+                    'message' => $e->getMessage(),
+                ],
+            ]);
+        }
+
+        $this->logger->info('Updating Google Ads campaign', [
+            'resourceName' => $dto->resourceName(),
+            'customerId' => GoogleAdsDefaults::apply($dto->providerContext())['google.customerId'] ?? null,
+        ]);
+
+        $response = $this->client->raw()
+            ->getCampaignServiceClient()
+            ->mutateCampaigns($request);
+
+        if ($validateOnly) {
+            return Result::ok();
+        }
+
+        $canonical = $this->responseMapper($response, $dto);
+
+        return Result::ok($canonical);
     }
 
     public function spec(CampaignCanonicalDTO $dto): void
@@ -77,7 +85,7 @@ final class UpdateOperation
     {
         $resourceName = $dto->resourceName();
         if (! $resourceName) {
-            throw new \InvalidArgumentException('Campaign update requires providerContext["resourceName"] or identifiers["resourceName"].');
+            throw new InvalidArgumentException('Campaign update requires providerContext["resourceName"] or identifiers["resourceName"].');
         }
 
         $campaignPayload = ['resource_name' => $resourceName];
@@ -85,7 +93,7 @@ final class UpdateOperation
             $campaignPayload['name'] = $dto->name;
         }
         if ($dto->status !== null) {
-            $campaignPayload['status'] = $dto->status;
+            $campaignPayload['status'] = CampaignStatus::value($dto->status);
         }
 
         $campaign = new Campaign($campaignPayload);

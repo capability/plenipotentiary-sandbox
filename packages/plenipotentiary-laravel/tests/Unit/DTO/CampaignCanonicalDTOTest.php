@@ -8,10 +8,10 @@ beforeEach(function () {
 });
 
 describe('CampaignCanonicalDTO', function () {
-    it('creates from array with defaults', function () {
+    it('creates from array with defaults applied lazily', function () {
         $dto = CampaignCanonicalDTO::fromArray([]);
 
-        expect($dto->providerContext)->toHaveKey('google.customerId')
+        expect($dto->providerContext)->toBeEmpty()
             ->and($dto->internalId)->toBeNull()
             ->and($dto->externalId)->toBeNull()
             ->and($dto->identifiers)->toBe([])
@@ -19,7 +19,8 @@ describe('CampaignCanonicalDTO', function () {
             ->and($dto->status)->toBeNull()
             ->and($dto->budgetResourceName)->toBeNull()
             ->and($dto->cpcBidMicros)->toBeNull()
-            ->and($dto->budgetMicros)->toBeNull();
+            ->and($dto->budgetMicros)->toBeNull()
+            ->and($dto->providerContextValue('google.customerId'))->toBe('1234567890');
     });
 
     it('creates from array with data', function () {

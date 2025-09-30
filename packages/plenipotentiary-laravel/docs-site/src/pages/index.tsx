@@ -7,7 +7,7 @@ import Layout from "@theme/Layout";
 import HomepageFeatures from "@site/src/components/HomepageFeatures";
 import HomepageTldr from "@site/src/components/HomepageTldr";
 import MakeScaffoldSection from "@site/src/components/MakeScaffoldSection";
-import PausePatternsSection from "@site/src/components/PausePatternsSection";
+import DeveloperWorkflow from "@site/src/components/DeveloperWorkflow";
 import ApiEndpointAdapterSection from "@site/src/components/ApiEndpointAdapterSection";
 import HomepageFAQ from "@site/src/components/HomepageFAQ";
 import HomepageBackground from "@site/src/components/HomepageBackground";
@@ -80,9 +80,9 @@ export default function Home(): ReactNode {
         <HomepageFeatures />
         <HomepageTldr />
         <SectionDivider />
-        <MakeScaffoldSection />
+        <DeveloperWorkflow />
         <SectionDivider />
-        <PausePatternsSection />
+        <MakeScaffoldSection />
         <SectionDivider />
         <ApiEndpointAdapterSection />
         <SectionDivider />

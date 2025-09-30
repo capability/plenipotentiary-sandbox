@@ -19,11 +19,11 @@ const items = [
   },
   {
     q: 'I could achieve the same thing with a few files in my service layer!',
-    a: <>You can. Then again for another service six months later… implemented differently because the new API has its own quirks. By splitting Gateway and Adapter, I keep SDK churn isolated, make the integration testable with mocks, and guarantee things like idempotency and error mapping are always applied. Pleni's saves you from your future self.</>,
+    a: <>You can. Then again for another service six months later… implemented differently because the new API has its own quirks. By splitting Gateway and Adapter, I keep SDK churn isolated, make the integration testable with mocks, and guarantee things like idempotency and error mapping are always applied. Pleni saves you from your future self.</>,
   },
   {
     q: 'What? So you want me to learn your approach AND a new API?',
-    a: <>~10 minutes to learn Gateway ↔ Adapter. After that, you're just writing the same code you'd normally drop into a service class... but in the Adapter, where it's isolated. Pleni isn't an SDK wrapper! You still need to know the provider API. The difference is you only expose what you need, not the entire SDK surface. Over time the community can share common Adapters for basic ops, but the goal is clean contracts and boundaries, not hiding APIs behind another API.</>,
+    a: <>~10 minutes to learn Gateway ↔ Adapter/Operations. After that, you're just writing the same code you'd normally drop into a service class... but in the Adapter, where it's isolated. Pleni isn't an SDK wrapper! You still need to know the provider API. The difference is you only expose what you need, not the entire SDK surface. Over time the community can share common Adapters for basic ops, but the goal is clean contracts and boundaries, not hiding APIs behind another API.</>,
   },
   {
     q: 'Er… have you ever heard of Saloon / Guzzle / Laravel HTTP?',
