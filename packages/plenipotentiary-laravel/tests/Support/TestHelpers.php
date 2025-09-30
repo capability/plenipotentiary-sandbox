@@ -9,7 +9,7 @@ if (! function_exists('createTestCampaignDTO')) {
     function createTestCampaignDTO(array $overrides = []): CampaignCanonicalDTO
     {
         $defaults = [
-            'accountKeys' => ['google.customerId' => '1234567890'],
+            'providerContext' => ['google.customerId' => '1234567890'],
             'name' => 'Test Campaign',
             'status' => 'ENABLED',
             'budgetResourceName' => 'customers/1234567890/campaignBudgets/123',

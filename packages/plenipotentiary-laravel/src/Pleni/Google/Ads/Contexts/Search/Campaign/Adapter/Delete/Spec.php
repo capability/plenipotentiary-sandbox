@@ -11,8 +11,13 @@ use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 final class Spec implements SpecContract
 {
-    public function preflight(CampaignSelector $sel): void
+    public function preflight(mixed $input): void
     {
+        if (! $input instanceof CampaignSelector) {
+            throw new \InvalidArgumentException('Delete campaign spec expects a CampaignSelector instance.');
+        }
+
+        $sel = $input;
         $violations = [];
         if (! $sel->value()) {
             $violations[] = ['field' => 'selector', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name or id'];

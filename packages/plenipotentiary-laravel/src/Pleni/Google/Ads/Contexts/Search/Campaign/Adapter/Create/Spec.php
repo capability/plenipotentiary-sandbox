@@ -14,8 +14,13 @@ use Plenipotentiary\Laravel\Support\Operation\ValidationException;
  */
 final class Spec implements SpecContract
 {
-    public function preflight(CampaignCanonicalDTO $c): void
+    public function preflight(mixed $input): void
     {
+        if (! $input instanceof CampaignCanonicalDTO) {
+            throw new \InvalidArgumentException('Create campaign spec expects a CampaignCanonicalDTO instance.');
+        }
+
+        $c = $input;
         $violations = [];
 
         if (! $c->name || mb_strlen($c->name) > 128) {
@@ -26,8 +31,8 @@ final class Spec implements SpecContract
             $violations[] = ['field' => 'status', 'rule' => 'enum[ENABLED,PAUSED]', 'mapsTo' => 'campaign.status'];
         }
 
-        if (! $c->budgetResourceName) {
-            $violations[] = ['field' => 'budgetResourceName', 'rule' => 'required resource_name', 'mapsTo' => 'campaign.campaign_budget'];
+        if (! $c->budgetResourceName && $c->budgetMicros === null) {
+            $violations[] = ['field' => 'budgetResourceName', 'rule' => 'required unless budgetMicros provided', 'mapsTo' => 'campaign.campaign_budget'];
         }
 
         if ($violations) {
@@ -40,7 +45,7 @@ final class Spec implements SpecContract
         return OperationDescription::make('campaign.create', [
             ['field' => 'name', 'rule' => 'required|string|max:128', 'mapsTo' => 'campaign.name'],
             ['field' => 'status', 'rule' => 'enum[ENABLED,PAUSED]', 'mapsTo' => 'campaign.status'],
-            ['field' => 'budgetResourceName', 'rule' => 'required resource_name', 'mapsTo' => 'campaign.campaign_budget'],
+            ['field' => 'budgetResourceName', 'rule' => 'required unless budgetMicros provided', 'mapsTo' => 'campaign.campaign_budget'],
         ]);
     }
 }

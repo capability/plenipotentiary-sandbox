@@ -1,12 +1,17 @@
 <?php
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
+
+beforeEach(function () {
+    GoogleAdsDefaults::set('google.customerId', '1234567890');
+});
 
 describe('CampaignCanonicalDTO', function () {
     it('creates from array with defaults', function () {
         $dto = CampaignCanonicalDTO::fromArray([]);
 
-        expect($dto->accountKeys)->toHaveKey('google.customerId')
+        expect($dto->providerContext)->toHaveKey('google.customerId')
             ->and($dto->internalId)->toBeNull()
             ->and($dto->externalId)->toBeNull()
             ->and($dto->identifiers)->toBe([])
@@ -19,7 +24,7 @@ describe('CampaignCanonicalDTO', function () {
 
     it('creates from array with data', function () {
         $data = [
-            'accountKeys' => ['google.customerId' => '1234567890'],
+            'providerContext' => ['google.customerId' => '1234567890'],
             'internalId' => 'internal-123',
             'externalId' => 'external-456',
             'identifiers' => ['resourceName' => 'customers/123/campaigns/456'],
@@ -32,7 +37,7 @@ describe('CampaignCanonicalDTO', function () {
 
         $dto = CampaignCanonicalDTO::fromArray($data);
 
-        expect($dto->accountKeys)->toBe($data['accountKeys'])
+        expect($dto->providerContext)->toBe($data['providerContext'])
             ->and($dto->internalId)->toBe('internal-123')
             ->and($dto->externalId)->toBe('external-456')
             ->and($dto->identifiers)->toBe($data['identifiers'])
@@ -53,7 +58,7 @@ describe('CampaignCanonicalDTO', function () {
 
         expect($array)->toHaveKey('name', 'Test Campaign')
             ->and($array)->toHaveKey('status', 'ENABLED')
-            ->and($array)->toHaveKey('accountKeys')
+            ->and($array)->toHaveKey('providerContext')
             ->and($array)->toHaveKey('identifiers');
     });
 

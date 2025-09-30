@@ -12,18 +12,21 @@ final class ResponseMapper
 {
     public function toCanonical(MutateCampaignsResponse|MutateGoogleAdsResponse $resp): CampaignCanonicalDTO
     {
-        $results = $resp->getResults();
-        $resource = $results[0]?->getCampaign();
-        $c = new CampaignCanonicalDTO;
+        $result = $resp->getResults()[0] ?? null;
+        $campaign = $result?->getCampaign();
+        $resourceName = $campaign?->getResourceName() ?? $result?->getResourceName();
 
-        if ($resource) {
-            $c->resourceName = $resource->getResourceName();
-            $c->id = (string) $resource->getId();
-            $c->name = $resource->getName();
-            $c->status = $resource->getStatus();
-            $c->budgetResourceName = $resource->getCampaignBudget();
-        }
-
-        return $c;
+        return CampaignCanonicalDTO::fromArray([
+            'externalId' => $campaign ? (string) $campaign->getId() : null,
+            'identifiers' => array_filter([
+                'resourceName' => $resourceName,
+            ], fn ($value) => $value !== null && $value !== ''),
+            'providerContext' => array_filter([
+                'resourceName' => $resourceName,
+            ], fn ($value) => $value !== null && $value !== ''),
+            'name' => $campaign?->getName(),
+            'status' => $campaign?->getStatus(),
+            'budgetResourceName' => $campaign?->getCampaignBudget(),
+        ]);
     }
 }

@@ -4,37 +4,49 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key;
 
-final class CampaignSelector
+use Plenipotentiary\Laravel\Contracts\Selector\SelectorContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
+
+final class CampaignSelector implements SelectorContract
 {
-    /** @var array<string,string> provider account identifiers (e.g. google.customerId) */
-    private array $accountKeys;
+    /** @var array<string,string> provider context hints (e.g. google.customerId, resourceName) */
+    private array $providerContext;
 
     private function __construct(
         private CampaignSelectorKind $kind,
         private string $value,
-        array $accountKeys = []
+        array $providerContext = []
     ) {
-        $this->accountKeys = $accountKeys ?: ['google.customerId' => env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '')];
+        $this->providerContext = GoogleAdsDefaults::hydrate($providerContext);
+
+        if ($this->kind === CampaignSelectorKind::ResourceName && ! isset($this->providerContext['resourceName'])) {
+            $this->providerContext['resourceName'] = $this->value;
+        }
     }
 
-    public static function byResourceName(string $resourceName, array $accountKeys = []): self
+    public static function byResourceName(string $resourceName, array $providerContext = []): self
     {
-        return new self(CampaignSelectorKind::ResourceName, $resourceName, $accountKeys);
+        return new self(CampaignSelectorKind::ResourceName, $resourceName, $providerContext);
     }
 
-    public static function byExternalId(string $id, array $accountKeys = []): self
+    public static function byExternalId(string $id, array $providerContext = []): self
     {
-        return new self(CampaignSelectorKind::ExternalId, $id, $accountKeys);
+        return new self(CampaignSelectorKind::ExternalId, $id, $providerContext);
     }
 
-    public static function byLocalId(string $id, array $accountKeys = []): self
+    public static function byLocalId(string $id, array $providerContext = []): self
     {
-        return new self(CampaignSelectorKind::LocalId, $id, $accountKeys);
+        return new self(CampaignSelectorKind::LocalId, $id, $providerContext);
     }
 
     public function kind(): CampaignSelectorKind
     {
         return $this->kind;
+    }
+
+    public function type(): string
+    {
+        return $this->kind->value;
     }
 
     public function value(): string
@@ -45,36 +57,13 @@ final class CampaignSelector
     /** Convenience for the common key; remains provider-aware in Google namespace */
     public function customerId(): ?string
     {
-        return $this->accountKeys['google.customerId'] ?? null;
+        return $this->providerContext['google.customerId'] ?? GoogleAdsDefaults::get('google.customerId');
     }
 
     /** Access entire bag for multi-provider consistency */
-    public function accountKeys(): array
+    public function providerContext(): array
     {
-        return $this->accountKeys;
+        return $this->providerContext;
     }
 
-    /** GA-specific: build a resource_name when kind != ResourceName */
-    public function resourceName(?string $overrideCustomerId = null): string
-    {
-        $cid = $overrideCustomerId ?: $this->customerId() ?: '';
-
-        return match ($this->kind) {
-            CampaignSelectorKind::ResourceName => $this->value,
-            CampaignSelectorKind::ExternalId,
-            CampaignSelectorKind::LocalId => sprintf('customers/%s/campaigns/%s', $cid, $this->value),
-        };
-    }
-
-    /** Build a minimal canonical DTO skeleton for status-only updates, etc. */
-    public function toCanonicalSkeleton(): \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO
-    {
-        return \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO::fromArray([
-            'accountKeys' => $this->accountKeys,
-            'externalId' => $this->kind === CampaignSelectorKind::ExternalId ? $this->value : null,
-            'identifiers' => [
-                'resourceName' => $this->resourceName(),
-            ],
-        ]);
-    }
 }
