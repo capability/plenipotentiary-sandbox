@@ -35,7 +35,7 @@ export default function ApiEndpointAdapterSection() {
 
             <Heading as="h3" className="margin-bottom--sm">CRUD as Universal Foundation</Heading>
             <p>
-              CRUD operations (Create, Read, Update, Delete) are universal across many APIs—like filesystem
+              CRUD operations (Create, Read, Update, Delete) are universal across many APIs... like filesystem
               operations, they can be abstracted because they rarely change. The
               <code> ApiCrudAdapterContract</code> provides this solid foundation for core operations that a
               provider supports.

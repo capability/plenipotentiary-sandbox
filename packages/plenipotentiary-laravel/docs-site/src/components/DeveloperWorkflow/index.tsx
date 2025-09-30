@@ -40,8 +40,9 @@ export default function DeveloperWorkflow(): JSX.Element {
       title: 'Stay in one place until it\'s green',
       body: (
         <>
-          Keep everything in the adapter operation: auth, request build, response mapping, and a tiny preflight derived
-          from <code>INPUT_SPEC</code>. When <code>perform()</code> returns a green <code>Result</code>, you have genuinely understood the API and your use case.
+          Keep everything in the adapter operation... auth, request build, response mapping and a tiny preflight derived from <code>INPUT_SPEC</code>... until your unit test 
+          for perform() is green (covers success, invalid input, and mapped errors). Once the test is green, you've genuinely understood the API vs your use case and you are
+          ready for the next step.
         </>
       ),
     },

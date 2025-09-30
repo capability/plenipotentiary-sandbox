@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Support;
+namespace Plenipotentiary\Laravel\Support;
 
-use Plenipotentiary\Laravel\Pleni\Support\InputSource\InputSource;
+use Plenipotentiary\Laravel\Support\InputSource\InputSource;
 use Plenipotentiary\Laravel\Support\Result;
 
 final class CanonicalFactory
