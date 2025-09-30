@@ -30,6 +30,7 @@ final class OpenAIServiceProvider extends ServiceProvider
             ->give(function ($app) {
                 /** @var SdkAuthStrategyContract $auth */
                 $auth = $app->make(SdkAuthStrategyContract::class);
+
                 return new OpenAISdkClient($auth->getClient());
             });
 
@@ -45,7 +46,8 @@ final class OpenAIServiceProvider extends ServiceProvider
 
         // Idempotency hints for endpoints (provide your implementation)
         $this->app->bind(EndpointIdempotencyHints::class, function () {
-            return new class implements EndpointIdempotencyHints {
+            return new class implements EndpointIdempotencyHints
+            {
                 public function fingerprintForCall(string $operation, array $payload = [], array $options = []): string
                 {
                     return hash('sha256', $operation.'|'.json_encode([$payload, $options]));

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key;
 
 use Plenipotentiary\Laravel\Contracts\Selector\SelectorContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 
 final class CampaignSelector implements SelectorContract
 {
@@ -17,11 +16,7 @@ final class CampaignSelector implements SelectorContract
         private string $value,
         array $providerContext = []
     ) {
-        $this->providerContext = GoogleAdsDefaults::hydrate($providerContext);
-
-        if ($this->kind === CampaignSelectorKind::ResourceName && ! isset($this->providerContext['resourceName'])) {
-            $this->providerContext['resourceName'] = $this->value;
-        }
+        $this->providerContext = array_filter($providerContext, fn ($value) => $value !== null && $value !== '');
     }
 
     public static function byResourceName(string $resourceName, array $providerContext = []): self
@@ -54,16 +49,9 @@ final class CampaignSelector implements SelectorContract
         return $this->value;
     }
 
-    /** Convenience for the common key; remains provider-aware in Google namespace */
-    public function customerId(): ?string
-    {
-        return $this->providerContext['google.customerId'] ?? GoogleAdsDefaults::get('google.customerId');
-    }
-
     /** Access entire bag for multi-provider consistency */
     public function providerContext(): array
     {
         return $this->providerContext;
     }
-
 }

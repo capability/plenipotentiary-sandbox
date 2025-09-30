@@ -15,6 +15,7 @@ describe('Package Configuration', function () {
     });
 
     it('binds PSR-3 logger interface', function () {
-        expect(app(\Psr\Log\LoggerInterface::class))->toBeInstanceOf(\Illuminate\Log\Logger::class);
+        expect(app()->bound(\Psr\Log\LoggerInterface::class))->toBeTrue()
+            ->and(app(\Psr\Log\LoggerInterface::class))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
     });
 });

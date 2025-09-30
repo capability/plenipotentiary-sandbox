@@ -7,27 +7,14 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers;
 use App\Models\AcmeCart\Search\Campaign as CampaignModel;
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Adapter\SpecContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateRequestMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\CreateResponseMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\RequestMapper as CreateRequestMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\ResponseMapper as CreateResponseMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Spec as CreateSpec;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete\DeleteRequestMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete\DeleteResponseMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete\RequestMapper as DeleteRequestMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete\ResponseMapper as DeleteResponseMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Delete\Spec as DeleteSpec;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update\RequestMapper as UpdateRequestMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update\ResponseMapper as UpdateResponseMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update\Spec as UpdateSpec;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update\UpdateRequestMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Update\UpdateResponseMapperContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\CampaignRepositoryContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\EloquentCampaignRepository;
@@ -63,6 +50,11 @@ final class GoogleAdsServiceProvider extends ServiceProvider
         // Adapters
         $this->app->singleton(ApiCrudAdapterContract::class, CampaignApiCrudAdapter::class);
 
+        // Adapter operations
+        $this->app->singleton(CreateOperation::class);
+        $this->app->singleton(UpdateOperation::class);
+        $this->app->singleton(DeleteOperation::class);
+
         // Gateways
         $this->app->singleton(ApiCrudGatewayContract::class, CampaignApiCrudGateway::class);
 
@@ -73,34 +65,5 @@ final class GoogleAdsServiceProvider extends ServiceProvider
             );
         });
 
-        // Mapper contracts
-        $this->app->bind(CreateRequestMapperContract::class, CreateRequestMapper::class);
-        $this->app->bind(CreateResponseMapperContract::class, CreateResponseMapper::class);
-        $this->app->bind(UpdateRequestMapperContract::class, UpdateRequestMapper::class);
-        $this->app->bind(UpdateResponseMapperContract::class, UpdateResponseMapper::class);
-        $this->app->bind(DeleteRequestMapperContract::class, DeleteRequestMapper::class);
-        $this->app->bind(DeleteResponseMapperContract::class, DeleteResponseMapper::class);
-
-        // Spec contracts
-        $this->app->when(CampaignApiCrudAdapter::class)
-            ->needs(SpecContract::class)
-            ->give(function ($app) {
-                // We might want more granular binding, but for simplicity bind directly
-                return new CreateSpec;
-            });
-
-        $this->app->when(CampaignApiCrudAdapter::class)
-            ->needs(SpecContract::class)
-            ->give(function ($app) {
-                // Provide UpdateSpec if requested explicitly elsewhere
-                return new UpdateSpec;
-            });
-
-        $this->app->when(CampaignApiCrudAdapter::class)
-            ->needs(SpecContract::class)
-            ->give(function ($app) {
-                // Provide DeleteSpec if requested explicitly elsewhere
-                return new DeleteSpec;
-            });
     }
 }

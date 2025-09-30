@@ -49,6 +49,7 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
     {
         try {
             $violations = $this->validatePayload($operation, $payload);
+
             return $violations ? Result::invalid($violations) : Result::ok();
         } catch (\Throwable $e) {
             return Result::err($this->errorMapper->map($e));
@@ -112,6 +113,7 @@ final class OpenAIAdapter implements ApiEndpointAdapterContract
                 }
                 break;
         }
+
         return $violations;
     }
 

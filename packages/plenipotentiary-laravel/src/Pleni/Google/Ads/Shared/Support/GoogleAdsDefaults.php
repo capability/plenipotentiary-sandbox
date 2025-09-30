@@ -45,27 +45,47 @@ final class GoogleAdsDefaults
     public static function get(string $key): ?string
     {
         self::loadFromEnv();
+
         return self::$defaults[$key] ?? null;
     }
 
     /**
-     * Merge provided context with configured defaults (defaults apply when missing).
+     * Merge provided context with defaults without mutating input.
      *
-     * @param  array<string,string>  $context
+     * @param  array<string,string|null>  $context
      * @return array<string,string>
      */
-    public static function hydrate(array $context): array
+    public static function apply(array $context): array
     {
         self::loadFromEnv();
 
-        $merged = self::$defaults;
+        $normalised = [];
         foreach ($context as $key => $value) {
             if ($value === null || $value === '') {
                 continue;
             }
-            $merged[$key] = $value;
+            $normalised[$key] = (string) $value;
         }
 
-        return array_filter($merged, fn ($value) => $value !== null && $value !== '');
+        return array_filter(array_merge(self::$defaults, $normalised), fn ($value) => $value !== null && $value !== '');
+    }
+
+    /**
+     * Apply defaults and ensure required keys are present.
+     *
+     * @param  array<string,string|null>  $context
+     * @return array<string,string>
+     */
+    public static function require(array $context, string ...$requiredKeys): array
+    {
+        $merged = self::apply($context);
+
+        foreach ($requiredKeys as $key) {
+            if (! isset($merged[$key]) || $merged[$key] === '') {
+                throw new \InvalidArgumentException(sprintf('Missing required provider context key [%s].', $key));
+            }
+        }
+
+        return $merged;
     }
 }
