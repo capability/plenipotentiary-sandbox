@@ -3,12 +3,10 @@
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignResult;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
-use Mockery;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 use Psr\Log\LoggerInterface;
@@ -17,12 +15,10 @@ beforeEach(function () {
     GoogleAdsDefaults::set('google.customerId', '1234567890');
 
     $this->client = Mockery::mock(ProviderClientContract::class);
-    $this->errorMapper = Mockery::mock(ErrorMapperContract::class);
     $this->logger = Mockery::mock(LoggerInterface::class);
 
     $this->operation = new DeleteOperation(
         $this->client,
-        $this->errorMapper,
         $this->logger,
     );
 });

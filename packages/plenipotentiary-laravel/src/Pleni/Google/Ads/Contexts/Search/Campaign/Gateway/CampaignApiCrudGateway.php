@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
+use Plenipotentiary\Laravel\Exceptions\DomainException;
+use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * Provider-agnostic gateway class.
@@ -27,6 +31,7 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         private LoggerInterface $logger,
         private IdempotencyStore $idempotencyStore,
         private IdempotencyHints $idempotencyHints,
+        private ErrorMapperContract $errorMapper,
     ) {}
 
     public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
@@ -44,7 +49,11 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
             return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
         }
 
-        $result = $this->adapter->create($c, $validateOnly);
+        try {
+            $result = $this->adapter->create($c, $validateOnly);
+        } catch (Throwable $exception) {
+            return $this->mapException($exception);
+        }
 
         if ($result->isOk() && ! $validateOnly) {
             $this->idempotencyStore->put($scope, $fp, json_encode($result->unwrap()->toArray()));
@@ -57,14 +66,22 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     {
         $this->logger->info('Gateway: find campaign', ['selector' => $sel->value()]);
 
-        return $this->adapter->find($sel);
+        try {
+            return $this->adapter->find($sel);
+        } catch (Throwable $exception) {
+            return $this->mapException($exception);
+        }
     }
 
     public function lookup(Lookup $criteria, string $customerId): Result
     {
         $this->logger->info('Gateway: lookup campaigns', ['customerId' => $customerId]);
 
-        return $this->adapter->lookup($criteria, $customerId);
+        try {
+            return $this->adapter->lookup($criteria, $customerId);
+        } catch (Throwable $exception) {
+            return $this->mapException($exception);
+        }
     }
 
     public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
@@ -82,7 +99,11 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
             return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
         }
 
-        $result = $this->adapter->update($c, $validateOnly);
+        try {
+            $result = $this->adapter->update($c, $validateOnly);
+        } catch (Throwable $exception) {
+            return $this->mapException($exception);
+        }
 
         if ($result->isOk() && ! $validateOnly) {
             $this->idempotencyStore->put($scope, $fp, json_encode($result->unwrap()->toArray()));
@@ -106,12 +127,40 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
             return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
         }
 
-        $result = $this->adapter->delete($sel, $validateOnly);
+        try {
+            $result = $this->adapter->delete($sel, $validateOnly);
+        } catch (Throwable $exception) {
+            return $this->mapException($exception);
+        }
 
         if ($result->isOk() && ! $validateOnly) {
             $this->idempotencyStore->tombstone($scope, $fp);
         }
 
         return $result;
+    }
+
+    private function mapException(Throwable $exception): Result
+    {
+        $mapped = $this->errorMapper->map($exception);
+
+        if ($mapped instanceof DomainInvalidException) {
+            return Result::invalid($mapped->violations());
+        }
+
+        if ($mapped instanceof DomainException) {
+            return Result::err([
+                'code' => $mapped->code(),
+                'message' => $mapped->getMessage(),
+                'httpStatus' => $mapped->httpStatus(),
+                'retryable' => $mapped->isRetryable(),
+                'meta' => $mapped->meta(),
+            ]);
+        }
+
+        return Result::err([
+            'code' => $mapped::class,
+            'message' => $mapped->getMessage(),
+        ]);
     }
 }

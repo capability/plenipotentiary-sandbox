@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Tests\Stubs\Idempotency;
 
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 
 final class FakeCampaignIdempotencyHints implements IdempotencyHints
 {

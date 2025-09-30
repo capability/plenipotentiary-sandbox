@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Contracts\Adapter;
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Support\Result;
 

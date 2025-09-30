@@ -28,6 +28,27 @@ final class CampaignCanonicalDTO
 
     public ?int $budgetMicros = null; // optional, used when creating budget on the fly
 
+    public ?string $customerId = null;
+
+    /**
+     * Defines the canonical shape expected by factories/controllers when hydrating this DTO.
+     *
+     * @return array<string,array<string,mixed>>
+     */
+    public static function schema(): array
+    {
+        return [
+            'internalId' => ['key' => 'internal_id', 'rules' => ['nullable', 'string']],
+            'externalId' => ['key' => 'external_id', 'rules' => ['nullable', 'string']],
+            'name' => ['key' => 'name', 'rules' => ['required', 'string', 'min:1', 'max:128']],
+            'status' => ['key' => 'status', 'rules' => ['required', 'in:ENABLED,PAUSED,REMOVED']],
+            'budgetResourceName' => ['key' => 'budget_resource_name', 'rules' => ['nullable', 'string']],
+            'budgetMicros' => ['key' => 'budget', 'rules' => ['nullable', 'numeric', 'min:0'], 'cast' => 'currency_to_micros'],
+            'cpcBidMicros' => ['key' => 'cpc_bid', 'rules' => ['nullable', 'numeric', 'min:0'], 'cast' => 'int'],
+            'customerId' => ['key' => 'customer_id', 'rules' => ['nullable', 'string']],
+        ];
+    }
+
     public static function fromArray(array $data): self
     {
         $c = new self;
@@ -41,6 +62,13 @@ final class CampaignCanonicalDTO
         $c->budgetResourceName = $data['budgetResourceName'] ?? null;
         $c->cpcBidMicros = isset($data['cpcBidMicros']) ? (int) $data['cpcBidMicros'] : null;
         $c->budgetMicros = isset($data['budgetMicros']) ? (int) $data['budgetMicros'] : null;
+        $c->customerId = $data['customerId'] ?? null;
+
+        if ($c->customerId) {
+            $c->providerContext['google.customerId'] = $c->customerId;
+        } elseif (isset($c->providerContext['google.customerId'])) {
+            $c->customerId = $c->providerContext['google.customerId'];
+        }
 
         return $c;
     }
@@ -74,10 +102,16 @@ final class CampaignCanonicalDTO
 
     public function mergeProviderContext(array $context): void
     {
-        $this->providerContext = array_filter(
+        $merged = array_filter(
             array_merge($this->providerContext, $context),
             fn ($value) => $value !== null && $value !== ''
         );
+
+        $this->providerContext = $merged;
+
+        if (isset($merged['google.customerId'])) {
+            $this->customerId = $merged['google.customerId'];
+        }
     }
 
     public function customerId(): ?string
@@ -102,6 +136,7 @@ final class CampaignCanonicalDTO
             'budgetResourceName' => $this->budgetResourceName,
             'cpcBidMicros' => $this->cpcBidMicros,
             'budgetMicros' => $this->budgetMicros,
+            'customerId' => $this->customerId,
         ];
     }
 }

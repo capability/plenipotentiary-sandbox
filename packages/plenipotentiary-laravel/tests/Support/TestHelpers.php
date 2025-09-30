@@ -3,7 +3,7 @@
 namespace Plenipotentiary\Laravel\Tests\Support;
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Key\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 
 if (! function_exists('createTestCampaignDTO')) {
     function createTestCampaignDTO(array $overrides = []): CampaignCanonicalDTO

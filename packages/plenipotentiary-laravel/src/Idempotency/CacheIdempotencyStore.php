@@ -16,7 +16,9 @@ final class CacheIdempotencyStore implements IdempotencyStore
 
     public function get(string $scope, string $fp): ?string
     {
-        return $this->cache->get($this->k($scope, $fp));
+        $value = $this->cache->get($this->k($scope, $fp));
+
+        return $value === '__TOMBSTONE__' ? null : $value;
     }
 
     public function put(string $scope, string $fp, string $value): void

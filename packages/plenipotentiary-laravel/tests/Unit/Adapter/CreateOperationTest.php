@@ -1,32 +1,32 @@
 <?php
 
-use Google\Ads\GoogleAds\V21\Resources\CampaignBudget;
-use Google\Ads\GoogleAds\V21\Services\CampaignBudgetOperation;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
+use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
 use Google\Ads\GoogleAds\V21\Services\MutateGoogleAdsRequest;
-use Google\Ads\GoogleAds\V21\Services\MutateOperation;
-use Mockery;
+use Google\Ads\GoogleAds\V21\Services\MutateGoogleAdsResponse;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\Create\Budget\RequestMapper as BudgetRequestMapper;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 use Psr\Log\LoggerInterface;
 
 beforeEach(function () {
     GoogleAdsDefaults::set('google.customerId', '1234567890');
 
+    $this->googleAdsClient = Mockery::mock();
+    $this->campaignService = Mockery::mock();
+    $this->googleAdsService = Mockery::mock();
+
+    $this->googleAdsClient->shouldReceive('getCampaignServiceClient')->andReturn($this->campaignService);
+    $this->googleAdsClient->shouldReceive('getGoogleAdsServiceClient')->andReturn($this->googleAdsService);
+
     $this->client = Mockery::mock(ProviderClientContract::class);
-    $this->budgetMapper = Mockery::mock(BudgetRequestMapper::class);
-    $this->errorMapper = Mockery::mock(ErrorMapperContract::class);
+    $this->client->shouldReceive('raw')->andReturn($this->googleAdsClient);
+
     $this->logger = Mockery::mock(LoggerInterface::class);
 
     $this->operation = new CreateOperation(
         $this->client,
-        $this->budgetMapper,
-        $this->errorMapper,
         $this->logger,
     );
 });
@@ -36,10 +36,8 @@ afterEach(function () {
     GoogleAdsDefaults::set('google.customerId', null);
 });
 
-describe('CreateOperation::requestMapper', function () {
-    it('builds mutate campaigns request when budget already exists', function () {
-        $this->budgetMapper->shouldNotReceive('toBudgetOperation');
-
+describe('CreateOperation::perform', function () {
+    it('returns ok when validation only and budget resource provided', function () {
         $dto = CampaignCanonicalDTO::fromArray([
             'providerContext' => ['google.customerId' => '1234567890'],
             'name' => 'Test Campaign',
@@ -47,118 +45,58 @@ describe('CreateOperation::requestMapper', function () {
             'budgetResourceName' => 'customers/1234567890/campaignBudgets/42',
         ]);
 
-        [$request, $usesUnified] = $this->operation->requestMapper($dto, false);
+        $this->campaignService
+            ->shouldReceive('mutateCampaigns')
+            ->once()
+            ->with(Mockery::on(fn ($request) => $request instanceof MutateCampaignsRequest
+                && $request->getCustomerId() === '1234567890'
+                && $request->getValidateOnly() === true))
+            ->andReturn(new MutateCampaignsResponse);
 
-        expect($request)->toBeInstanceOf(MutateCampaignsRequest::class)
-            ->and($usesUnified)->toBeFalse()
-            ->and($request->getCustomerId())->toBe('1234567890')
-            ->and($request->getOperations())->toHaveCount(1)
-            ->and($request->getValidateOnly())->toBeFalse();
+        $this->googleAdsService->shouldReceive('mutate')->never();
+        $this->logger->shouldReceive('info')->once();
+
+        $result = $this->operation->perform($dto, true);
+
+        expect($result->isOk())->toBeTrue();
     });
 
-    it('builds unified mutate request when creating budget on the fly', function () {
-        $budgetOperation = new CampaignBudgetOperation([
-            'create' => new CampaignBudget([
-                'name' => 'Test Campaign Budget',
-                'amount_micros' => 1_000_000,
-                'resource_name' => 'customers/1234567890/campaignBudgets/-1',
-            ]),
-        ]);
-
-        $this->budgetMapper
-            ->shouldReceive('toBudgetOperation')
-            ->once()
-            ->andReturn($budgetOperation);
-
+    it('dispatches unified mutate when budgetMicros provided', function () {
         $dto = CampaignCanonicalDTO::fromArray([
             'providerContext' => ['google.customerId' => '1234567890'],
-            'name' => 'Test Campaign',
+            'name' => 'Unified Campaign',
             'status' => 'PAUSED',
-            'budgetMicros' => 1_000_000,
+            'budgetMicros' => 1_500_000,
         ]);
 
-        [$request, $usesUnified] = $this->operation->requestMapper($dto, true);
+        $this->googleAdsService
+            ->shouldReceive('mutate')
+            ->once()
+            ->with(Mockery::on(fn ($request) => $request instanceof MutateGoogleAdsRequest
+                && $request->getCustomerId() === '1234567890'))
+            ->andReturn(new MutateGoogleAdsResponse);
 
-        expect($request)->toBeInstanceOf(MutateGoogleAdsRequest::class)
-            ->and($usesUnified)->toBeTrue()
-            ->and($request->getCustomerId())->toBe('1234567890')
-            ->and($request->getValidateOnly())->toBeTrue()
-            ->and($request->getMutateOperations())->toHaveCount(2)
-            ->and($request->getMutateOperations()[0])->toBeInstanceOf(MutateOperation::class)
-            ->and($request->getMutateOperations()[0]->getCampaignBudgetOperation())->toBe($budgetOperation);
+        $this->campaignService->shouldReceive('mutateCampaigns')->never();
+        $this->logger->shouldReceive('info')->once();
+
+        $result = $this->operation->perform($dto, true);
+
+        expect($result->isOk())->toBeTrue();
     });
 
-    it('throws when customer id is missing', function () {
-        GoogleAdsDefaults::set('google.customerId', null);
-
+    it('returns invalid result with dev hints when payload incomplete', function () {
         $dto = CampaignCanonicalDTO::fromArray([
-            'name' => 'No Customer Campaign',
-            'status' => 'ENABLED',
-            'budgetMicros' => 1_000_000,
-        ]);
-
-        expect(fn () => $this->operation->requestMapper($dto, false))
-            ->toThrow(InvalidArgumentException::class, 'Missing required provider context key [google.customerId]');
-    });
-});
-
-describe('CreateOperation::spec', function () {
-    it('accepts valid payload', function () {
-        $dto = CampaignCanonicalDTO::fromArray([
-            'name' => 'Valid Campaign',
-            'status' => 'ENABLED',
-            'budgetResourceName' => 'customers/123/campaignBudgets/456',
-        ]);
-
-        expect(fn () => $this->operation->spec($dto))->not->toThrow(ValidationException::class);
-    });
-
-    it('requires name and length <= 128', function () {
-        $dtoMissing = CampaignCanonicalDTO::fromArray([
-            'status' => 'ENABLED',
-            'budgetResourceName' => 'customers/123/budgets/456',
-        ]);
-
-        $dtoTooLong = CampaignCanonicalDTO::fromArray([
-            'name' => str_repeat('A', 129),
-            'status' => 'ENABLED',
-            'budgetResourceName' => 'customers/123/budgets/456',
-        ]);
-
-        expect(fn () => $this->operation->spec($dtoMissing))
-            ->toThrow(ValidationException::class);
-        expect(fn () => $this->operation->spec($dtoTooLong))
-            ->toThrow(ValidationException::class);
-    });
-
-    it('requires supported status', function () {
-        $dto = CampaignCanonicalDTO::fromArray([
-            'name' => 'Test',
-            'status' => 'INVALID_STATUS',
-            'budgetResourceName' => 'customers/123/budgets/456',
-        ]);
-
-        expect(fn () => $this->operation->spec($dto))
-            ->toThrow(ValidationException::class);
-    });
-
-    it('requires budget resource or micros', function () {
-        $dto = CampaignCanonicalDTO::fromArray([
-            'name' => 'Test',
             'status' => 'ENABLED',
         ]);
 
-        expect(fn () => $this->operation->spec($dto))
-            ->toThrow(ValidationException::class);
-    });
+        $this->logger->shouldReceive('info')->never();
 
-    it('allows budgetMicros in lieu of budget resource', function () {
-        $dto = CampaignCanonicalDTO::fromArray([
-            'name' => 'Test',
-            'status' => 'PAUSED',
-            'budgetMicros' => 2_000_000,
-        ]);
+        $result = $this->operation->perform($dto);
 
-        expect(fn () => $this->operation->spec($dto))->not->toThrow(ValidationException::class);
+        expect($result->isInvalid())->toBeTrue();
+        $violations = $result->violations();
+        expect($violations)->not->toBeNull();
+        $fields = array_map(fn ($violation) => $violation['field'] ?? null, $violations);
+        expect(in_array('_dev', $fields, true))->toBeTrue();
     });
 });
