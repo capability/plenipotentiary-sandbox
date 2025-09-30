@@ -8,4 +8,3 @@ class Ad extends Model
 {
     protected $guarded = [];
 }
-

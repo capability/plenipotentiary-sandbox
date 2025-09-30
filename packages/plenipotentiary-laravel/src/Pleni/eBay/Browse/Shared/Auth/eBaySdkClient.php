@@ -15,9 +15,13 @@ use Psr\Http\Message\ResponseInterface;
 final class eBaySdkClient implements HttpProviderClientContract
 {
     private Configuration $config;
+
     private GuzzleClient $httpClient;
+
     private ItemSummaryApi $itemSummaryApi;
+
     private ItemApi $itemApi;
+
     private OfferApi $offerApi;
 
     public function __construct(Configuration $config)

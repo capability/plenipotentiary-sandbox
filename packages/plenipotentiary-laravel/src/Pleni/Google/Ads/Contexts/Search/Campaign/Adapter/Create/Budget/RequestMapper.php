@@ -19,11 +19,16 @@ final class RequestMapper
      */
     public function toBudgetOperation(CampaignCanonicalDTO $c, int $tempId): CampaignBudgetOperation
     {
+        $customerId = $c->providerContextValue('google.customerId');
+        if (! $customerId) {
+            throw new \InvalidArgumentException('Budget operation requires providerContext[google.customerId].');
+        }
+
         $budget = new CampaignBudget([
             'name' => $c->name.' Budget',
             'amount_micros' => $c->budgetMicros ?? 1000000,
             'delivery_method' => BudgetDeliveryMethod::STANDARD,
-            'resource_name' => sprintf('customers/%s/campaignBudgets/%d', $c->providerContextValue('google.customerId') ?? $c->customerId() ?? '', $tempId),
+            'resource_name' => sprintf('customers/%s/campaignBudgets/%d', $customerId, $tempId),
         ]);
 
         return (new CampaignBudgetOperation)->setCreate($budget);

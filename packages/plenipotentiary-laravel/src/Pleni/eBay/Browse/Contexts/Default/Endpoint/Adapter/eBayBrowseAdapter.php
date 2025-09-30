@@ -101,6 +101,7 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
                 }
                 break;
         }
+
         return $violations;
     }
 
@@ -127,7 +128,7 @@ final class eBayBrowseAdapter implements ApiEndpointAdapterContract
             $request['query'] = $payload;
         }
 
-        if (!empty($options['validate_only'])) {
+        if (! empty($options['validate_only'])) {
             $request['headers']['X-eBay-C-Validate-Only'] = 'true';
         }
 

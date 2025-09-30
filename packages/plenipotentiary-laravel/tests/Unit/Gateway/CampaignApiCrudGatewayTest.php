@@ -84,7 +84,7 @@ describe('Campaign API CRUD Gateway', function () {
     });
 
     it('finds campaign', function () {
-        $selector = CampaignSelector::byExternalId('123');
+        $selector = CampaignSelector::byExternalId('123', ['google.customerId' => '1234567890']);
         $expectedResult = Result::ok($this->createTestCampaignDTO());
 
         $this->logger->shouldReceive('info')->once();
@@ -121,7 +121,7 @@ describe('Campaign API CRUD Gateway', function () {
     });
 
     it('deletes campaign with tombstoning', function () {
-        $selector = CampaignSelector::byExternalId('123');
+        $selector = CampaignSelector::byExternalId('123', ['google.customerId' => '1234567890']);
         $fingerprint = 'delete-fingerprint';
         $expectedResult = Result::ok();
 
