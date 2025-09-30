@@ -11,11 +11,16 @@ use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 
 final class Spec implements SpecContract
 {
-    public function preflight(CampaignCanonicalDTO $c): void
+    public function preflight(mixed $input): void
     {
+        if (! $input instanceof CampaignCanonicalDTO) {
+            throw new \InvalidArgumentException('Update campaign spec expects a CampaignCanonicalDTO instance.');
+        }
+
+        $c = $input;
         $violations = [];
 
-        if (! $c->resourceName) {
+        if (! $c->resourceName()) {
             $violations[] = ['field' => 'resourceName', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name'];
         }
 

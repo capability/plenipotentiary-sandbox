@@ -33,6 +33,7 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\EloquentCampaignRepository;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Auth\GoogleAdsSdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Auth\GoogleAdsSdkClient;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsErrorMapper;
 
 /**
@@ -42,6 +43,7 @@ final class GoogleAdsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        GoogleAdsDefaults::loadFromEnv();
         // Auth
         $this->app->singleton(SdkAuthStrategyContract::class, GoogleAdsSdkAuthStrategy::class);
 

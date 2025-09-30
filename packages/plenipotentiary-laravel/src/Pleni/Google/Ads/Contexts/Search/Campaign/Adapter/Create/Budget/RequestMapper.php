@@ -23,7 +23,7 @@ final class RequestMapper
             'name' => $c->name.' Budget',
             'amount_micros' => $c->budgetMicros ?? 1000000,
             'delivery_method' => BudgetDeliveryMethod::STANDARD,
-            'resource_name' => sprintf('customers/%s/campaignBudgets/%d', $c->accountKeys['google.customerId'] ?? $c->customerId ?? '', $tempId),
+            'resource_name' => sprintf('customers/%s/campaignBudgets/%d', $c->providerContextValue('google.customerId') ?? $c->customerId() ?? '', $tempId),
         ]);
 
         return (new CampaignBudgetOperation)->setCreate($budget);

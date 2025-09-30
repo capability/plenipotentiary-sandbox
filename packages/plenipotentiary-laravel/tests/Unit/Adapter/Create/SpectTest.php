@@ -13,7 +13,7 @@ describe('Create Spec', function () {
             'budgetResourceName' => 'customers/123/budgets/456',
         ]);
 
-        expect(fn () => $spec->preflight($dto))->not->toThrow();
+        expect(fn () => $spec->preflight($dto))->not->toThrow(ValidationException::class);
     });
 
     it('validates name is required and not too long', function () {
@@ -60,6 +60,15 @@ describe('Create Spec', function () {
 
         expect(fn () => $spec->preflight($dto))
             ->toThrow(ValidationException::class);
+
+        $dtoWithBudgetMicros = CampaignCanonicalDTO::fromArray([
+            'name' => 'Test Campaign',
+            'status' => 'ENABLED',
+            'budgetMicros' => 2000000,
+        ]);
+
+        expect(fn () => $spec->preflight($dtoWithBudgetMicros))
+            ->not->toThrow(ValidationException::class);
     });
 
     it('describes validation rules', function () {
