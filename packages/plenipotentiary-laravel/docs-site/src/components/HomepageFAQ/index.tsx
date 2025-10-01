@@ -61,7 +61,7 @@ export default function HomepageFAQ() {
                         <li style={{marginBottom: '12px'}}><strong>Zero integration, maximum tooling:</strong> Install the adapter, run op through gateway, it fails with a payload that
                           shows the exact DTO (plus expected + violations) and generates the Factory to match. You just fill the values and go.
                         </li>
-                        <li style={{marginBottom: '12px'}}><strong>Not a maintenance trap (abstraction-lite)</strong> - Community adapters must keep the scope small and task-focused. The goal is to
+                        <li style={{marginBottom: '12px'}}><strong>Not a community maintenance trap (abstraction-lite)</strong> - Community adapters must keep the scope small and task-focused. The goal is to
                           cover the 20% of operations that deliver 80% of value, not the entire API. If you need more, copy the adapter code into your app and extend it. The framework supports it... but that maintenance becomes yours.
                         </li>
                         <li style={{marginBottom: '12px'}}><strong>ApiEndpointAdapter as a hatchway:</strong> For anything outside CRUD, hit any endpoint with minimal ceremony. You pass a request, get a normalized Result back... reusing the same auth, error mapping, and logging.</li>
