@@ -13,11 +13,11 @@ use Plenipotentiary\Laravel\Support\Result;
 final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
 {
     public function __construct(
-        private CreateOperation $createOperation,
-        private UpdateOperation $updateOperation,
-        private DeleteOperation $deleteOperation,
-        private ReadOperation $readOperation,
-        private ReadManyOperation $readManyOperation,
+        private CampaignCreate $createOperation,
+        private CampaignUpdate $updateOperation,
+        private CampaignDelete $deleteOperation,
+        private CampaignRead $readOperation,
+        private CampaignReadMany $readManyOperation,
     ) {}
 
     /**

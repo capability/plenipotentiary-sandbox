@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
@@ -14,7 +14,7 @@ use Plenipotentiary\Laravel\Exceptions\DomainException;
 use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
@@ -42,7 +42,7 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     {
         $this->logger->info('Gateway: create campaign', ['name' => $c->name]);
 
-        if ($invalid = $this->preflight($this->resolveOperation(CreateOperation::class), $c)) {
+        if ($invalid = $this->preflight($this->resolveOperation(CampaignCreate::class), $c)) {
             return $invalid;
         }
 
@@ -185,7 +185,7 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     /**
      * Resolve a concrete operation instance (Create/Update/Delete/...).
      */
-    private function resolveOperation(string $operationClass): OperationContract
+    private function resolveOperation(string $operationClass): AdapterVerbContract
     {
         return $this->adapter instanceof ApiCrudAdapterContract
             ? app($operationClass)

@@ -14,7 +14,7 @@ final class GenerateCanonicalFromErrorCommand extends Command
 {
     protected $signature = 'pleni:generate-canonical '
         .' {--error= : JSON string or file containing the error payload }'
-        .' {--operation=Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Contexts\\Search\\Campaign\\Adapter\\CreateOperation : Fully qualified operation class }'
+        .' {--operation=Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Contexts\\Search\\Campaign\\Adapter\\CampaignCreate : Fully qualified operation class }'
         .' {--dto=Plenipotentiary\\Laravel\\Pleni\\Google\\Ads\\Contexts\\Search\\Campaign\\DTO\\CampaignCanonicalDTO : Fully qualified DTO class }'
         .' {--pretty : Output the DTO array as formatted PHP}';
 
