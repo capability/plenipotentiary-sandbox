@@ -228,6 +228,7 @@ final class GenerateCanonicalFromErrorCommand extends Command
             if (str_starts_with($key, 'providerContext.')) {
                 $contextKey = substr($key, strlen('providerContext.'));
                 $providerContext[$contextKey] = $descriptor;
+
                 continue;
             }
 
@@ -361,7 +362,7 @@ final class GenerateCanonicalFromErrorCommand extends Command
             $this->warn(sprintf('DTO class [%s] does not extend %s; attempting to instantiate regardless.', $dtoClass, CampaignCanonicalDTO::class));
         }
 
-        $factory = new CanonicalFactory();
+        $factory = new CanonicalFactory;
 
         try {
             $dto = $factory->make($dtoClass, [new ArraySource($payload)], $payload);

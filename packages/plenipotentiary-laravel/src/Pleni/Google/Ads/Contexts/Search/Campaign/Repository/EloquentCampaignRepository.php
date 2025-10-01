@@ -7,8 +7,6 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repo
 use App\Models\AcmeCart\Search\Campaign;
 use Illuminate\Support\Collection;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
 final class EloquentCampaignRepository implements CampaignRepositoryContract
 {
     private Campaign $model;
@@ -73,4 +71,3 @@ final class EloquentCampaignRepository implements CampaignRepositoryContract
         ];
     }
 }
-

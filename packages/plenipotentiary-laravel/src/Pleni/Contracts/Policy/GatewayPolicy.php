@@ -13,7 +13,7 @@ final class GatewayCall
         public readonly array $payload = [],
         public readonly array $options = [],
         public readonly array $context = [],
-        public readonly object|null $hints = null
+        public readonly ?object $hints = null
     ) {}
 }
 
@@ -52,12 +52,14 @@ final class GatewayPolicyChain
             foreach (array_reverse($this->policies) as $p) {
                 $res = $p->after($c, $res);
             }
+
             return $res;
         } catch (\Throwable $e) {
             $err = $e;
             foreach (array_reverse($this->policies) as $p) {
                 $err = $p->onError($c, $err);
             }
+
             return $err instanceof Result ? $err : Result::err($e);
         }
     }

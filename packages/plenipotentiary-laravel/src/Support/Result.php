@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Support;
 
-use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
-
 use JsonSerializable;
 use LogicException;
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
 
 final class Result implements JsonSerializable
 {

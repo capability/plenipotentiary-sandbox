@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway;
 
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
@@ -16,7 +16,6 @@ use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayCall;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
@@ -49,7 +48,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     {
         try {
             $call = new GatewayCall('campaign.create', $c->toArray(), ['validateOnly' => $validateOnly]);
-            return $this->chain()->invoke(fn() => $this->adapter->create($c, $validateOnly), $call);
+
+            return $this->chain()->invoke(fn () => $this->adapter->create($c, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -61,7 +61,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
 
         try {
             $call = new GatewayCall('campaign.find', $sel->toCanonicalDTO()->toArray());
-            return $this->chain()->invoke(fn() => $this->adapter->find($sel), $call);
+
+            return $this->chain()->invoke(fn () => $this->adapter->find($sel), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -73,7 +74,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
 
         try {
             $call = new GatewayCall('campaign.lookup', ['customerId' => $customerId]);
-            return $this->chain()->invoke(fn() => $this->adapter->lookup($criteria, $customerId), $call);
+
+            return $this->chain()->invoke(fn () => $this->adapter->lookup($criteria, $customerId), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -83,7 +85,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     {
         try {
             $call = new GatewayCall('campaign.update', $c->toArray(), ['validateOnly' => $validateOnly]);
-            return $this->chain()->invoke(fn() => $this->adapter->update($c, $validateOnly), $call);
+
+            return $this->chain()->invoke(fn () => $this->adapter->update($c, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -99,7 +102,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
 
         try {
             $call = new GatewayCall('campaign.delete', $sel->toCanonicalDTO()->toArray(), ['validateOnly' => $validateOnly]);
-            return $this->chain()->invoke(fn() => $this->adapter->delete($sel, $validateOnly), $call);
+
+            return $this->chain()->invoke(fn () => $this->adapter->delete($sel, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }

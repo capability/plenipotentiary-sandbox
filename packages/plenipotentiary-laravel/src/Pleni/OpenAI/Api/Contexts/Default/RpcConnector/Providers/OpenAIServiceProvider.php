@@ -17,9 +17,9 @@ use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Auth\OpenAISdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Auth\OpenAISdkClient;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIErrorMapper;
 use Plenipotentiary\Laravel\Pleni\Policies\LoggingPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
 use Plenipotentiary\Laravel\Pleni\Policies\MetricsPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
 
 final class OpenAIServiceProvider extends ServiceProvider
 {
@@ -67,11 +67,12 @@ final class OpenAIServiceProvider extends ServiceProvider
             if (empty(config('pleni.policies'))) {
                 $chain = new \Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain([
                     new LoggingPolicy($app->make(\Psr\Log\LoggerInterface::class)),
-                    new RetryBackoffPolicy(),
-                    new RateLimitPolicy(),
-                    new MetricsPolicy(),
+                    new RetryBackoffPolicy,
+                    new RateLimitPolicy,
+                    new MetricsPolicy,
                 ]);
             }
+
             return $chain;
         });
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Contracts\Adapter;
 
-use Plenipotentiary\Laravel\Support\Result;
 use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
+use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Contract enforced by adapter operations so tooling can introspect INPUT_SPEC.
@@ -34,6 +34,7 @@ interface AdapterVerbContract
      *
      * @template TResponse
      * @template TDto
+     *
      * @param  TResponse  $response
      * @param  TDto  $dto
      * @return mixed

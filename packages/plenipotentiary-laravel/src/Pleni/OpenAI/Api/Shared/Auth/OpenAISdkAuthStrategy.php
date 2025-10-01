@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Auth;
 
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
-use Psr\Http\Message\RequestInterface;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIConfig;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * OpenAI SDK Authentication Strategy
