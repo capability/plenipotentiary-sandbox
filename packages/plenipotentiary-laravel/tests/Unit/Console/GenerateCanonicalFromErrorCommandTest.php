@@ -1,10 +1,10 @@
 <?php
 
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignUpdate;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignDelete;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignRead;
 use Plenipotentiary\Laravel\Support\Commands\GenerateCanonicalFromErrorCommand;
 
 it('generates canonical payload from expected structure', function () {
@@ -59,9 +59,9 @@ it('falls back to operation input spec when expected structure omits required va
 
     $this->artisan(GenerateCanonicalFromErrorCommand::class, [
         '--error' => json_encode($error, JSON_THROW_ON_ERROR),
-        '--operation' => CreateOperation::class,
+        '--operation' => CampaignCreate::class,
         '--pretty' => true,
-    ])->expectsOutputToContain('Missing required field "name" in error payload; inferred from CreateOperation::INPUT_SPEC.')
+    ])->expectsOutputToContain('Missing required field "name" in error payload; inferred from CampaignCreate::INPUT_SPEC.')
         ->expectsOutputToContain('google.customerId')
         ->assertSuccessful();
 
@@ -82,10 +82,10 @@ it('infers update operation provider context placeholders from INPUT_SPEC', func
 
     $this->artisan(GenerateCanonicalFromErrorCommand::class, [
         '--error' => json_encode($error, JSON_THROW_ON_ERROR),
-        '--operation' => UpdateOperation::class,
+        '--operation' => CampaignUpdate::class,
         '--pretty' => true,
-    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from UpdateOperation::INPUT_SPEC.')
-        ->expectsOutputToContain('Missing required provider context "resourceName" in error payload; inferred from UpdateOperation::INPUT_SPEC.')
+    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from CampaignUpdate::INPUT_SPEC.')
+        ->expectsOutputToContain('Missing required provider context "resourceName" in error payload; inferred from CampaignUpdate::INPUT_SPEC.')
         ->expectsOutputToContain('resourceName')
         ->assertSuccessful();
 
@@ -106,9 +106,9 @@ it('infers delete operation placeholders from INPUT_SPEC', function () {
 
     $this->artisan(GenerateCanonicalFromErrorCommand::class, [
         '--error' => json_encode($error, JSON_THROW_ON_ERROR),
-        '--operation' => DeleteOperation::class,
+        '--operation' => CampaignDelete::class,
         '--pretty' => true,
-    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from DeleteOperation::INPUT_SPEC.')
+    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from CampaignDelete::INPUT_SPEC.')
         ->expectsOutputToContain('externalId')
         ->assertSuccessful();
 
@@ -129,9 +129,9 @@ it('infers read operation placeholders from INPUT_SPEC', function () {
 
     $this->artisan(GenerateCanonicalFromErrorCommand::class, [
         '--error' => json_encode($error, JSON_THROW_ON_ERROR),
-        '--operation' => ReadOperation::class,
+        '--operation' => CampaignRead::class,
         '--pretty' => true,
-    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from ReadOperation::INPUT_SPEC.')
+    ])->expectsOutputToContain('Missing required provider context "google.customerId" in error payload; inferred from CampaignRead::INPUT_SPEC.')
         ->expectsOutputToContain('externalId')
         ->assertSuccessful();
 

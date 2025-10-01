@@ -35,7 +35,7 @@ const items = [
   },
   {
     q: 'Okay. I understand provider, domain, resource... but whats a context?',
-    a: <><p>A context is just a way of saying "this thing works slightly differently depending on how you use it".</p>
+    a: <><p><a id="faq:context"></a>A context is just a way of saying "this thing works slightly differently depending on how you use it".</p>
     <p>Using Google Ads as an example. There are lots of <a href="https://developers.google.com/google-ads/api/docs/campaigns/overview">different campaign types</a> - Search, Display, 
     Shopping, Performance Max, App, Local Services, and more. They all look like "campaigns", but each has its own rules and setup. Dig deeper and you'll find Ads and Ad Groups behave differently in different campaigns.
     </p>
