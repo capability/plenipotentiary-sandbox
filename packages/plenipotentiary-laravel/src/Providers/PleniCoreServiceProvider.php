@@ -6,6 +6,7 @@ namespace Plenipotentiary\Laravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Support\Commands\GenerateCanonicalFromErrorCommand;
+use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
 
 /**
  * Core ServiceProvider that registers only framework-level bindings.
@@ -31,6 +32,16 @@ final class PleniCoreServiceProvider extends ServiceProvider
         );
     }
 
+    public function registerPolicies(): void
+    {
+        $this->app->bind(GatewayPolicyChain::class, function ($app) {
+            $policies = collect(config('pleni.policies', []))
+                ->map(fn ($class) => $app->make($class))
+                ->all();
+            return new GatewayPolicyChain($policies);
+        });
+    }
+
     public function boot(): void
     {
         // Ensure PSR-3 LoggerInterface resolves to Laravel logger globally
@@ -43,5 +54,8 @@ final class PleniCoreServiceProvider extends ServiceProvider
                 GenerateCanonicalFromErrorCommand::class,
             ]);
         }
+
+        // Ensure GatewayPolicyChain is bound with config overrides
+        $this->registerPolicies();
     }
 }

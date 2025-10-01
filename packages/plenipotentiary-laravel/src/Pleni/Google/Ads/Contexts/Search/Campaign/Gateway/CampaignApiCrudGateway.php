@@ -12,6 +12,8 @@ use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Exceptions\DomainException;
 use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
+use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayCall;
+use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
@@ -38,37 +40,19 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         private ErrorMapperContract $errorMapper,
     ) {}
 
+    private function chain(): GatewayPolicyChain
+    {
+        return app(GatewayPolicyChain::class);
+    }
+
     public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
     {
-        $this->logger->info('Gateway: create campaign', ['name' => $c->name]);
-
-        if ($invalid = $this->preflight($this->resolveOperation(CampaignCreate::class), $c)) {
-            return $invalid;
-        }
-
-        $fp = $this->idempotencyHints->fingerprintForCreate($c);
-        $scope = 'campaign.create';
-
-        if ($this->idempotencyStore->isTombstoned($scope, $fp)) {
-            return Result::err('Create operation already tombstoned');
-        }
-
-        if ($existing = $this->idempotencyStore->get($scope, $fp)) {
-            return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
-        }
-
         try {
-            $result = $this->adapter->create($c, $validateOnly);
+            $call = new GatewayCall('campaign.create', $c->toArray(), ['validateOnly' => $validateOnly]);
+            return $this->chain()->invoke(fn() => $this->adapter->create($c, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
-
-        if ($result->isOk() && ! $validateOnly) {
-            $payload = $result->unwrap();
-            $this->idempotencyStore->put($scope, $fp, json_encode($payload instanceof CampaignCanonicalDTO ? $payload->toArray() : $payload));
-        }
-
-        return $result;
     }
 
     public function find(CampaignSelector $sel): Result
@@ -76,7 +60,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         $this->logger->info('Gateway: find campaign', ['selector' => $sel->value()]);
 
         try {
-            return $this->adapter->find($sel);
+            $call = new GatewayCall('campaign.find', $sel->toCanonicalDTO()->toArray());
+            return $this->chain()->invoke(fn() => $this->adapter->find($sel), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -87,7 +72,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         $this->logger->info('Gateway: lookup campaigns', ['customerId' => $customerId]);
 
         try {
-            return $this->adapter->lookup($criteria, $customerId);
+            $call = new GatewayCall('campaign.lookup', ['customerId' => $customerId]);
+            return $this->chain()->invoke(fn() => $this->adapter->lookup($criteria, $customerId), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -95,35 +81,12 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
 
     public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
     {
-        $this->logger->info('Gateway: update campaign', ['id' => $c->externalId]);
-
-        if ($invalid = $this->preflight($this->adapter, $c)) {
-            return $invalid;
-        }
-
-        $fp = $this->idempotencyHints->fingerprintForUpdate($c);
-        $scope = 'campaign.update';
-
-        if ($this->idempotencyStore->isTombstoned($scope, $fp)) {
-            return Result::err('Update operation already tombstoned');
-        }
-
-        if ($existing = $this->idempotencyStore->get($scope, $fp)) {
-            return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
-        }
-
         try {
-            $result = $this->adapter->update($c, $validateOnly);
+            $call = new GatewayCall('campaign.update', $c->toArray(), ['validateOnly' => $validateOnly]);
+            return $this->chain()->invoke(fn() => $this->adapter->update($c, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
-
-        if ($result->isOk() && ! $validateOnly) {
-            $payload = $result->unwrap();
-            $this->idempotencyStore->put($scope, $fp, json_encode($payload instanceof CampaignCanonicalDTO ? $payload->toArray() : $payload));
-        }
-
-        return $result;
     }
 
     public function delete(CampaignSelector $sel, bool $validateOnly = false): Result
@@ -134,28 +97,12 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
             return $invalid;
         }
 
-        $fp = $this->idempotencyHints->fingerprintForDelete($sel);
-        $scope = 'campaign.delete';
-
-        if ($this->idempotencyStore->isTombstoned($scope, $fp)) {
-            return Result::err('Delete operation already tombstoned');
-        }
-
-        if ($existing = $this->idempotencyStore->get($scope, $fp)) {
-            return Result::ok(CampaignCanonicalDTO::fromArray(json_decode($existing, true)));
-        }
-
         try {
-            $result = $this->adapter->delete($sel, $validateOnly);
+            $call = new GatewayCall('campaign.delete', $sel->toCanonicalDTO()->toArray(), ['validateOnly' => $validateOnly]);
+            return $this->chain()->invoke(fn() => $this->adapter->delete($sel, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
-
-        if ($result->isOk() && ! $validateOnly) {
-            $this->idempotencyStore->tombstone($scope, $fp);
-        }
-
-        return $result;
     }
 
     private function mapException(Throwable $exception): Result
