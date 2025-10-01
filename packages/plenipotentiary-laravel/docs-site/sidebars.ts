@@ -17,10 +17,12 @@ const sidebars: SidebarsConfig = {
       label: 'Core Concepts',
       items: [
         'concepts/contracts',
+        'concepts/developer-workflow',
         'concepts/dtos',
         'concepts/gateways',
         'concepts/workflows',
         'concepts/logging',
+        'concepts/repository',
         'concepts/testing',
       ],
     },
