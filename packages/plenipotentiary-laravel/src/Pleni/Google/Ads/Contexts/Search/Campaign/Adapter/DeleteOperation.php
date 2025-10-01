@@ -8,47 +8,50 @@ use Google\Ads\GoogleAds\V21\Services\CampaignOperation;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
 use InvalidArgumentException;
+use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class DeleteOperation
+final class DeleteOperation implements OperationContract
 {
+    public const INPUT_SPEC = [
+        'externalId' => [
+            'rules' => ['nullable', 'string'],
+        ],
+        'providerContext.google.customerId' => [
+            'rules' => ['required', 'string'],
+            'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
+        ],
+        'providerContext.resourceName' => [
+            'rules' => ['nullable', 'string'],
+        ],
+    ];
+
     public function __construct(
         private ProviderClientContract $client,
         private LoggerInterface $logger,
     ) {}
 
-    public function perform(CampaignSelector $selector, bool $validateOnly = false): Result
+    public static function inputSpec(): array
     {
-        try {
-            $this->spec($selector);
-        } catch (ValidationException $e) {
-            return Result::invalid($e->toArray());
-        }
+        return self::INPUT_SPEC;
+    }
 
-        try {
-            $context = GoogleAdsDefaults::require($selector->providerContext(), 'google.customerId');
-        } catch (InvalidArgumentException $e) {
-            return Result::invalid([
-                [
-                    'field' => 'providerContext.google.customerId',
-                    'rule' => 'required',
-                    'message' => $e->getMessage(),
-                ],
-            ]);
-        }
+    public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result
+    {
 
-        $customerId = $context['google.customerId'];
-        $request = $this->requestMapper($customerId, $selector, $validateOnly);
+        $customerId = $dto->getProviderContextValue('google.customerId');
+
+        $request = $this->requestMapper($dto, $validateOnly);
 
         $this->logger->info('Deleting Google Ads campaign', [
-            'selector_type' => $selector->type(),
-            'selector_value' => $selector->value(),
+            'externalId' => $dto->externalId,
+            'resourceName' => $dto->getProviderContextValue('resourceName'),
             'customerId' => $customerId,
         ]);
 
@@ -60,30 +63,25 @@ final class DeleteOperation
             return Result::ok();
         }
 
-        $canonical = $this->responseMapper($response, $selector, $customerId, $context);
-
-        return Result::ok($canonical);
+        return Result::ok($this->responseMapper($response, $dto));
     }
 
-    public function spec(CampaignSelector $selector): void
+    public function requestMapper(CanonicalDTOContract $dto, bool $validateOnly = false): mixed
     {
-        if (! $selector->value()) {
-            throw ValidationException::fromArray('campaign.delete', [
-                ['field' => 'selector', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name or id'],
-            ]);
+        if (! $dto instanceof CampaignCanonicalDTO) {
+            throw new InvalidArgumentException('DeleteOperation::requestMapper expects CampaignCanonicalDTO');
         }
-    }
 
-    public function requestMapper(string $customerId, CampaignSelector $selector, bool $validateOnly = false): MutateCampaignsRequest
-    {
-        $context = $selector->providerContext();
-        $resourceName = $selector->getProviderContextValue('resourceName')
-            ?? (($selector->type() === 'resource_name')
-                ? $selector->value()
-                : sprintf('customers/%s/campaigns/%s', $customerId, $selector->value()));
+        $context = GoogleAdsDefaults::require($dto->providerContext, 'google.customerId');
+        $dto->setProviderContext($context);
+
+        $customerId = $context['google.customerId'];
+        $resourceName = $dto->getProviderContextValue('resourceName');
+
+        $finalResource = $resourceName ?: $this->deriveResourceName($dto, $customerId);
 
         $operation = new CampaignOperation;
-        $operation->setRemove($resourceName);
+        $operation->setRemove($finalResource);
 
         return (new MutateCampaignsRequest)
             ->setCustomerId($customerId)
@@ -91,24 +89,29 @@ final class DeleteOperation
             ->setValidateOnly($validateOnly);
     }
 
-    public function responseMapper(
-        MutateCampaignsResponse $response,
-        CampaignSelector $selector,
-        string $customerId,
-        array $context
-    ): CampaignCanonicalDTO {
+    private function deriveResourceName(CampaignCanonicalDTO $dto, string $customerId): string
+    {
+        $externalId = $dto->externalId;
+
+        if (! $externalId) {
+            throw new InvalidArgumentException('Campaign delete requires externalId when providerContext.resourceName is absent.');
+        }
+
+        return sprintf('customers/%s/campaigns/%s', $customerId, $externalId);
+    }
+
+    public function responseMapper(mixed $response, mixed $source): CanonicalDTOContract
+    {
+        if (! $response instanceof MutateCampaignsResponse || ! $source instanceof CampaignCanonicalDTO) {
+            throw new InvalidArgumentException('DeleteOperation::responseMapper expects (MutateCampaignsResponse, CampaignCanonicalDTO)');
+        }
+
         $result = $response->getResults()[0] ?? null;
         $resourceName = $result?->getResourceName();
 
         return CampaignCanonicalDTO::fromArray([
-            'providerContext' => array_filter(
-                array_merge(
-                    $context,
-                    $selector->providerContext(),
-                    ['resourceName' => $resourceName]
-                ),
-                fn ($value) => $value !== null && $value !== ''
-            ),
+            'externalId' => $source->externalId,
+            'providerContext' => $source->providerContext + ['resourceName' => $resourceName],
         ]);
     }
 }

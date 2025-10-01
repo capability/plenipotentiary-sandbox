@@ -50,6 +50,10 @@ final class CampaignSelector implements SelectorContract
     {
         $payload = ['providerContext' => $this->providerContext];
 
+        if ($this->type === 'resource_name' && ! isset($payload['providerContext']['resourceName'])) {
+            $payload['providerContext']['resourceName'] = $this->value;
+        }
+
         if ($this->type === 'external_id') {
             $payload['externalId'] = $this->value;
         } elseif ($this->type === 'local_id') {

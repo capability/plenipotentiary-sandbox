@@ -6,11 +6,12 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repo
 
 use App\Models\AcmeCart\Search\Campaign;
 use Illuminate\Support\Collection;
-use Plenipotentiary\Laravel\Traits\HandlesEloquentCrud;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class EloquentCampaignRepository implements CampaignRepositoryContract
 {
-    use HandlesEloquentCrud;
+    private Campaign $model;
 
     public function __construct(Campaign $model)
     {
@@ -27,33 +28,49 @@ final class EloquentCampaignRepository implements CampaignRepositoryContract
         return $this->model->where('external_ref', $externalRef)->first();
     }
 
-    /**
-     * Find a campaign by primary key.
-     */
     public function find(int|string $id): ?Campaign
     {
         return $this->model->find($id);
     }
 
-    /**
-     * Override update to support persisting remote identifiers.
-     */
-    public function update(int|string $id, array $attributes): Campaign
+    public function all(array $criteria = []): Collection
+    {
+        return $this->model->where($criteria)->get();
+    }
+
+    public function create(array $attributes): Campaign
+    {
+        return $this->model->create($attributes);
+    }
+
+    public function update(int|string $id, array $attributes): ?Campaign
     {
         $instance = $this->find($id);
-        if (! $instance) {
-            throw new \RuntimeException("Campaign {$id} not found");
+        if ($instance) {
+            $instance->update($attributes);
         }
-
-        // Only allow updating fields we care about from remote
-        $allowed = [
-            'resource_id' => $attributes['resource_id'] ?? null,
-            'resource_name' => $attributes['resource_name'] ?? null,
-            'name' => $attributes['name'] ?? $instance->name,
-        ];
-
-        $instance->update(array_filter($allowed, fn ($v) => $v !== null));
 
         return $instance;
     }
+
+    public function delete(int|string $id): bool
+    {
+        return $this->model->destroy($id) > 0;
+    }
+
+    public function restore(int|string $id): bool
+    {
+        return (bool) $this->model->withTrashed()->find($id)?->restore();
+    }
+
+    public function findWithBudgets(string $id): array
+    {
+        $campaign = $this->model->with('budgets')->findOrFail($id);
+
+        return [
+            'campaign' => $campaign,
+            'budgets' => $campaign->budgets ?? collect(),
+        ];
+    }
 }
+

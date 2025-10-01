@@ -17,6 +17,7 @@ final class InputSpecValidator
     public static function validate(array $spec, array $values): array
     {
         $violations = [];
+        $expected = self::expectedStructure($spec);
 
         foreach ($spec as $field => $definition) {
             $rules = $definition['rules'] ?? [];
@@ -88,7 +89,70 @@ final class InputSpecValidator
             }
         }
 
-        return $violations;
+        return [
+            'expected' => $expected,
+            'violations' => $violations,
+        ];
+    }
+
+    private static function expectedStructure(array $spec): array
+    {
+        $fields = [];
+        $providerContext = [];
+
+        foreach ($spec as $key => $definition) {
+            $descriptor = [
+                'required' => in_array('required', $definition['rules'] ?? [], true),
+                'rules' => $definition['rules'] ?? [],
+            ];
+
+            if (isset($definition['default'])) {
+                $descriptor['default'] = $definition['default'];
+            }
+
+            if (isset($definition['cast'])) {
+                $descriptor['cast'] = $definition['cast'];
+            }
+
+            if (isset($definition['source'])) {
+                $descriptor['source'] = $definition['source'];
+            }
+
+            $type = self::inferRuleType($definition['rules'] ?? []);
+            if ($type !== null) {
+                $descriptor['type'] = $type;
+            }
+
+            if (str_starts_with($key, 'providerContext.')) {
+                $contextKey = substr($key, strlen('providerContext.'));
+                $providerContext[$contextKey] = $descriptor;
+            } else {
+                $fields[$key] = $descriptor;
+            }
+        }
+
+        return [
+            'dto' => [
+                'fields' => $fields,
+                'providerContext' => $providerContext,
+            ],
+        ];
+    }
+
+    private static function inferRuleType(array $rules): ?string
+    {
+        foreach ($rules as $rule) {
+            if ($rule === 'string') {
+                return 'string';
+            }
+            if ($rule === 'numeric') {
+                return 'numeric';
+            }
+            if (is_string($rule) && str_starts_with($rule, 'in:')) {
+                return 'enum';
+            }
+        }
+        return null;
     }
 
     private static function isFilled(bool $valuePresent, mixed $value): bool
@@ -117,10 +181,40 @@ final class InputSpecValidator
 
     private static function violation(string $field, string $rule, ?string $mapsTo = null): array
     {
+        $message = self::messageFor($rule, $field);
+        
         return array_filter([
             'field' => $field,
             'rule' => $rule,
             'mapsTo' => $mapsTo,
+            'message' => $message,
         ], fn ($v) => $v !== null && $v !== '');
+    }
+
+    private static function messageFor(string $rule, string $field): string
+    {
+        if ($rule === 'required') {
+            return "Required";
+        }
+        if ($rule === 'string') {
+            return "Must be a string";
+        }
+        if ($rule === 'numeric') {
+            return "Must be numeric";
+        }
+        if (str_starts_with($rule, 'min:')) {
+            $min = substr($rule, 4);
+            return "Must be at least {$min}";
+        }
+        if (str_starts_with($rule, 'max:')) {
+            $max = substr($rule, 4);
+            return "Must not exceed {$max}";
+        }
+        if (str_starts_with($rule, 'in:')) {
+            $values = substr($rule, 3);
+            return "Must be one of: {$values}";
+        }
+        
+        return "Validation failed for rule: {$rule}";
     }
 }

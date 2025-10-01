@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO;
 
-final class CampaignCanonicalDTO
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
+
+final class CampaignCanonicalDTO implements CanonicalDTOContract
 {
     /** @var array<string,string> */
     public array $providerContext = [];

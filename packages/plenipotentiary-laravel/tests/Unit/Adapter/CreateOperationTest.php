@@ -31,6 +31,71 @@ beforeEach(function () {
     );
 });
 
+describe('CreateOperation::perform validation', function () {
+    it('returns invalid when required fields are missing', function () {
+        $dto = CampaignCanonicalDTO::fromArray([
+            // missing name and providerContext.google.customerId
+            'status' => 'ENABLED',
+        ]);
+
+        $result = $this->operation->perform($dto);
+
+        expect($result->isInvalid())->toBeTrue();
+
+        $violations = $result->violations();
+        expect($violations)->toBeArray()
+            ->and(array_column($violations, 'field'))->toContain('name')
+            ->and(array_column($violations, 'field'))->toContain('providerContext.google.customerId');
+    });
+});
+
+it('maps request correctly', function () {
+    $dto = CampaignCanonicalDTO::fromArray([
+        'name' => 'Mapped Campaign',
+        'status' => 'ENABLED',
+        'budgetResourceName' => 'customers/1234567890/campaignBudgets/111',
+        'providerContext' => ['google.customerId' => '1234567890'],
+    ]);
+
+    $request = $this->operation->requestMapper($dto, true);
+
+    expect($request)->toBeInstanceOf(MutateCampaignsRequest::class)
+        ->and($request->getCustomerId())->toBe('1234567890')
+        ->and($request->getValidateOnly())->toBeTrue()
+        ->and($request->getOperations())->toHaveCount(1);
+});
+
+it('maps response correctly', function () {
+    $dto = CampaignCanonicalDTO::fromArray([
+        'name' => 'Source Campaign',
+        'status' => 'PAUSED',
+        'providerContext' => ['google.customerId' => '1234567890'],
+    ]);
+
+    $campaign = new Campaign([
+        'resource_name' => 'customers/1234567890/campaigns/222',
+        'id' => 222,
+        'name' => 'Response Campaign',
+        'status' => 1,
+        'campaign_budget' => 'customers/1234567890/campaignBudgets/333',
+    ]);
+
+    $response = new MutateCampaignsResponse([
+        'results' => [new MutateCampaignResult([
+            'resource_name' => 'customers/1234567890/campaigns/222',
+            'campaign' => $campaign,
+        ])],
+    ]);
+
+    $canonical = $this->operation->responseMapper($response, $dto);
+
+    expect($canonical)->toBeInstanceOf(CampaignCanonicalDTO::class)
+        ->and($canonical->externalId)->toBe('222')
+        ->and($canonical->name)->toBe('Response Campaign')
+        ->and($canonical->budgetResourceName)->toBe('customers/1234567890/campaignBudgets/333')
+        ->and($canonical->getProviderContextValue('resourceName'))->toBe('customers/1234567890/campaigns/222');
+});
+
 afterEach(function () {
     Mockery::close();
 });
@@ -73,7 +138,7 @@ describe('CreateOperation::perform', function () {
         $this->budgetOperation
             ->shouldReceive('create')
             ->once()
-            ->with('1234567890', Mockery::on(fn ($arg) => $arg === $dto), 1_500_000, false)
+            ->with($dto, 1_500_000, false)
             ->andReturn('customers/1234567890/campaignBudgets/777');
 
         $campaign = new Campaign([
@@ -129,7 +194,9 @@ describe('CreateOperation::perform', function () {
         expect($violations)->not->toBeNull();
 
         $fields = array_map(static fn ($violation) => $violation['field'] ?? null, $violations);
-        expect(in_array('_expected', $fields, true))->toBeTrue();
         expect(in_array('name', $fields, true))->toBeTrue();
+
+        $payload = $result->toArray()['payload'] ?? [];
+        expect($payload)->toHaveKey('expected');
     });
 });

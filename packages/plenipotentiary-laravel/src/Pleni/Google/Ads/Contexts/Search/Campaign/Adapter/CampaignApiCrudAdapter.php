@@ -38,7 +38,7 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
      */
     public function find(CampaignSelector $sel): Result
     {
-        return $this->readOperation->perform($sel);
+        return $this->readOperation->perform($sel->toCanonicalDTO());
     }
 
     public function lookup(Lookup $criteria, string $customerId): Result
@@ -48,6 +48,6 @@ final class CampaignApiCrudAdapter implements ApiCrudAdapterContract
 
     public function delete(CampaignSelector $sel, bool $validateOnly = false): Result
     {
-        return $this->deleteOperation->perform($sel, $validateOnly);
+        return $this->deleteOperation->perform($sel->toCanonicalDTO(), $validateOnly);
     }
 }

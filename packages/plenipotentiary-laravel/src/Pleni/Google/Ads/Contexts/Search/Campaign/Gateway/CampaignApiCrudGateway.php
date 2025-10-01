@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
@@ -13,6 +14,7 @@ use Plenipotentiary\Laravel\Exceptions\DomainException;
 use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
@@ -26,6 +28,8 @@ use Throwable;
  */
 final class CampaignApiCrudGateway implements ApiCrudGatewayContract
 {
+    use \Plenipotentiary\Laravel\Support\Operation\GatewayPreflightTrait;
+
     public function __construct(
         private ApiCrudAdapterContract $adapter,
         private LoggerInterface $logger,
@@ -37,6 +41,10 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
     {
         $this->logger->info('Gateway: create campaign', ['name' => $c->name]);
+
+        if ($invalid = $this->preflight($this->resolveOperation(CreateOperation::class), $c)) {
+            return $invalid;
+        }
 
         $fp = $this->idempotencyHints->fingerprintForCreate($c);
         $scope = 'campaign.create';
@@ -56,7 +64,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         }
 
         if ($result->isOk() && ! $validateOnly) {
-            $this->idempotencyStore->put($scope, $fp, json_encode($result->unwrap()->toArray()));
+            $payload = $result->unwrap();
+            $this->idempotencyStore->put($scope, $fp, json_encode($payload instanceof CampaignCanonicalDTO ? $payload->toArray() : $payload));
         }
 
         return $result;
@@ -88,6 +97,10 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     {
         $this->logger->info('Gateway: update campaign', ['id' => $c->externalId]);
 
+        if ($invalid = $this->preflight($this->adapter, $c)) {
+            return $invalid;
+        }
+
         $fp = $this->idempotencyHints->fingerprintForUpdate($c);
         $scope = 'campaign.update';
 
@@ -106,7 +119,8 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         }
 
         if ($result->isOk() && ! $validateOnly) {
-            $this->idempotencyStore->put($scope, $fp, json_encode($result->unwrap()->toArray()));
+            $payload = $result->unwrap();
+            $this->idempotencyStore->put($scope, $fp, json_encode($payload instanceof CampaignCanonicalDTO ? $payload->toArray() : $payload));
         }
 
         return $result;
@@ -115,6 +129,10 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
     public function delete(CampaignSelector $sel, bool $validateOnly = false): Result
     {
         $this->logger->info('Gateway: delete campaign', ['selector' => $sel->value()]);
+
+        if ($invalid = $this->preflight($this->adapter, $sel->toCanonicalDTO())) {
+            return $invalid;
+        }
 
         $fp = $this->idempotencyHints->fingerprintForDelete($sel);
         $scope = 'campaign.delete';
@@ -159,8 +177,18 @@ final class CampaignApiCrudGateway implements ApiCrudGatewayContract
         }
 
         return Result::err([
-            'code' => $mapped::class,
-            'message' => $mapped->getMessage(),
+            'code' => $exception::class,
+            'message' => $exception->getMessage(),
         ]);
+    }
+
+    /**
+     * Resolve a concrete operation instance (Create/Update/Delete/...).
+     */
+    private function resolveOperation(string $operationClass): OperationContract
+    {
+        return $this->adapter instanceof ApiCrudAdapterContract
+            ? app($operationClass)
+            : throw new \InvalidArgumentException("Adapter does not support resolving operation {$operationClass}");
     }
 }
