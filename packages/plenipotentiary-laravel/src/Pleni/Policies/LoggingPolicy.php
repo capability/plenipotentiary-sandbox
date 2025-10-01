@@ -14,7 +14,7 @@ final class LoggingPolicy implements GatewayPolicy
 {
     public function __construct(
         private LoggerInterface $logger,
-        private Redactor $redactor = new Redactor()
+        private Redactor $redactor = new Redactor
     ) {}
 
     public function before(GatewayCall $call): GatewayCall
@@ -23,6 +23,7 @@ final class LoggingPolicy implements GatewayPolicy
             'operation' => $call->operation,
             'context' => $call->context,
         ]);
+
         return $call;
     }
 
@@ -32,6 +33,7 @@ final class LoggingPolicy implements GatewayPolicy
             'operation' => $call->operation,
             'meta' => $result->toArray(),
         ]);
+
         return $result;
     }
 
@@ -41,6 +43,7 @@ final class LoggingPolicy implements GatewayPolicy
             'operation' => $call->operation,
             'error' => $error instanceof Result ? $error->toArray() : ['exception' => $error::class, 'message' => $error->getMessage()],
         ]);
+
         return $error instanceof Result ? $error : Result::err($error);
     }
 }

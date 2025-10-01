@@ -6,8 +6,8 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Auth;
 
 use Bricre\EbaySdkBuyBrowse\Configuration;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
-use Psr\Http\Message\RequestInterface;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support\EbayConfig;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * eBay Browse SDK Authentication Strategy

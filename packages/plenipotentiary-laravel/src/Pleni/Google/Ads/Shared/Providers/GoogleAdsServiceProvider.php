@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Providers\CampaignServiceProvider;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Auth\GoogleAdsSdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Auth\GoogleAdsSdkClient;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsErrorMapper;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Providers\CampaignServiceProvider;
 
 /**
  * Registers Google Ads specific adapters, mappers, and services.

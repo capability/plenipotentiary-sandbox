@@ -18,11 +18,11 @@ describe('Result helper assertions', function () {
 
         expect($result->isErr())->toBeTrue()
             ->and($result->error())
-                ->toMatchArray([
-                    'error' => 'Exception',
-                    'class' => \RuntimeException::class,
-                    'message' => 'Support test error',
-                ]);
+            ->toMatchArray([
+                'error' => 'Exception',
+                'class' => \RuntimeException::class,
+                'message' => 'Support test error',
+            ]);
     });
 
     it('creates an invalid result with violations', function () {

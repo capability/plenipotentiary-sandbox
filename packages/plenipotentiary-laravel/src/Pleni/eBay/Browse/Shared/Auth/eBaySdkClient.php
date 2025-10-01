@@ -10,8 +10,8 @@ use Bricre\EbaySdkBuyBrowse\Api\OfferApi;
 use Bricre\EbaySdkBuyBrowse\Configuration;
 use GuzzleHttp\Client as GuzzleClient;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
-use Psr\Http\Message\ResponseInterface;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support\EbayConfig;
+use Psr\Http\Message\ResponseInterface;
 
 final class eBaySdkClient implements HttpProviderClientContract
 {

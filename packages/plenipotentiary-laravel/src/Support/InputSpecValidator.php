@@ -152,6 +152,7 @@ final class InputSpecValidator
                 return 'enum';
             }
         }
+
         return null;
     }
 
@@ -182,7 +183,7 @@ final class InputSpecValidator
     private static function violation(string $field, string $rule, ?string $mapsTo = null): array
     {
         $message = self::messageFor($rule, $field);
-        
+
         return array_filter([
             'field' => $field,
             'rule' => $rule,
@@ -194,27 +195,30 @@ final class InputSpecValidator
     private static function messageFor(string $rule, string $field): string
     {
         if ($rule === 'required') {
-            return "Required";
+            return 'Required';
         }
         if ($rule === 'string') {
-            return "Must be a string";
+            return 'Must be a string';
         }
         if ($rule === 'numeric') {
-            return "Must be numeric";
+            return 'Must be numeric';
         }
         if (str_starts_with($rule, 'min:')) {
             $min = substr($rule, 4);
+
             return "Must be at least {$min}";
         }
         if (str_starts_with($rule, 'max:')) {
             $max = substr($rule, 4);
+
             return "Must not exceed {$max}";
         }
         if (str_starts_with($rule, 'in:')) {
             $values = substr($rule, 3);
+
             return "Must be one of: {$values}";
         }
-        
+
         return "Validation failed for rule: {$rule}";
     }
 }

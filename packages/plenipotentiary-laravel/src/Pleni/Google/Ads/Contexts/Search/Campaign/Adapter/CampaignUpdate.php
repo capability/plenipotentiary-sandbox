@@ -14,9 +14,8 @@ use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Support\InputSpecValidator;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
@@ -88,7 +87,7 @@ final class CampaignUpdate implements AdapterVerbContract
 
         // If no mutable fields were provided, return invalid
         if ($dto->name === null && $dto->status === null) {
-            return new MutateCampaignsRequest(); // placeholder, perform() will catch via preflight
+            return new MutateCampaignsRequest; // placeholder, perform() will catch via preflight
         }
 
         $campaign = new Campaign($campaignPayload);
@@ -129,5 +128,4 @@ final class CampaignUpdate implements AdapterVerbContract
             'providerContext' => $source->providerContext + ['resourceName' => $resourceName],
         ]));
     }
-
 }

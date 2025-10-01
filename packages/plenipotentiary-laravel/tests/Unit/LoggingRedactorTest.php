@@ -37,7 +37,7 @@ describe('Logging Redactor', function () {
         expect($redacted['password'])->toBe('***REDACTED***')
             ->and($redacted['token'])->toBe('***REDACTED***')
             ->and($redacted['customerId'])
-                ->toBe(Redactor::hash('123-xyz'))
+            ->toBe(Redactor::hash('123-xyz'))
             ->and($redacted['metadata'])->toBe('[array]')
             ->and($redacted['payload'])->toBe('[object]')
             ->and($redacted['description'])->toBe('visible');
@@ -47,6 +47,6 @@ describe('Logging Redactor', function () {
         expect(Redactor::hash('abc123'))
             ->toBe(Redactor::hash('abc123'))
             ->and(Redactor::hash('abc123'))
-                ->not()->toBe(Redactor::hash('different'));
+            ->not()->toBe(Redactor::hash('different'));
     });
 });

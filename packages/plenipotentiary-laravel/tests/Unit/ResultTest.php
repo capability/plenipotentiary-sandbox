@@ -33,11 +33,11 @@ describe('Result', function () {
         expect($result->isErr())->toBeTrue()
             ->and($result->dto())->toBe($dto)
             ->and($result->error())
-                ->toMatchArray([
-                    'error' => 'Exception',
-                    'class' => RuntimeException::class,
-                    'message' => 'Explosion',
-                ]);
+            ->toMatchArray([
+                'error' => 'Exception',
+                'class' => RuntimeException::class,
+                'message' => 'Explosion',
+            ]);
     });
 
     it('normalises string errors', function () {
@@ -45,9 +45,9 @@ describe('Result', function () {
 
         expect($result->isErr())->toBeTrue()
             ->and($result->error())
-                ->toMatchArray([
-                    'error' => 'Something went wrong',
-                ]);
+            ->toMatchArray([
+                'error' => 'Something went wrong',
+            ]);
     });
 
     it('records invalid violations and expected structure', function () {
@@ -68,13 +68,13 @@ describe('Result', function () {
             ->and($result->dto())->toBe($dto)
             ->and($result->violations())->toBe($violations)
             ->and($result->toArray())
-                ->toMatchArray([
-                    'kind' => 'invalid',
-                    'payload' => [
-                        'expected' => $expected,
-                        'violations' => $violations,
-                    ],
-                ]);
+            ->toMatchArray([
+                'kind' => 'invalid',
+                'payload' => [
+                    'expected' => $expected,
+                    'violations' => $violations,
+                ],
+            ]);
     });
 
     it('maps ok results with canonical dto', function () {
@@ -111,7 +111,7 @@ describe('Result', function () {
         expect($mapped)->not()->toBe($result)
             ->and($mapped->isErr())->toBeTrue()
             ->and($mapped->error())
-                ->toMatchArray(['error' => 'Handled: Original Problem']);
+            ->toMatchArray(['error' => 'Handled: Original Problem']);
     });
 
     it('maps invalid violations', function () {
@@ -151,6 +151,6 @@ describe('Result', function () {
                 'dto' => $dto->toArray(),
             ])
             ->and($json['payload'])
-                ->toMatchArray($dto->toArray());
+            ->toMatchArray($dto->toArray());
     });
 });

@@ -7,9 +7,9 @@ namespace Plenipotentiary\Laravel\Providers;
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
 use Plenipotentiary\Laravel\Pleni\Policies\LoggingPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
 use Plenipotentiary\Laravel\Pleni\Policies\MetricsPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -23,9 +23,9 @@ final class PleniPolicyDefaultsServiceProvider extends ServiceProvider
         $this->app->bind(GatewayPolicyChain::class, function ($app) {
             return new GatewayPolicyChain([
                 new LoggingPolicy($app->make(LoggerInterface::class)),
-                new RetryBackoffPolicy(),
-                new RateLimitPolicy(),
-                new MetricsPolicy(),
+                new RetryBackoffPolicy,
+                new RateLimitPolicy,
+                new MetricsPolicy,
             ]);
         });
     }

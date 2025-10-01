@@ -18,6 +18,7 @@ interface CampaignRepositoryContract
 
     /**
      * Example extension for relationships: return campaign aggregate with related budgets.
+     *
      * @return array{campaign: Campaign, budgets: Collection}
      */
     public function findWithBudgets(string $id): array;

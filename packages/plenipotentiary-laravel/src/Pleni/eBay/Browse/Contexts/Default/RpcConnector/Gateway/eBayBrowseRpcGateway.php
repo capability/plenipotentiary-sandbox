@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Gateway;
 
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiRpcGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\EndpointIdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;

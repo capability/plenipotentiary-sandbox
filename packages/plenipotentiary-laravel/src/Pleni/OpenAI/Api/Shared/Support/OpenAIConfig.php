@@ -18,6 +18,7 @@ final class OpenAIConfig
     public static function organizationId(): ?string
     {
         $org = env('OPENAI_ORGANIZATION_ID', '');
+
         return $org !== '' ? $org : null;
     }
 

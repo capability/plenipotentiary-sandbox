@@ -8,7 +8,7 @@ use Plenipotentiary\Laravel\Tests\Unit\Stubs\FakeCanonicalDto;
 
 describe('CanonicalFactory', function () {
     it('hydrates DTOs from input sources and applies casts, defaults, and overrides', function () {
-        $factory = new CanonicalFactory();
+        $factory = new CanonicalFactory;
 
         $sources = [
             new ArraySource([
@@ -41,14 +41,14 @@ describe('CanonicalFactory', function () {
     });
 
     it('throws when the DTO class does not expose required factories', function () {
-        $factory = new CanonicalFactory();
+        $factory = new CanonicalFactory;
 
         expect(fn () => $factory->make(MissingFactoryDto::class, []))
             ->toThrow(\InvalidArgumentException::class, 'MissingFactoryDto must expose schema() and fromArray().');
     });
 
     it('ensures DTO factories return objects', function () {
-        $factory = new CanonicalFactory();
+        $factory = new CanonicalFactory;
 
         expect(fn () => $factory->make(NonObjectFactoryDto::class, []))
             ->toThrow(\RuntimeException::class, 'NonObjectFactoryDto::fromArray must return a DTO instance.');
