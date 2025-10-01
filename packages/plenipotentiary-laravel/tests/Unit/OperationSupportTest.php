@@ -20,7 +20,7 @@ describe('Operation support objects', function () {
                 'rules' => $rules,
             ])
             ->and(json_decode((string) json_encode($description), true))
-                ->toMatchArray($description->toArray());
+            ->toMatchArray($description->toArray());
     });
 
     it('creates validation exceptions with context', function () {
@@ -35,11 +35,11 @@ describe('Operation support objects', function () {
             ->and($exception->getMessage())->toBe('Validation failed for campaign.create')
             ->and($exception->violations())->toBe($violations)
             ->and($exception->toArray())
-                ->toMatchArray([
-                    'operation' => 'campaign.create',
-                    'violations' => $violations,
-                ])
+            ->toMatchArray([
+                'operation' => 'campaign.create',
+                'violations' => $violations,
+            ])
             ->and(json_decode((string) json_encode($exception), true))
-                ->toMatchArray($exception->toArray());
+            ->toMatchArray($exception->toArray());
     });
 });

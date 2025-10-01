@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -7,8 +7,8 @@ namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector
 use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
-use Plenipotentiary\Laravel\Support\Result;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIConfig;
+use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
 final class OpenAIRpcAdapter implements RpcAdapterContract

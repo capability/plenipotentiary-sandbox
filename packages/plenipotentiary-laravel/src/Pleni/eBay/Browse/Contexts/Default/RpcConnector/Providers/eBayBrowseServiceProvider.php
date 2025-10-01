@@ -6,7 +6,6 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnecto
 
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
@@ -17,9 +16,9 @@ use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkClient;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Support\eBayErrorMapper;
 use Plenipotentiary\Laravel\Pleni\Policies\LoggingPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
-use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
 use Plenipotentiary\Laravel\Pleni\Policies\MetricsPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
 
 /**
  * Registers eBay Browse specific adapters, gateways, and services.
@@ -55,11 +54,12 @@ final class EbayBrowseServiceProvider extends ServiceProvider
             if (empty(config('pleni.policies'))) {
                 $chain = new \Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain([
                     new LoggingPolicy($app->make(\Psr\Log\LoggerInterface::class)),
-                    new RetryBackoffPolicy(),
-                    new RateLimitPolicy(),
-                    new MetricsPolicy(),
+                    new RetryBackoffPolicy,
+                    new RateLimitPolicy,
+                    new MetricsPolicy,
                 ]);
             }
+
             return $chain;
         });
     }

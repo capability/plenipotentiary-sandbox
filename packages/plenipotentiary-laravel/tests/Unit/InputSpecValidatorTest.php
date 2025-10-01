@@ -41,18 +41,18 @@ describe('InputSpecValidator', function () {
         expect($result)
             ->toHaveKey('expected')
             ->and($result['expected']['dto']['fields']['name'])
-                ->toMatchArray([
-                    'required' => true,
-                    'rules' => ['required', 'string', 'min:3', 'max:10'],
-                    'type' => 'string',
-                ])
+            ->toMatchArray([
+                'required' => true,
+                'rules' => ['required', 'string', 'min:3', 'max:10'],
+                'type' => 'string',
+            ])
             ->and($result['expected']['dto']['providerContext']['accountId'])
-                ->toMatchArray([
-                    'required' => true,
-                    'rules' => ['required', 'string'],
-                    'source' => 'providerContext',
-                    'type' => 'string',
-                ]);
+            ->toMatchArray([
+                'required' => true,
+                'rules' => ['required', 'string'],
+                'source' => 'providerContext',
+                'type' => 'string',
+            ]);
 
         expect($result['violations'])
             ->toHaveCount(4)
@@ -95,12 +95,12 @@ describe('InputSpecValidator', function () {
 
         expect($result['violations'])->toBeEmpty()
             ->and($result['expected']['dto']['fields']['budget'])
-                ->toMatchArray([
-                    'required' => false,
-                    'rules' => ['numeric', 'min:100'],
-                    'cast' => 'int',
-                    'type' => 'numeric',
-                    'default' => 150,
-                ]);
+            ->toMatchArray([
+                'required' => false,
+                'rules' => ['numeric', 'min:100'],
+                'cast' => 'int',
+                'type' => 'numeric',
+                'default' => 150,
+            ]);
     });
 });

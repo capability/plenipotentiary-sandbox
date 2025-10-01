@@ -11,6 +11,7 @@ use Plenipotentiary\Laravel\Support\Result;
 final class RateLimitPolicy implements GatewayPolicy
 {
     private array $tokens = [];
+
     public function __construct(private int $limitPerMinute = 60) {}
 
     public function before(GatewayCall $call): GatewayCall

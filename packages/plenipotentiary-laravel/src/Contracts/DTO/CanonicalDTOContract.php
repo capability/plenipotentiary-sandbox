@@ -35,7 +35,7 @@ interface CanonicalDTOContract
     /**
      * Provider context manipulation.
      *
-     * @param array<string,string> $context
+     * @param  array<string,string>  $context
      */
     public function setProviderContext(array $context): void;
 

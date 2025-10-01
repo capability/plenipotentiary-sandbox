@@ -51,7 +51,7 @@ class RunSandbox extends Command
         ]);
 
         $payload = CampaignCanonicalDTO::fromArray([
-            array()
+            [],
         ]);
 
         $createResult = $gateway->create($payload);

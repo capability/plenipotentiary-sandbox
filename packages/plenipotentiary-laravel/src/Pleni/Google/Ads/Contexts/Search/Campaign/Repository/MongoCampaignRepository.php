@@ -60,7 +60,7 @@ final class MongoCampaignRepository implements CampaignRepositoryContract
                 ['upsert' => true]
             );
         } else {
-            $campaign->externalId = (string) new \MongoDB\BSON\ObjectId();
+            $campaign->externalId = (string) new \MongoDB\BSON\ObjectId;
             $doc['externalId'] = $campaign->externalId;
             $this->collection->insertOne($doc);
         }

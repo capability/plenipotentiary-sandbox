@@ -54,7 +54,7 @@ final class CampaignCreate implements AdapterVerbContract
 
     public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result
     {
-        
+
         if (! $dto->budgetResourceName) {
 
             // This context only ever uses a campaign budget. Spinning up a separate adapter would be overkill.
@@ -68,7 +68,7 @@ final class CampaignCreate implements AdapterVerbContract
         $this->logger->info('Creating Google Ads campaign', [
             'customerId' => $dto->getProviderContextValue('google.customerId'),
             'name' => $dto->name,
-            'validateOnly' => $validateOnly
+            'validateOnly' => $validateOnly,
         ]);
 
         if ($validateOnly) {
