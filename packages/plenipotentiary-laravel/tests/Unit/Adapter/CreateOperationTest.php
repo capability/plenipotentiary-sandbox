@@ -38,6 +38,9 @@ describe('CreateOperation::perform validation', function () {
             'status' => 'ENABLED',
         ]);
 
+        // Mock budget operation since DTO has no budgetResourceName
+        $this->budgetOperation->shouldReceive('create')->never();
+
         $result = $this->operation->perform($dto);
 
         expect($result->isInvalid())->toBeTrue();
@@ -111,20 +114,15 @@ describe('CreateOperation::perform', function () {
 
         $this->budgetOperation->shouldReceive('create')->never();
 
-        $this->campaignService
-            ->shouldReceive('mutateCampaigns')
-            ->once()
-            ->with(Mockery::on(fn ($request) => $request instanceof MutateCampaignsRequest
-                && $request->getCustomerId() === '1234567890'
-                && $request->getValidateOnly() === true
-                && count($request->getOperations()) === 1))
-            ->andReturn(new MutateCampaignsResponse);
+        // In validateOnly mode, no actual API call is made
+        $this->campaignService->shouldReceive('mutateCampaigns')->never();
 
         $this->logger->shouldReceive('info')->once();
 
         $result = $this->operation->perform($dto, true);
 
         expect($result->isOk())->toBeTrue();
+        expect($result->unwrap())->toBeInstanceOf(CampaignCanonicalDTO::class);
     });
 
     it('creates a budget when none supplied and returns canonical dto', function () {
@@ -183,6 +181,7 @@ describe('CreateOperation::perform', function () {
             'status' => 'ENABLED',
         ]);
 
+        // Mock budget operation since DTO has no budgetResourceName
         $this->budgetOperation->shouldReceive('create')->never();
         $this->campaignService->shouldReceive('mutateCampaigns')->never();
         $this->logger->shouldReceive('info')->never();

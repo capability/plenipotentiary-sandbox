@@ -68,7 +68,8 @@ final class CreateOperation implements OperationContract
         ]);
 
         if ($validateOnly) {
-            return Result::ok();
+            // In validateOnly mode, return the DTO as-is since no actual creation happens
+            return Result::ok($dto);
         }
 
         $response = $this->client
