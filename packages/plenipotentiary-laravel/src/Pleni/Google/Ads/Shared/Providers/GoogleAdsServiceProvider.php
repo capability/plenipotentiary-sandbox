@@ -22,6 +22,7 @@ final class GoogleAdsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Ensure defaults are booted
         GoogleAdsDefaults::loadFromEnv();
         // Auth
         $this->app->singleton(SdkAuthStrategyContract::class, GoogleAdsSdkAuthStrategy::class);

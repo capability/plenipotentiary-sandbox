@@ -7,6 +7,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Auth;
 use Bricre\EbaySdkBuyBrowse\Configuration;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Psr\Http\Message\RequestInterface;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support\EbayConfig;
 
 /**
  * eBay Browse SDK Authentication Strategy
@@ -65,10 +66,10 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     private function initializeAuthentication(): void
     {
-        $clientId = env('EBAY_CLIENT_ID');
-        $clientSecret = env('EBAY_CLIENT_SECRET');
-        $refreshToken = env('EBAY_REFRESH_TOKEN');
-        $redirectUri = env('EBAY_REDIRECT_URI');
+        $clientId = EbayConfig::clientId();
+        $clientSecret = EbayConfig::clientSecret();
+        $refreshToken = EbayConfig::refreshToken();
+        $redirectUri = EbayConfig::redirectUri();
 
         if (! $clientId || ! $clientSecret) {
             throw new \RuntimeException('eBay client credentials not configured. Please set EBAY_CLIENT_ID and EBAY_CLIENT_SECRET environment variables.');
@@ -96,8 +97,8 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     private function obtainAccessTokenFromRefreshToken(string $refreshToken): string
     {
-        $clientId = env('EBAY_CLIENT_ID');
-        $clientSecret = env('EBAY_CLIENT_SECRET');
+        $clientId = EbayConfig::clientId();
+        $clientSecret = EbayConfig::clientSecret();
 
         $credentials = base64_encode($clientId.':'.$clientSecret);
 
@@ -129,7 +130,7 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     private function refreshAccessToken(): void
     {
-        $refreshToken = env('EBAY_REFRESH_TOKEN');
+        $refreshToken = EbayConfig::refreshToken();
 
         if (! $refreshToken) {
             throw new \RuntimeException('Cannot refresh token: EBAY_REFRESH_TOKEN not configured');
@@ -185,8 +186,8 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     public function getAuthorizationUrl(?string $state = null): string
     {
-        $clientId = env('EBAY_CLIENT_ID');
-        $redirectUri = env('EBAY_REDIRECT_URI');
+        $clientId = EbayConfig::clientId();
+        $redirectUri = EbayConfig::redirectUri();
 
         if (! $clientId || ! $redirectUri) {
             throw new \RuntimeException('eBay OAuth configuration incomplete');
@@ -208,9 +209,9 @@ final class eBaySdkAuthStrategy implements SdkAuthStrategyContract
      */
     public function exchangeCodeForToken(string $authorizationCode): array
     {
-        $clientId = env('EBAY_CLIENT_ID');
-        $clientSecret = env('EBAY_CLIENT_SECRET');
-        $redirectUri = env('EBAY_REDIRECT_URI');
+        $clientId = EbayConfig::clientId();
+        $clientSecret = EbayConfig::clientSecret();
+        $redirectUri = EbayConfig::redirectUri();
 
         if (! $clientId || ! $clientSecret || ! $redirectUri) {
             throw new \RuntimeException('eBay OAuth configuration incomplete');

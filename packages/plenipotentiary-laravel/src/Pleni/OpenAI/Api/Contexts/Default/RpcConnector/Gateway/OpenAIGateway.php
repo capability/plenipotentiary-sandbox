@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Gateway;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Gateway;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiRpcGatewayContract;
