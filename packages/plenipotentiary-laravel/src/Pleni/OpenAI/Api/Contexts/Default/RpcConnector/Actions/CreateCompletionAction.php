@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Actions;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Actions;
 
 use Lorisleiva\Actions\Concerns\AsAction;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiRpcGatewayContract;

@@ -6,6 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Auth;
 
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Psr\Http\Message\RequestInterface;
+use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIConfig;
 
 /**
  * OpenAI SDK Authentication Strategy
@@ -21,8 +22,8 @@ final class OpenAISdkAuthStrategy implements SdkAuthStrategyContract
 
     public function __construct()
     {
-        $this->apiKey = env('OPENAI_API_KEY', '');
-        $this->organizationId = env('OPENAI_ORGANIZATION_ID', '');
+        $this->apiKey = OpenAIConfig::apiKey();
+        $this->organizationId = OpenAIConfig::organizationId();
 
         if (empty($this->apiKey)) {
             throw new \RuntimeException('OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.');
@@ -113,6 +114,6 @@ final class OpenAIClientConfig
      */
     public function getBaseUrl(): string
     {
-        return env('OPENAI_BASE_URL', 'https://api.openai.com/v1');
+        return OpenAIConfig::baseUrl();
     }
 }

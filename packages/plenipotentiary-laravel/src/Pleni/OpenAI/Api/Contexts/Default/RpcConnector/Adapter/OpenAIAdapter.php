@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Adapter;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Adapter;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Support\Result;
+use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIConfig;
 use Psr\Log\LoggerInterface;
 
 final class OpenAIApiRpcAdapter implements ApiRpcAdapterContract
@@ -124,7 +125,7 @@ final class OpenAIApiRpcAdapter implements ApiRpcAdapterContract
     {
         $headers = array_merge([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer '.($options['api_key'] ?? env('OPENAI_API_KEY')),
+            'Authorization' => 'Bearer '.($options['api_key'] ?? OpenAIConfig::apiKey()),
         ], $options['headers'] ?? []);
 
         $endpoint = $config['endpoint'];

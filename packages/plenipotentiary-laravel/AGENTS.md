@@ -1,194 +1,130 @@
-Here’s a revised **AGENTS.md** that reflects your points: auth is provider-level (not in operations), failures are structure-driven (expected shape first, then violations), and DTOs/Selectors support a `providerContext` for provider-specific identifiers with env-driven defaults that auto-hydrate.
+# Plenipotentiary Agent Architecture
 
----
+This document outlines the architectural patterns for interacting with external provider APIs through this package.
 
-# AGENTS.md
+## Core Principles
 
-## 🧭 Adapter-First, Spec-Led
+The primary goal of this package is to provide a stable, predictable, and reliable interface for communicating with external APIs. This allows for the implementation of common cross-cutting concerns such as:
 
-The **adapter operation** (e.g., `Adapter/CreateOperation.php`) is where understanding is earned. You start with the provider **SDK** in a single file, make the call work, and from that knowledge declare a minimal **`INPUT_SPEC`**. That spec drives the generated **CanonicalDTO** and **Factory**—not the other way around.
+-   **Idempotency**: Preventing duplicate operations.
+-   **Queuing**: Safely dispatching API calls to background jobs.
+-   **Logging & Monitoring**: Centralized and standardized logging for all provider interactions.
+-   **Error Handling**: Consistent and predictable error mapping across all providers.
 
-Plenipotentiary promotes **understanding over abstraction**: you write the SDK call and the spec; the tooling scaffolds from what you proved works.
+## 1. The CRUD Pattern
 
----
+For APIs that expose resources with a clear Create, Read, Update, and Delete lifecycle (e.g., Google Ads Campaigns), we use the `ApiCrudGatewayContract`. This provides a structured and provider-agnostic way to manage these resources.
 
-## 🔐 Provider-Level Auth (shared, not in operations)
+-   **Gateway**: `ApiCrudGatewayContract` - The public entry point.
+-   **Adapter**: `ApiCrudAdapterContract` - The provider-specific implementation.
 
-* Authentication is configured **once per provider** using a package **AuthStrategy** (e.g., `GoogleAdsSdkAuthStrategy`) and wired in the provider’s Service Provider.
-* Operations receive an **authed client via DI**; they **do not** implement auth themselves.
-* For tests, **mock the client** behind the same contract; for dev, use real creds (sandbox/`validateOnly` when available).
+## 2. Non-CRUD Operations: A Dual-Choice Architecture
 
----
+For all other API interactions that do not fit the CRUD model, we recognize that a single pattern is insufficient. Therefore, this package provides two distinct, first-class architectural patterns. Developers should choose the pattern that best fits their use case.
 
-## 🧱 `INPUT_SPEC` — Simple, Specifying Enough
+### 2.1. The RPC (Remote Procedure Call) Pattern
 
-`INPUT_SPEC` must be **as simple as possible**, while carrying enough info to:
+This pattern prioritizes **developer velocity and simplicity**. It is ideal for rapid prototyping, simple APIs, or ad-hoc scripts where creating dedicated classes for each endpoint feels like overkill.
 
-1. build the CanonicalDTO + Factory shape and
-2. validate/preflight inputs.
+To ensure stability for queuing and tooling, the entire RPC call is encapsulated into a single, serializable object.
 
-### Design rules
+**Contracts:**
+- `RpcGatewayContract`: The public gateway, which accepts an `RpcOperationContract`.
+- `RpcAdapterContract`: The provider-specific adapter, which still uses a `call(string, array, array)` signature internally.
 
-* **Canonical property names** as keys (what the DTO exposes).
-* **Validation**: minimal rules (Laravel-style or internal equivalent).
-* **Casting hints**: small, deterministic set (e.g., `currency_to_micros`).
-* **Dotted keys for `providerContext`** — use `providerContext.*` to declare provider-specific identifiers the adapter will need (e.g., `providerContext.google.customerId`).
-* **Optional `source` hints** (purely informative): `env:GOOGLE_ADS_LINKED_CUSTOMER_ID`. The **Factory automatically applies provider defaults**; you **do not** call defaults manually in commands/actions.
+**How It Works:**
+The developer creates a simple `GenericRpcOperation` object, which represents a complete instruction. The `RpcGateway` receives this object, applies cross-cutting concerns (logging, idempotency), and then unpacks it to call the `RpcAdapter`.
 
-**Example (inside `Adapter/CreateOperation.php`):**
-
-```php
-public const INPUT_SPEC = [
-    'name'         => ['rules' => ['required','string','min:1']],
-    'status'       => ['rules' => ['required','in:ENABLED,PAUSED,REMOVED']],
-    'budgetMicros' => ['rules' => ['required','numeric','min:0'], 'cast' => 'currency_to_micros'],
-    'customerId'   => ['rules' => ['required','string']],
-
-    // Provider-specific IDs / names live under providerContext.*
-    'providerContext.google.customerId'   => ['rules' => ['required','string'], 'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID'],
-    'providerContext.google.resourceName' => ['rules' => ['nullable','string']], // read/update/delete
-];
-```
-
-> Keep it flat with dotted keys; the hydrator builds nested structures in the DTO (`providerContext` array) automatically.
-
----
-
-## 🧩 DTOs & Selectors: `providerContext` and Defaults
-
-* **DTOs and Selectors** include a `providerContext: array` to carry **provider-specific identifiers** (e.g., Google’s `resource_name`) alongside canonical fields (`externalId`, etc.).
-* **Do not** manually apply defaults in entrypoints. The **Factory** auto-hydrates from `{Provider}{Service}Defaults` (e.g., `GoogleAdsDefaults`) which reads environment values and injects them **before** validation.
-* If a required `providerContext` key is not present after defaults + input merge, validation will fail like any other missing field.
-
-**Example DTO shape (conceptual):**
+#### **Example Usage:**
 
 ```php
-final class CampaignCanonicalDTO {
-    public function __construct(
-        public ?string $externalId = null,
-        public ?string $name = null,
-        public ?string $status = null,
-        public ?int    $budgetMicros = null,
-        public ?string $customerId = null,
-        public array   $providerContext = [] // e.g., ['google.customerId' => '...', 'google.resourceName' => '...']
-    ) {}
-}
-```
+use Plenipotentiary\Laravel\Contracts\Gateway\RpcGatewayContract;
+use Plenipotentiary\Laravel\Support\Operation\GenericRpcOperation;
 
----
-
-## ❌ Failure Payload — Structure First, Then Violations
-
-When preflighting/validating with a DTO that doesn’t fit, return a **structured failure**:
-
-1. **`expected`** — the expected DTO/Selector structure derived from `INPUT_SPEC` (including required fields, types/casts, and providerContext keys).
-2. **`violations`** — explicit, well-formed list of what’s wrong.
-
-**Example:**
-
-```json
+class EBaySearchAction
 {
-  "expected": {
-    "dto": {
-      "fields": {
-        "name":         {"required": true,  "type": "string"},
-        "status":       {"required": true,  "type": "enum", "values": ["ENABLED","PAUSED","REMOVED"]},
-        "budgetMicros": {"required": true,  "type": "int",   "cast": "currency_to_micros"},
-        "customerId":   {"required": true,  "type": "string"}
-      },
-      "providerContext": {
-        "google.customerId":   {"required": true,  "type": "string", "source": "env:GOOGLE_ADS_LINKED_CUSTOMER_ID"},
-        "google.resourceName": {"required": false, "type": "string"}
-      }
+    public function __construct(private RpcGatewayContract $gateway) {}
+
+    public function handle(string $query): Result
+    {
+        // 1. Create a stable, serializable operation object.
+        $operation = new GenericRpcOperation(
+            'searchItems', // The operation name the adapter will handle
+            ['q' => $query, 'limit' => 10]
+        );
+
+        // 2. Execute the operation via the gateway.
+        // This call is now safe to be queued.
+        return $this->gateway->execute($operation);
     }
-  },
-  "violations": [
-    {"field":"name","message":"Required"},
-    {"field":"providerContext.google.customerId","message":"Required (set GOOGLE_ADS_LINKED_CUSTOMER_ID or provide explicitly)."}
-  ]
 }
 ```
 
-This format is **machine-friendly** (for tooling) and **developer-friendly** (clear next steps).
+**Benefits:**
+- **Fast Prototyping**: Quickly add support for new endpoints by modifying only the adapter's internal `match` statement.
+- **Safe for Queuing**: The entire operation is a single, type-hinted object, making it reliable for background jobs.
+- **Low Boilerplate**: No need to create new classes for each endpoint.
 
----
+### 2.2. The REST/Saloon Pattern
 
-## 🔁 Operation Structure (one file, tests drive “green”)
+This pattern prioritizes **architectural purity, long-term maintainability, and type safety**. It is the recommended choice for complex, critical, or frequently used APIs. It leverages the excellent `saloonphp/saloon` library to create a robust and scalable implementation.
 
-Keep everything in the operation file until tests are green:
+**Contracts:**
+- `RestGatewayContract`: The public gateway, which accepts a `Saloon\Http\Request` object.
+- `RestAdapterContract`: The provider-specific adapter, which uses a Saloon `Connector` to send the request.
 
-* **SDK call** (built from the DTO)
-* **Preflight** derived from `INPUT_SPEC`
-* **Request build → SDK invoke → response map**
-* **Throw provider exceptions**; **Gateway** will map to domain (`invalid` vs `err`) via the provider’s `ErrorMapper`.
+**How It Works:**
+The developer creates a dedicated, self-contained `Saloon\Http\Request` class for each API endpoint. This class defines the HTTP method, path, and request data structure. The adapter becomes a simple pass-through, eliminating the "god `match` statement" anti-pattern.
 
-Unit tests for `perform()` must cover **success**, **invalid input** (with structured failures as above), and **mapped provider errors**.
+#### **Example Usage:**
 
----
-
-## 🎯 Your Role as Agent
-
-### Primary Responsibilities
-
-1. **Spec-driven operations**: Ensure each `*Operation.php` declares a minimal `INPUT_SPEC` that truly reflects the SDK call and the business use case.
-2. **Structured failures**: Implement preflight that returns `expected` + `violations` as shown above—no opaque errors.
-3. **DTO/Factory readiness**: Keep `INPUT_SPEC` simple and deterministic so DTO + Factory can be generated directly (dotted keys → nested structures; known casts; optional `source` hints).
-4. **Provider auth is shared**: Confirm operations receive an authed client via provider-level strategy; don’t embed auth in operations.
-5. **Provider context**: Use `providerContext.*` for provider-specific identifiers; rely on defaults auto-hydration (no manual defaults in entrypoints).
-6. **Testing**: Provide unit tests for `perform()` (ok/invalid/err) and happy E2E through the Gateway.
-
-### Key Principles
-
-* **Understanding over abstraction**: Start with the SDK in one file; encode what you learned in `INPUT_SPEC`.
-* **Provider semantics**: Preserve natural operation names and patterns.
-* **Contract-driven**: Implementations satisfy **core package** contracts (contracts live centrally).
-* **Scaffolding-ready**: Code is template-quality for generation.
-
-### Current Focus Areas
-
-1. **INPUT_SPEC completeness** (incl. `providerContext.*` where needed).
-2. **Exemplary adapters**: Google Ads/eBay/OpenAI reflect the pattern crisply.
-3. **Gateway mapping**: Provider exceptions → domain results via `ErrorMapper`.
-4. **Test coverage**: Green unit tests on operations and Gateway pass-throughs.
-5. **Docs**: Concise, copy-pasteable examples for spec, failures, and defaults.
-
----
-
-## 🚀 Example Usage Patterns
-
-**CRUD (create)**
-
+First, define a Saloon Request class for the endpoint:
 ```php
-$result = $campaignGateway->create($campaignDto);
-if ($result->isOk()) {
-    $campaign = $result->unwrap();
-} elseif ($result->isInvalid()) {
-    // show $result->violations() (you also have $result->toArray()['expected'])
+// packages/plenipotentiary-laravel/src/Pleni/eBay/Browse/Requests/SearchItemsRequest.php
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+
+final class SearchItemsRequest extends Request
+{
+    protected Method $method = Method::GET;
+
+    public function resolveEndpoint(): string
+    {
+        return '/buy/browse/v1/item_summary/search';
+    }
+
+    public function __construct(public readonly string $query) {}
+
+    protected function defaultQuery(): array
+    {
+        return ['q' => $this->query];
+    }
 }
 ```
 
-**Consistent error handling**
-
+Then, use it in your application:
 ```php
-if ($result->isInvalid()) {
-    $violations = $result->violations();
-} elseif ($result->isErr()) {
-    $error = $result->error(); // { code, message, retryable, http, meta }
+use Plenipotentiary\Laravel\Contracts\Gateway\RestGatewayContract;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Requests\SearchItemsRequest;
+
+class EBaySearchAction
+{
+    public function __construct(private RestGatewayContract $gateway) {}
+
+    public function handle(string $query): Result
+    {
+        // 1. Create a type-safe, self-documenting request object.
+        $request = new SearchItemsRequest($query);
+
+        // 2. Execute the request via the gateway.
+        return $this->gateway->execute($request);
+    }
 }
 ```
 
----
+**Benefits:**
+- **Scalable & Maintainable**: Follows the Open/Closed Principle. Adding a new endpoint requires creating a new file, not modifying an existing one.
+- **Type-Safe**: The request's parameters are defined by the constructor, providing compile-time safety.
+- **Self-Documenting**: The `Requests` directory becomes a clear, browsable list of all supported API operations.
 
-## 📋 Development Guidelines
-
-* **Contracts in core**; providers implement them.
-* **Operation-first**: Build the SDK call, then declare `INPUT_SPEC`.
-* **Structured preflight**: Failures must include `expected` + `violations`.
-* **Auto-defaults**: `{Provider}{Service}Defaults` auto-hydrate; no manual defaults application in entrypoints.
-* **Comprehensive tests**: success / invalid (with structured failure) / mapped errors.
-* **Template quality**: keep operations clean and copy-worthy.
-* **Docs**: short, accurate examples for spec, providerContext, and defaults.
-
----
-
-✅ **Context Complete**: Make adapter operations the source of truth—SDK call → `INPUT_SPEC` → structured preflight → predictable results. From that, DTO + Factory are scaffolded to your spec, and the Gateway remains a stable, provider-agnostic, toolable boundary.
+By offering both the **RPC** and **REST/Saloon** patterns, this package empowers developers to make the right architectural trade-off for their specific context.

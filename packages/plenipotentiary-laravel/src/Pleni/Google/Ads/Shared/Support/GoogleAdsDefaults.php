@@ -28,7 +28,7 @@ final class GoogleAdsDefaults
         }
 
         self::$booted = true;
-        $linkedCustomer = env('GOOGLE_ADS_LINKED_CUSTOMER_ID');
+        $linkedCustomer = GoogleAdsConfig::linkedCustomerId();
         if ($linkedCustomer !== null && $linkedCustomer !== '') {
             self::$defaults['google.customerId'] = $linkedCustomer;
         }

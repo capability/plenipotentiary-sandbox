@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Commands;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Commands;
 
 use Illuminate\Console\Command;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Actions\CreateCompletionAction;
