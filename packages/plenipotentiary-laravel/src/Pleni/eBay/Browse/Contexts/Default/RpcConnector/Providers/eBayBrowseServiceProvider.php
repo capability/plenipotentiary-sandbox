@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiRpcGatewayContract;
-use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Adapter\EbayBrowseApiRpcAdapter;
-use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Gateway\EbayBrowseApiRpcGateway;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Adapter\EbayBrowseRpcAdapter;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Gateway\EbayBrowseRpcGateway;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkAuthStrategy;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Auth\eBaySdkClient;
 use Plenipotentiary\Laravel\Pleni\eBay\Shared\Support\eBayErrorMapper;
+use Plenipotentiary\Laravel\Pleni\Policies\LoggingPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RetryBackoffPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\RateLimitPolicy;
+use Plenipotentiary\Laravel\Pleni\Policies\MetricsPolicy;
 
 /**
  * Registers eBay Browse specific adapters, gateways, and services.
  */
-final class eBayBrowseServiceProvider extends ServiceProvider
+final class EbayBrowseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -41,9 +45,22 @@ final class eBayBrowseServiceProvider extends ServiceProvider
         $this->app->singleton(ErrorMapperContract::class, eBayErrorMapper::class);
 
         // Adapters
-        $this->app->singleton(ApiRpcAdapterContract::class, EbayBrowseApiRpcAdapter::class);
+        $this->app->singleton(RpcAdapterContract::class, EbayBrowseRpcAdapter::class);
 
         // Gateways
-        $this->app->singleton(ApiRpcGatewayContract::class, EbayBrowseApiRpcGateway::class);
+        $this->app->singleton(ApiRpcGatewayContract::class, EbayBrowseRpcGateway::class);
+
+        // Register default policies if none configured
+        $this->app->resolving(\Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain::class, function ($chain, $app) {
+            if (empty(config('pleni.policies'))) {
+                $chain = new \Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain([
+                    new LoggingPolicy($app->make(\Psr\Log\LoggerInterface::class)),
+                    new RetryBackoffPolicy(),
+                    new RateLimitPolicy(),
+                    new MetricsPolicy(),
+                ]);
+            }
+            return $chain;
+        });
     }
 }
