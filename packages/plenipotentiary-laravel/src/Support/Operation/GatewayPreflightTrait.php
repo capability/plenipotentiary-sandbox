@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Support\Operation;
 
 use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
-use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 
 /**
@@ -22,7 +22,7 @@ trait GatewayPreflightTrait
      * @param  OperationContract  $operation
      * @param  CampaignCanonicalDTO  $dto
      */
-    private function preflight(OperationContract $operation, CampaignCanonicalDTO $dto): ?Result
+    private function preflight(AdapterVerbContract $operation, CampaignCanonicalDTO $dto): ?Result
     {
         $preflight = InputSpecValidator::validate($operation::inputSpec(), $dto->toArray());
 

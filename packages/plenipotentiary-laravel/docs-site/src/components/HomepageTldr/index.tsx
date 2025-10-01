@@ -40,9 +40,9 @@ export default function HomepageTldr() {
           </div>
           <div className="card__body">
             <p className="margin--none">
-              a person, especially a diplomat, invested with the full power of
-              independent action on behalf of their government, typically in a
-              foreign country.
+              a person <code>GATEWAY/ADAPTER</code>, invested with the full power of
+              independent action on behalf of their government <code>DOMAIN</code>, typically in a
+              foreign country <code>API_PROVIDER</code>.
             </p>
           </div>
         </div>

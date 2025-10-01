@@ -7,15 +7,16 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Prov
 use App\Models\AcmeCart\Search\Campaign as CampaignModel;
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiCrudAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignApiCrudAdapter;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateSupport\CreateBudgetOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadManyOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateSupport\CampaignCreateBudget;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignDelete;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignReadMany;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignRead;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignUpdate;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway\CampaignApiCrudGateway;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\CampaignRepositoryContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\EloquentCampaignRepository;
@@ -26,12 +27,12 @@ final class CampaignServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Operations
-        $this->app->singleton(CreateBudgetOperation::class);
-        $this->app->singleton(CreateOperation::class);
-        $this->app->singleton(UpdateOperation::class);
-        $this->app->singleton(DeleteOperation::class);
-        $this->app->singleton(ReadOperation::class);
-        $this->app->singleton(ReadManyOperation::class);
+        $this->app->singleton(CampaignCreateBudget::class);
+        $this->app->singleton(CampaignCreate::class);
+        $this->app->singleton(CampaignUpdate::class);
+        $this->app->singleton(CampaignDelete::class);
+        $this->app->singleton(CampaignRead::class);
+        $this->app->singleton(CampaignReadMany::class);
 
         // Adapter / Gateway
         $this->app->singleton(ApiCrudAdapterContract::class, CampaignApiCrudAdapter::class);
