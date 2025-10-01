@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Plenipotentiary\Laravel\Providers\PleniCoreServiceProvider;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Providers\GoogleAdsServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->register(PleniCoreServiceProvider::class);
+        $this->app->register(GoogleAdsServiceProvider::class);
     }
 
     /**

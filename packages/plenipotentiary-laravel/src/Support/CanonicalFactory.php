@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Support;
 
+use InvalidArgumentException;
 use Plenipotentiary\Laravel\Support\InputSource\InputSource;
+use RuntimeException;
 
 final class CanonicalFactory
 {
@@ -12,28 +14,25 @@ final class CanonicalFactory
      * @param  class-string  $dtoClass
      * @param  array<int,InputSource>  $sources
      */
-    public function make(string $dtoClass, array $sources, array $overrides = []): Result
+    public function make(string $dtoClass, array $sources, array $overrides = []): object
     {
         if (! method_exists($dtoClass, 'schema') || ! method_exists($dtoClass, 'fromArray')) {
-            return Result::err([
-                'error' => 'invalid_dto_contract',
-                'message' => sprintf('%s must expose schema() and fromArray()', $dtoClass),
-            ]);
+            throw new InvalidArgumentException(sprintf('%s must expose schema() and fromArray().', $dtoClass));
         }
 
         /** @var array<string,array<string,mixed>> $schema */
         $schema = $dtoClass::schema();
         $payload = array_merge($this->collect($schema, $sources), $overrides);
 
-        $violations = InputSpecValidator::validate($schema, $payload);
-        if ($violations) {
-            return Result::invalid($violations);
-        }
-
         /** @var callable(array):object $fromArray */
         $fromArray = [$dtoClass, 'fromArray'];
+        $dto = $fromArray($payload);
 
-        return Result::ok($fromArray($payload));
+        if (! is_object($dto)) {
+            throw new RuntimeException(sprintf('%s::fromArray must return a DTO instance.', $dtoClass));
+        }
+
+        return $dto;
     }
 
     /**

@@ -9,8 +9,6 @@ class LoggingServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(LoggerInterface::class, function ($app) {
-            return new LoggingService;
-        });
+        $this->app->singleton(LoggerInterface::class, LoggingService::class);
     }
 }

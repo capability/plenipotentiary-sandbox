@@ -217,4 +217,16 @@ describe('Campaign API CRUD Gateway', function () {
         ]);
         expect($payload['meta'])->toHaveKey('retryAfter', 30);
     });
+    it('returns invalid when preflight validation fails', function () {
+        $invalidDto = \Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO::fromArray([]);
+        $this->logger->shouldReceive('info')->once();
+
+        $result = $this->gateway->create($invalidDto);
+
+        expect($result->isInvalid())->toBeTrue();
+        $violations = $result->violations();
+        expect($violations)->toBeArray()
+            ->and(array_column($violations, 'field'))->toContain('name')
+            ->and(array_column($violations, 'field'))->toContain('providerContext.google.customerId');
+    });
 });

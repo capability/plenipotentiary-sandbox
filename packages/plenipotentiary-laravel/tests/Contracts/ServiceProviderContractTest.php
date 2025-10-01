@@ -7,6 +7,7 @@ use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Tests\Stubs\Auth\FakeGoogleAdsSdkAuthStrategy;
+use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 
 describe('Service Provider Contracts', function () {
     it('binds core contracts', function () {
@@ -27,11 +28,21 @@ describe('Service Provider Contracts', function () {
     });
 
     it('binds adapter operations', function () {
-        expect(app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation::class))
-            ->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation::class)
-            ->and(app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation::class))
-            ->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation::class)
-            ->and(app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation::class))
-            ->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation::class);
+        $create = app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation::class);
+        $update = app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation::class);
+        $delete = app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation::class);
+        $read = app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation::class);
+        $readMany = app(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadManyOperation::class);
+
+        expect($create)->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CreateOperation::class)
+            ->and($update)->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\UpdateOperation::class)
+            ->and($delete)->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\DeleteOperation::class)
+            ->and($read)->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadOperation::class)
+            ->and($readMany)->toBeInstanceOf(\Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\ReadManyOperation::class)
+            ->and($create)->toBeInstanceOf(OperationContract::class)
+            ->and($update)->toBeInstanceOf(OperationContract::class)
+            ->and($delete)->toBeInstanceOf(OperationContract::class)
+            ->and($read)->toBeInstanceOf(OperationContract::class)
+            ->and($readMany)->toBeInstanceOf(OperationContract::class);
     });
 });

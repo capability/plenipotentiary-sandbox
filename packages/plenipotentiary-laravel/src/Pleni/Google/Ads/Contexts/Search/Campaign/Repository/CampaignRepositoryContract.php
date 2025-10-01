@@ -6,11 +6,19 @@ namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repo
 
 use App\Models\AcmeCart\Search\Campaign;
 use Illuminate\Support\Collection;
-use Plenipotentiary\Laravel\Contracts\Repository\BaseRepositoryContract;
 
-interface CampaignRepositoryContract extends BaseRepositoryContract
+interface CampaignRepositoryContract
 {
+    /**
+     * Example of domain-specific queries/aggregates that don't belong in a base repository.
+     */
     public function findActive(): Collection;
 
     public function findByExternalReference(string $externalRef): ?Campaign;
+
+    /**
+     * Example extension for relationships: return campaign aggregate with related budgets.
+     * @return array{campaign: Campaign, budgets: Collection}
+     */
+    public function findWithBudgets(string $id): array;
 }

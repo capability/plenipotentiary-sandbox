@@ -7,7 +7,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Pr
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiEndpointAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Auth\SdkAuthStrategyContract;
-use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiEndpointGatewayContract;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Endpoint\Adapter\eBayBrowseAdapter;
@@ -26,13 +26,13 @@ final class eBayBrowseServiceProvider extends ServiceProvider
         // Auth
         $this->app->singleton(SdkAuthStrategyContract::class, eBaySdkAuthStrategy::class);
 
-        // Bind the unified ProviderClientContract to our eBaySdkClient wrapper
-        $this->app->singleton(ProviderClientContract::class, function ($app) {
+        // Bind the unified HttpProviderClientContract to our eBaySdkClient wrapper
+        $this->app->singleton(HttpProviderClientContract::class, function ($app) {
             /** @var SdkAuthStrategyContract $auth */
             $auth = $app->make(SdkAuthStrategyContract::class);
 
             return new eBaySdkClient(
-                $auth->getClient() // raw eBay client
+                $auth->getClient() // raw eBay Browse client
             );
         });
 

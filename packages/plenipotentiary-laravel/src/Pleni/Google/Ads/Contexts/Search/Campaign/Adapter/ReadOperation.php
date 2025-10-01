@@ -4,98 +4,120 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter;
 
+use Google\Ads\GoogleAds\V21\Enums\CampaignStatusEnum\CampaignStatus;
 use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
+use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class ReadOperation
+final class ReadOperation implements OperationContract
 {
+    public const INPUT_SPEC = [
+        'externalId' => [
+            'rules' => ['nullable', 'string'],
+        ],
+        'providerContext.google.customerId' => [
+            'rules' => ['required', 'string'],
+            'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
+        ],
+        'providerContext.resourceName' => [
+            'rules' => ['nullable', 'string'],
+        ],
+    ];
+
     public function __construct(
         private ProviderClientContract $client,
         private LoggerInterface $logger,
     ) {}
 
-    public function perform(CampaignSelector $selector): Result
+    public static function inputSpec(): array
     {
-        try {
-            $context = $this->spec($selector);
-        } catch (ValidationException $e) {
-            return Result::invalid($e->toArray());
+        return self::INPUT_SPEC;
+    }
+
+    public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result
+    {
+
+        $customerId = (string) $dto->getProviderContextValue('google.customerId');
+
+        // Ensure at least one identifier (externalId or resourceName) is present
+        if (empty($dto->externalId) && empty($dto->getProviderContextValue('resourceName'))) {
+            return Result::invalid([['field' => 'externalId|providerContext.resourceName', 'message' => 'At least one identifier required']], self::INPUT_SPEC);
         }
 
-        $request = $this->requestMapper($selector, $context['google.customerId']);
+        $request = $this->requestMapper($dto, $validateOnly);
 
         $this->logger->info('Executing Google Ads campaign read', [
-            'customerId' => $context['google.customerId'],
-            'selector' => $selector->value(),
+            'customerId' => $customerId,
+            'externalId' => $dto->externalId,
+            'resourceName' => $dto->getProviderContextValue('resourceName'),
         ]);
 
         $response = $this->client->raw()
             ->getGoogleAdsServiceClient()
             ->search($request);
 
-        $campaign = $this->responseMapper($response, $context['google.customerId']);
+        $campaign = $this->responseMapper($response, $dto);
 
         return Result::ok($campaign);
     }
 
-    /**
-     * @return array{google.customerId:string}
-     */
-    public function spec(CampaignSelector $selector): array
+    public function requestMapper(CanonicalDTOContract $dto, bool $validateOnly = false): mixed
     {
-        $violations = [];
-
-        if ($selector->value() === '') {
-            $violations[] = ['field' => 'selector.value', 'rule' => 'required', 'mapsTo' => 'campaign.id'];
+        if (! $dto instanceof CampaignCanonicalDTO) {
+            throw new \InvalidArgumentException('ReadOperation::requestMapper expects CampaignCanonicalDTO');
         }
 
-        if ($selector->type() !== 'external_id') {
-            $violations[] = ['field' => 'selector.kind', 'rule' => 'ExternalId only', 'mapsTo' => 'campaign.id'];
+        $customerId = (string) $dto->getProviderContextValue('google.customerId');
+        $resourceName = $dto->getProviderContextValue('resourceName');
+
+        if ($resourceName) {
+            $query = sprintf(
+                'SELECT campaign.resource_name, campaign.id, campaign.name, campaign.status, campaign.campaign_budget
+                 FROM campaign
+                 WHERE campaign.resource_name = "%s"
+                 LIMIT 1',
+                addslashes($resourceName)
+            );
+        } else {
+            $externalId = (int) $dto->externalId;
+            $query = sprintf(
+                'SELECT campaign.resource_name, campaign.id, campaign.name, campaign.status, campaign.campaign_budget
+                 FROM campaign
+                 WHERE campaign.id = %d
+                 LIMIT 1',
+                $externalId
+            );
         }
-
-        $context = GoogleAdsDefaults::apply($selector->providerContext());
-        $customerId = $selector->getProviderContextValue('google.customerId') ?? $context['google.customerId'] ?? null;
-        if (! $customerId) {
-            $violations[] = ['field' => 'providerContext.google.customerId', 'rule' => 'required', 'mapsTo' => 'customerId'];
-        }
-
-        if ($violations) {
-            throw ValidationException::fromArray('campaign.read', $violations);
-        }
-
-        return ['google.customerId' => $customerId];
-    }
-
-    private function requestMapper(CampaignSelector $selector, string $customerId): SearchGoogleAdsRequest
-    {
-        $query = sprintf(
-            'SELECT campaign.resource_name, campaign.id, campaign.name, campaign.status, campaign.campaign_budget
-             FROM campaign
-             WHERE campaign.id = %d
-             LIMIT 1',
-            (int) $selector->value()
-        );
 
         return (new SearchGoogleAdsRequest)
             ->setCustomerId($customerId)
             ->setQuery($query);
     }
 
-    private function responseMapper(object $response, string $customerId): ?CampaignCanonicalDTO
+    public function responseMapper(mixed $response, mixed $source): CanonicalDTOContract
     {
+        if (! is_object($response) || ! $source instanceof CampaignCanonicalDTO) {
+            throw new InvalidArgumentException('ReadOperation::responseMapper expects iterable response and CampaignCanonicalDTO');
+        }
+
+        $customerId = $source->getProviderContextValue('google.customerId');
+
+        $found = null;
         foreach ($response->iterateAllElements() as $row) {
             $campaign = $row->getCampaign();
 
-            return CampaignCanonicalDTO::fromArray([
+            $status = $campaign->getStatus();
+
+            $found = CampaignCanonicalDTO::fromArray([
                 'externalId' => (string) $campaign->getId(),
                 'name' => $campaign->getName(),
-                'status' => $campaign->getStatus(),
+                'status' => $status !== null ? CampaignStatus::name($status) : null,
                 'budgetResourceName' => $campaign->getCampaignBudget(),
                 'providerContext' => array_filter([
                     'google.customerId' => $customerId,
@@ -104,6 +126,11 @@ final class ReadOperation
             ]);
         }
 
-        return null;
+        if (! $found) {
+            return Result::invalid([['field' => 'externalId|providerContext.resourceName', 'message' => 'No matching campaign found']], self::INPUT_SPEC);
+        }
+
+        return $found;
     }
+
 }
