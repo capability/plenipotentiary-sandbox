@@ -1,192 +1,223 @@
-Short answer: **yes—but narrowly.**
-Pleni should have a **small, deterministic plugin (policy) pipeline** at the *Gateway* layer so teams can swap in org-specific behaviour (e.g., custom retry policy, rate limiter, logging/PII redaction) without forking Pleni. Think “**Gateway Policies**,” not a wild west of extensions.
+Totally—let’s make the OpenAI REST path implement **ApiRest*** contracts, and clear up the “swappable adapter vs pick one tool” question.
 
-Here’s a concrete way to do it that keeps Pleni opinionated:
+# Recommendation (short & opinionated)
 
-# What to allow
+* **Keep a small, stable boundary:** `RestGatewayContract` and `RestAdapterContract`.
+* **Ship one blessed implementation out of the box:** **Saloon** (best DX + features).
+* **Keep the door open (quietly):** because the adapter hangs off an interface, teams *can* swap in Guzzle/Laravel HTTP later—without you maintaining multiple stacks.
 
-* **Cross-cutting, provider-agnostic concerns only:** retries, backoff, circuit-breaker, rate limiting, timeouts, PII redaction, metrics/telemetry, tracing, audit logging, chaos testing.
-* **No request-shape coupling:** Plugins shouldn’t know about Google Ads vs eBay DTO fields.
+This balances pragmatism (one strong default) with flexibility (no lock-in).
 
-# What to avoid
+---
 
-* Plugins that **modify canonical DTOs** or **encode provider logic**. Keep that in Adapters.
-* Plugin chains that are **non-deterministic** or order-dependent with hidden side effects.
+# Contracts (add these once, keep stable)
 
-# Minimal design (stable & testable)
-
-## 1) Define a tiny policy interface
+`packages/plenipotentiary-laravel/src/Contracts/Gateway/RestGatewayContract.php`
 
 ```php
-namespace Pleni\Contracts;
+<?php
+declare(strict_types=1);
 
-use Pleni\Support\GatewayCall;   // contains op name, input, hints, context bag
-use Pleni\Support\Result;
+namespace Capability\Pleni\Contracts\Gateway;
 
-interface GatewayPolicy
+use Capability\Pleni\Support\Idempotency\IdempotencyHints;
+use Capability\Pleni\Support\Result;
+
+/**
+ * Stable entry point for REST-style, “named operation + payload” calls.
+ */
+interface ApiRestGatewayContract
 {
-    /** Called before the adapter call. May block (e.g., rate limit) or wrap context. */
-    public function before(GatewayCall $call): GatewayCall;
-
-    /** Called after a successful adapter call. May augment meta/telemetry only. */
-    public function after(GatewayCall $call, Result $result): Result;
-
-    /** Called when adapter throws or returns failure. May transform error or decide retry. */
-    public function onError(GatewayCall $call, \Throwable|Result $error): Result;
+    /**
+     * @param string $operation  e.g. 'chat.completions.create'
+     * @param array<string,mixed> $input
+     */
+    public function perform(string $operation, array $input, ?IdempotencyHints $hints = null): Result;
 }
 ```
 
-* **Contract guarantees:**
-
-  * `before` can *enrich context* (e.g., correlation IDs) and perform **pre-checks** (rate limit, circuit breaker).
-  * `after` can add **metadata/metrics**, but **must not mutate canonical `data()`**.
-  * `onError` can **map errors** and **signal retry** (by throwing a `RetryRequested` exception or returning a `Result::retryable(...)`).
-
-## 2) Deterministic policy chain
+`packages/plenipotentiary-laravel/src/Contracts/Adapter/RestAdapterContract.php`
 
 ```php
-final class GatewayPolicyChain
+<?php
+declare(strict_types=1);
+
+namespace Capability\Pleni\Contracts\Adapter;
+
+use Capability\Pleni\Support\Idempotency\IdempotencyHints;
+use Capability\Pleni\Support\Result;
+
+/**
+ * Provider-specific adapter for REST operations.
+ * Free to use Saloon/Guzzle/Laravel HTTP or a vendor SDK internally.
+ */
+interface RestAdapterContract
 {
-    /** @param array<GatewayPolicy> $policies ordered */
-    public function __construct(private array $policies) {}
+    public function perform(string $operation, array $input, ?IdempotencyHints $hints = null): Result;
+}
+```
 
-    public function invoke(callable $adapterCall, GatewayCall $call): Result
+---
+
+# OpenAI REST (Saloon-first) wired to contracts
+
+**Gateway**
+`packages/plenipotentiary-laravel/src/Pleni/OpenAI/Api/Contexts/Default/RestConnector/Gateway/RestGateway.php`
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector;
+
+use Capability\Pleni\Contracts\Gateway\RestGatewayContract;
+use Capability\Pleni\Support\Idempotency\IdempotencyHints;
+use Capability\Pleni\Support\Result;
+
+final class OpenAiApiRestGateway implements RestGatewayContract
+{
+    public function __construct(private RestAdapter $adapter) {} // type-hint concrete or interface; see binding below
+
+    public function perform(string $operation, array $input, ?IdempotencyHints $hints = null): Result
     {
-        $c = $call;
-        foreach ($this->policies as $p) $c = $p->before($c);
+        // If/when you add a GatewayPolicyChain, invoke it here.
+        return $this->adapter->perform($operation, $input, $hints);
+    }
+}
+```
 
+**Adapter (Saloon inside)**
+`packages/plenipotentiary-laravel/src/Pleni/OpenAI/Api/Contexts/Default/RestConnector/Adapter/OpenAIApiRestAdapter.php`
+
+```php
+<?php
+declare(strict_types=1);
+
+namespace Capability\Pleni\OpenAI\Api\Contexts\Default;
+
+use Capability\Pleni\Contracts\Adapter\RestAdapterContract;
+use Capability\Pleni\Support\Idempotency\IdempotencyHints;
+use Capability\Pleni\Support\Result;
+use Capability\Pleni\OpenAI\Api\Contexts\Default\Requests\PostChatCompletionsRequest;
+use Psr\Log\LoggerInterface;
+
+final class OpenAIApiRestAdapter implements RestAdapterContract
+{
+    public function __construct(
+        private RestConnector $connector,
+        private OpenAIErrorMapper $errors,
+        private LoggerInterface $log,
+    ) {}
+
+    public function perform(string $operation, array $input, ?IdempotencyHints $hints = null): Result
+    {
         try {
-            $res = $adapterCall($c); // Adapter returns Result
-            foreach (array_reverse($this->policies) as $p) $res = $p->after($c, $res);
-            return $res;
+            $response = match ($operation) {
+                'chat.completions.create' => $this->connector->send(
+                    new PostChatCompletionsRequest([
+                        'model'    => $input['model']    ?? 'gpt-4o-mini',
+                        'messages' => $input['messages'] ?? [],
+                        ...array_intersect_key(
+                            $input,
+                            array_flip([
+                                'temperature','top_p','max_tokens','response_format','tools','tool_choice','stop',
+                                'frequency_penalty','presence_penalty','seed','logit_bias','user'
+                            ])
+                        ),
+                    ])
+                ),
+                default => throw new \InvalidArgumentException("Unknown OpenAI operation: {$operation}"),
+            };
+
+            if ($response->failed()) {
+                return $this->errors->fromResponse($response, $operation, $input);
+            }
+
+            $json = $response->json();
+            if ($operation === 'chat.completions.create') {
+                $choice  = $json['choices'][0] ?? null;
+                $message = $choice['message'] ?? null;
+
+                $canonical = [
+                    'id'           => $json['id'] ?? null,
+                    'model'        => $json['model'] ?? null,
+                    'created'      => $json['created'] ?? null,
+                    'content'      => is_array($message) ? ($message['content'] ?? null) : null,
+                    'role'         => is_array($message) ? ($message['role'] ?? null) : null,
+                    'finishReason' => $choice['finish_reason'] ?? null,
+                    'usage'        => $json['usage'] ?? null,
+                ];
+
+                return Result::ok($canonical)->withMeta([
+                    'provider'  => 'openai',
+                    'operation' => $operation,
+                    'http'      => ['status' => $response->status()],
+                ]);
+            }
+
+            return Result::ok($json)->withMeta([
+                'provider'  => 'openai',
+                'operation' => $operation,
+                'http'      => ['status' => $response->status()],
+            ]);
         } catch (\Throwable $e) {
-            $err = $e;
-            foreach (array_reverse($this->policies) as $p) $err = $p->onError($c, $err);
-            return $err instanceof Result ? $err : Result::error('UNHANDLED', $e->getMessage(), ['ex'=>$e]);
+            $this->log->warning('openai.adapter.exception', ['op' => $operation, 'ex' => $e->getMessage()]);
+            return $this->errors->fromException($e, $operation, $input);
         }
     }
 }
 ```
 
-* **Ordering is explicit** (constructor order) → great for tests and predictability.
-* **Reverse order** on the way out mirrors HTTP middleware semantics.
+**Connector (Saloon)** — unchanged from before, already great.
 
-## 3) Registration via Laravel config/service provider
+---
+
+# Service provider bindings (interface-first, default = Saloon)
+
+```php
+use Capability\Pleni\Contracts\Gateway\RestGatewayContract;
+use Capability\Pleni\Contracts\Adapter\RestAdapterContract;
+use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Gateway\RestGateway;
+use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Adapter\RestAdapter;
+
+$this->app->bind(RestGatewayContract::class, RestGateway::class);
+
+// Default to Saloon-based adapter (RestAdapter). Teams can override via config later.
+$this->app->bind(RestAdapterContract::class, RestAdapter::class);
+
+// If you want the gateway to depend on the interface:
+$this->app->bind(RestGateway::class, function ($app) {
+    /** @var RestAdapterContract $adapter */
+    $adapter = $app->make(RestAdapterContract::class);
+    return new RestGateway($adapter);
+});
+```
+
+Optional config switch (kept quiet in docs, but handy):
 
 ```php
 // config/pleni.php
 return [
-  'policies' => [
-    \Pleni\Policies\CorrelationIdPolicy::class,
-    \Pleni\Policies\RateLimitPolicy::class,
-    \Pleni\Policies\RetryBackoffPolicy::class,
-    \Pleni\Policies\LoggingPolicy::class,
-    \Pleni\Policies\MetricsPolicy::class,
+  'providers' => [
+    'openai' => [
+      'rest' => [
+        'adapter' => \Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Adapter\RestAdapter::class, // swap to a guzzle-based one if desired
+      ],
+    ],
   ],
 ];
 ```
 
-```php
-// PleniCoreServiceProvider.php
-$this->app->bind(GatewayPolicyChain::class, function ($app) {
-    $policies = collect(config('pleni.policies', []))
-        ->map(fn ($c) => $app->make($c))
-        ->all();
-    return new GatewayPolicyChain($policies);
-});
-```
-
-## 4) Example policies (sketches)
-
-**Retry + backoff (idempotency-aware)**
-
-```php
-final class RetryBackoffPolicy implements GatewayPolicy
-{
-    public function before(GatewayCall $call): GatewayCall { return $call; }
-
-    public function after(GatewayCall $call, Result $res): Result { return $res; }
-
-    public function onError(GatewayCall $call, \Throwable|Result $err): Result
-    {
-        $retryable = $err instanceof Result
-            ? $err->isRetryable()
-            : $err instanceof \Pleni\Exceptions\TransientNetworkError;
-
-        if ($retryable && $call->hints->retriesRemaining() > 0) {
-            $delay = $call->hints->nextBackoffMs();
-            usleep($delay * 1000);
-            throw new \Pleni\Support\RetryRequested(); // gateway catches and re-invokes adapter
-        }
-
-        return $err instanceof Result ? $err : Result::error('TRANSIENT', (string)$err);
-    }
-}
-```
-
-**Token bucket rate limiter**
-
-```php
-final class RateLimitPolicy implements GatewayPolicy
-{
-    public function __construct(private RateLimiter $limiter) {}
-
-    public function before(GatewayCall $call): GatewayCall
-    {
-        $key = "rate:{$call->provider}:{$call->operation}";
-        $this->limiter->consumeOrBlock($key);
-        return $call;
-    }
-    public function after(GatewayCall $call, Result $res): Result { return $res; }
-    public function onError(GatewayCall $call, \Throwable|Result $e): Result { return $e instanceof Result ? $e : Result::error('ERR', $e->getMessage()); }
-}
-```
-
-**Structured logging + PII redaction**
-
-```php
-final class LoggingPolicy implements GatewayPolicy
-{
-    public function __construct(private LoggerInterface $log, private Redactor $redact) {}
-
-    public function before(GatewayCall $c): GatewayCall {
-        $this->log->info('pleni.call.start', ['op'=>$c->operation,'corr'=>$c->context['corr'] ?? null]);
-        return $c;
-    }
-    public function after(GatewayCall $c, Result $r): Result {
-        $this->log->info('pleni.call.ok', ['op'=>$c->operation,'meta'=>$this->redact->meta($r->meta())]);
-        return $r;
-    }
-    public function onError(GatewayCall $c, \Throwable|Result $e): Result {
-        $this->log->warning('pleni.call.fail', ['op'=>$c->operation,'err'=>$this->redact->error($e)]);
-        return $e instanceof Result ? $e : Result::error('FAILED', $e->getMessage());
-    }
-}
-```
-
-# Why this works for Pleni
-
-* **Keeps Pleni opinionated** (canonical DTOs, Result object, idempotency hints) while letting teams **swap policies** without touching Adapters.
-* **Interops with Saloon** cleanly: Adapters can use Saloon/Guzzle/SDKs; Policies don’t care.
-* **Deterministic & testable**: explicit order; each policy can be unit-tested in isolation.
-* **Safe boundaries**: policies can’t mutate canonical `data()`; only meta/telemetry.
-
-# Naming & docs
-
-* Call them **“Gateway Policies (Plugins)”** in docs. Lead with the defaults:
-
-  * `CorrelationIdPolicy`, `RateLimitPolicy`, `RetryBackoffPolicy`, `CircuitBreakerPolicy`, `LoggingPolicy`, `MetricsPolicy`, `ChaosPolicy` (disabled by default).
-* Document **ordering** and a simple rule: *“Policies must not alter canonical data; do observe/augment meta.”*
-
-# Migration path (you can do this incrementally)
-
-1. Implement `GatewayPolicy` + `GatewayPolicyChain`.
-2. Wrap existing gateway adapter calls with the chain.
-3. Move current built-ins (retry, logging, idempotency glue) behind default policies.
-4. Expose `pleni.policies` config for overrides.
-5. Ship 3–4 blessed policies; keep the interface stable.
-
 ---
 
-**Bottom line:** add plugins, but **keep the surface small and disciplined**. You get extensibility where it matters (ops concerns) without weakening Pleni’s core promise: stable gateways, clean adapters, predictable results.
+# Should the adapter be swappable across Saloon/Guzzle/Laravel HTTP?
+
+**Trade-offs:**
+
+* **Swappable (via interface)**
+
+  * Future-proof; users with strict policies (no extra deps) can roll their own.
+  * Keeps “ports & adapters” purity.
+    − Slightly more DI glue (one interface binding).
+* **Pick one tool** (Saloon only) - but allow developer to swap if needed. We just own't maintain that.
 

@@ -12,7 +12,7 @@ use Plenipotentiary\Laravel\Support\Result;
  * Provider-specific implementation of endpoint calls,
  * handles the actual API communication and response mapping.
  */
-interface ApiRpcAdapterContract
+interface RpcAdapterContract
 {
     /**
      * Provider-specific implementation of endpoint calls

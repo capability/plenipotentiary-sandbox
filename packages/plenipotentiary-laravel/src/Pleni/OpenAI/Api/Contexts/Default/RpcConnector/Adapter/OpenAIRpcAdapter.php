@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Adapter;
 
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Support\Result;
 use Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support\OpenAIConfig;
 use Psr\Log\LoggerInterface;
 
-final class OpenAIApiRpcAdapter implements ApiRpcAdapterContract
+final class OpenAIRpcAdapter implements RpcAdapterContract
 {
     public function __construct(
         private HttpProviderClientContract $client,

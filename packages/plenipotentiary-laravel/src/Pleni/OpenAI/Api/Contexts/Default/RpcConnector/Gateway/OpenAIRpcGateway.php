@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Gateway;
 
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ApiRpcGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\EndpointIdempotencyHints;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class OpenAIApiRpcGateway implements ApiRpcGatewayContract
+final class OpenAIRpcGateway implements ApiRpcGatewayContract
 {
     public function __construct(
-        private ApiRpcAdapterContract $adapter,
+        private RpcAdapterContract $adapter,
         private LoggerInterface $logger,
         private IdempotencyStore $idempotencyStore,
         private EndpointIdempotencyHints $idempotencyHints,

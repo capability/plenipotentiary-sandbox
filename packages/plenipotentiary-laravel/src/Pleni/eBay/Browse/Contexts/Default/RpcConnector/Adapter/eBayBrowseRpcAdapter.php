@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\RpcConnector\Adapter;
 
-use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;
+use Plenipotentiary\Laravel\Contracts\Adapter\RpcAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class EbayBrowseApiRpcAdapter implements ApiRpcAdapterContract
+final class EbayBrowseRpcAdapter implements RpcAdapterContract
 {
     public function __construct(
         private HttpProviderClientContract $client,
