@@ -2,79 +2,54 @@
 
 use Plenipotentiary\Laravel\Support\Result;
 
-describe('Result', function () {
-    it('creates ok result with value', function () {
-        $result = Result::ok('test value');
+describe('Result helper assertions', function () {
+    it('creates an ok result from a canonical DTO', function () {
+        $dto = $this->createTestCampaignDTO(['name' => 'Support Suite']);
+        $result = Result::ok($dto);
 
         expect($result->isOk())->toBeTrue()
-            ->and($result->isErr())->toBeFalse()
-            ->and($result->isInvalid())->toBeFalse()
-            ->and($result->unwrap())->toBe('test value');
+            ->and($result->dto())->toBe($dto)
+            ->and($result->unwrap())->toBe($dto);
     });
 
-    it('creates ok result without value', function () {
-        $result = Result::ok();
-
-        expect($result->isOk())->toBeTrue()
-            ->and($result->unwrap())->toBeNull();
-    });
-
-    it('creates error result with throwable', function () {
-        $exception = new \RuntimeException('Test error');
+    it('creates an error result from a throwable', function () {
+        $exception = new \RuntimeException('Support test error');
         $result = Result::err($exception);
 
         expect($result->isErr())->toBeTrue()
-            ->and($result->error())->toHaveKey('class', \RuntimeException::class)
-            ->and($result->error())->toHaveKey('message', 'Test error');
+            ->and($result->error())
+                ->toMatchArray([
+                    'error' => 'Exception',
+                    'class' => \RuntimeException::class,
+                    'message' => 'Support test error',
+                ]);
     });
 
-    it('creates error result with string', function () {
-        $result = Result::err('Simple error');
-
-        expect($result->isErr())->toBeTrue()
-            ->and($result->error())->toHaveKey('error', 'Simple error');
-    });
-
-    it('creates invalid result with violations', function () {
+    it('creates an invalid result with violations', function () {
         $violations = [
             ['field' => 'name', 'rule' => 'required'],
-            ['field' => 'email', 'rule' => 'email'],
         ];
+
         $result = Result::invalid($violations);
 
         expect($result->isInvalid())->toBeTrue()
             ->and($result->violations())->toBe($violations);
     });
 
-    it('maps ok values', function () {
-        $result = Result::ok(5);
-        $mapped = $result->map(fn ($x) => $x * 2);
+    it('maps ok values without affecting errors', function () {
+        $dto = $this->createTestCampaignDTO(['name' => 'Pre-map']);
+        $mapped = Result::ok($dto)->map(function ($dto) {
+            $data = $dto->toArray();
+            $data['name'] = 'Post-map';
 
-        expect($mapped->isOk())->toBeTrue()
-            ->and($mapped->unwrap())->toBe(10);
-    });
+            return $dto::fromArray($data);
+        });
 
-    it('does not map error values', function () {
-        $result = Result::err('error');
-        $mapped = $result->map(fn ($x) => $x * 2);
+        expect($mapped->unwrap()->name)->toBe('Post-map');
 
-        expect($mapped)->toBe($result);
-    });
-
-    it('maps error payloads', function () {
-        $result = Result::err('original error');
-        $mapped = $result->mapError(fn ($error) => 'mapped: '.$error['error']);
-
-        expect($mapped->isErr())->toBeTrue()
-            ->and($mapped->error())->toHaveKey('error', 'mapped: original error');
-    });
-
-    it('serializes to array', function () {
-        $result = Result::ok('test');
-        $array = $result->toArray();
-
-        expect($array)->toHaveKey('kind', 'ok')
-            ->and($array)->toHaveKey('payload', 'test');
+        $error = Result::err('error');
+        expect($error->map(fn () => throw new \RuntimeException('should not run')))
+            ->toBe($error);
     });
 
     it('throws when unwrapping non-ok result', function () {

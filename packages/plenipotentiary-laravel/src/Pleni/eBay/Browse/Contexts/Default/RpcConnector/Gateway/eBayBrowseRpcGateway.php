@@ -11,10 +11,10 @@ use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyStore;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class EbayBrowseApiRpcGateway implements ApiRpcGatewayContract
+final class EbayBrowseRpcGateway implements ApiRpcGatewayContract
 {
     public function __construct(
-        private ApiRpcAdapterContract $adapter,
+        private RpcAdapterContract $adapter,
         private LoggerInterface $logger,
         private IdempotencyStore $idempotencyStore,
         private EndpointIdempotencyHints $idempotencyHints,
