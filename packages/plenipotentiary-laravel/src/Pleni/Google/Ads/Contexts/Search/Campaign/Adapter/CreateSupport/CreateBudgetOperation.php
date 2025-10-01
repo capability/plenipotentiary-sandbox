@@ -17,11 +17,11 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\Campai
  * Keeping this logic here makes CreateOperation easier to scan while still exposing the
  * exact Google Ads SDK usage we rely on when a caller does not provide an existing budget.
  */
-final class CreateBudgetOperation
+class CreateBudgetOperation
 {
     public function __construct(private ProviderClientContract $client) {}
 
-    public function create(string $customerId, CampaignCanonicalDTO $source, int $budgetMicros, bool $validateOnly = false): string
+    public function create(CampaignCanonicalDTO $source, int $budgetMicros, bool $validateOnly = false): string
     {
         $budget = new CampaignBudget([
             'name' => sprintf('%s Budget', trim($source->name ?? 'Campaign')),
@@ -32,7 +32,7 @@ final class CreateBudgetOperation
         $operation = (new CampaignBudgetOperation)->setCreate($budget);
 
         $request = (new MutateCampaignBudgetsRequest)
-            ->setCustomerId($customerId)
+            ->setCustomerId($source->getProviderContextValue('google.customerId'))
             ->setOperations([$operation])
             ->setValidateOnly($validateOnly);
 
@@ -44,7 +44,7 @@ final class CreateBudgetOperation
         if ($validateOnly) {
             // Google Ads does not return resource names during validate-only calls; provide a
             // deterministic placeholder so the downstream campaign request can still reference it.
-            return sprintf('customers/%s/campaignBudgets/validate-only-temp', $customerId);
+            return sprintf('customers/%s/campaignBudgets/validate-only-temp', $source->getProviderContextValue('google.customerId'));
         }
 
         return (string) ($response->getResults()[0]?->getResourceName() ?? '');

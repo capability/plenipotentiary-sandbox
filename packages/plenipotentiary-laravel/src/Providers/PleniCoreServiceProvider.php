@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Plenipotentiary\Laravel\Support\Commands\GenerateCanonicalFromErrorCommand;
 
 /**
  * Core ServiceProvider that registers only framework-level bindings.
@@ -36,5 +37,11 @@ final class PleniCoreServiceProvider extends ServiceProvider
         $this->app->bind(\Psr\Log\LoggerInterface::class, function ($app) {
             return \Illuminate\Support\Facades\Log::getLogger();
         });
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GenerateCanonicalFromErrorCommand::class,
+            ]);
+        }
     }
 }

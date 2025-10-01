@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Support;
 
-final class Result implements \JsonSerializable
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
+
+use JsonSerializable;
+use LogicException;
+
+final class Result implements JsonSerializable
 {
     private function __construct(
         private readonly string $kind,          // ok|err|invalid
-        private readonly mixed $payload = null, // any
+        private readonly ?CanonicalDTOContract $dto = null,
+        private readonly mixed $payload = null, // any meta or error details
     ) {}
 
-    public static function ok(mixed $value = null): self
+    public static function ok(CanonicalDTOContract $dto): self
     {
-        return new self('ok', $value);
+        return new self('ok', $dto, $dto);
     }
 
     /** Accepts \Throwable|string|array */
-    public static function err(mixed $error): self
+    public static function err(mixed $error, ?CanonicalDTOContract $dto = null): self
     {
         if ($error instanceof \Throwable) {
             $error = [
@@ -29,13 +35,16 @@ final class Result implements \JsonSerializable
             $error = ['error' => $error];
         }
 
-        return new self('err', $error);
+        return new self('err', $dto, $error);
     }
 
     /** $violations = [ ['field'=>'name','rule'=>'required', ...], ... ] */
-    public static function invalid(array $violations): self
+    public static function invalid(array $violations, array $expected = [], ?CanonicalDTOContract $dto = null): self
     {
-        return new self('invalid', ['violations' => array_values($violations)]);
+        return new self('invalid', $dto, [
+            'expected' => $expected,
+            'violations' => array_values($violations),
+        ]);
     }
 
     public function isOk(): bool
@@ -57,10 +66,10 @@ final class Result implements \JsonSerializable
     public function unwrap(): mixed
     {
         if (! $this->isOk()) {
-            throw new \LogicException('Attempted to unwrap a non-ok Result');
+            throw new LogicException('Attempted to unwrap a non-ok Result');
         }
 
-        return $this->payload;
+        return $this->dto;
     }
 
     /** Returns normalised error payload for err, null otherwise */
@@ -75,10 +84,15 @@ final class Result implements \JsonSerializable
         return $this->isInvalid() ? (array) ($this->payload['violations'] ?? null) : null;
     }
 
+    public function dto(): ?CanonicalDTOContract
+    {
+        return $this->dto;
+    }
+
     /** Map ok value, passthrough otherwise */
     public function map(callable $fn): self
     {
-        return $this->isOk() ? self::ok($fn($this->payload)) : $this;
+        return $this->isOk() && $this->dto ? self::ok($fn($this->dto)) : $this;
     }
 
     /** Map error payload when err|invalid, passthrough ok */
@@ -96,7 +110,11 @@ final class Result implements \JsonSerializable
 
     public function toArray(): array
     {
-        return ['kind' => $this->kind, 'payload' => $this->payload];
+        return [
+            'kind' => $this->kind,
+            'payload' => $this->payload,
+            'dto' => $this->dto?->toArray(),
+        ];
     }
 
     public function jsonSerialize(): array

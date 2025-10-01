@@ -7,8 +7,6 @@ use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Repository\CampaignRepositoryContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Support\CanonicalFactory;
-use Plenipotentiary\Laravel\Support\InputSource\ArraySource;
 
 class RunSandbox extends Command
 {
@@ -31,23 +29,11 @@ class RunSandbox extends Command
      */
     public function handle(
         CampaignRepositoryContract $repository,
-        CanonicalFactory $factory,
         ApiCrudGatewayContract $gateway,
     ) {
         $local = $repository->find(3);
         if (! $local) {
             $this->error('Local Campaign with id=3 not found.');
-
-            return Command::FAILURE;
-        }
-
-        $providerContext = GoogleAdsDefaults::apply([
-            'resourceName' => $local->resource_name,
-        ]);
-
-        $customerId = $providerContext['google.customerId'] ?? null;
-        if (! $customerId) {
-            $this->error('Missing google.customerId. Set GOOGLE_ADS_LINKED_CUSTOMER_ID before running the sandbox.');
 
             return Command::FAILURE;
         }
@@ -59,46 +45,25 @@ class RunSandbox extends Command
             'PAUSED' => 'PAUSED',
             'REMOVED' => 'REMOVED',
         ];
-        $status = $statusMap[$status] ?? 'PAUSED';
 
-        $dtoResult = $factory->make(
-            CampaignCanonicalDTO::class,
-            [
-                new ArraySource([
-                    'internal_id' => (string) $local->id,
-                    'name' => $local->name,
-                    'status' => $status,
-                    'budget_resource_name' => $local->budget_resource_name,
-                    'budget' => $local->daily_budget,
-                ]),
-            ],
-            [
-                'providerContext' => array_filter(
-                    array_merge($providerContext, ['resourceName' => $local->resource_name]),
-                    fn ($value) => $value !== null && $value !== ''
-                ),
-            ]
-        );
+        $providerContext = GoogleAdsDefaults::apply([
+            'resourceName' => $local->resource_name,
+        ]);
 
-        if ($dtoResult->isInvalid()) {
-            $this->displayViolations('Local campaign failed canonical validation', $dtoResult->violations() ?? []);
-
-            return Command::FAILURE;
-        }
-
-        if ($dtoResult->isErr()) {
-            $this->displayError('Unable to build canonical campaign DTO', $dtoResult->error() ?? []);
-
-            return Command::FAILURE;
-        }
-
-        /** @var CampaignCanonicalDTO $payload */
-        $payload = $dtoResult->unwrap();
+        $payload = CampaignCanonicalDTO::fromArray([
+            array()
+        ]);
 
         $createResult = $gateway->create($payload);
 
         if ($createResult->isInvalid()) {
-            $this->displayViolations('Remote API rejected the request', $createResult->violations() ?? []);
+            $payload = $createResult->toArray()['payload'] ?? [];
+            $this->displayViolations('Remote API rejected the request', $payload['violations'] ?? []);
+
+            if (isset($payload['expected'])) {
+                $this->line('Expected DTO shape:');
+                $this->line(json_encode($payload['expected'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            }
 
             return Command::FAILURE;
         }

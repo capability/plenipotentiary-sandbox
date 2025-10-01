@@ -11,83 +11,68 @@ use Google\Ads\GoogleAds\V21\Resources\Campaign;
 use Google\Ads\GoogleAds\V21\Services\CampaignOperation;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsRequest;
 use Google\Ads\GoogleAds\V21\Services\MutateCampaignsResponse;
-use InvalidArgumentException;
+use Plenipotentiary\Laravel\Contracts\Adapter\OperationContract;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Support\GoogleAdsDefaults;
-use Plenipotentiary\Laravel\Support\Operation\ValidationException;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
+use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
-final class UpdateOperation
+final class UpdateOperation implements OperationContract
 {
+    public const INPUT_SPEC = [
+        'name' => [
+            'rules' => ['nullable', 'string', 'min:1', 'max:128'],
+        ],
+        'status' => [
+            'rules' => ['nullable', 'in:ENABLED,PAUSED,REMOVED'],
+        ],
+        'providerContext.google.customerId' => [
+            'rules' => ['required', 'string'],
+            'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
+        ],
+        'providerContext.resourceName' => [
+            'rules' => ['required', 'string'],
+        ],
+    ];
+
     public function __construct(
         private ProviderClientContract $client,
         private LoggerInterface $logger,
     ) {}
 
-    public function perform(CampaignCanonicalDTO $dto, bool $validateOnly = false): Result
+    public static function inputSpec(): array
     {
-        try {
-            $this->spec($dto);
-        } catch (ValidationException $e) {
-            return Result::invalid($e->toArray());
+        return self::INPUT_SPEC;
+    }
+
+    public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result
+    {
+        if (! $dto instanceof CampaignCanonicalDTO) {
+            throw new \InvalidArgumentException('UpdateOperation expects CampaignCanonicalDTO');
         }
 
-        try {
-            $request = $this->requestMapper($dto, $validateOnly);
-        } catch (InvalidArgumentException $e) {
-            return Result::invalid([
-                [
-                    'field' => 'providerContext.google.customerId',
-                    'rule' => 'required',
-                    'message' => $e->getMessage(),
-                ],
-            ]);
-        }
-
-        $resourceName = $dto->getProviderContextValue('resourceName');
-        $customerId = GoogleAdsDefaults::apply($dto->providerContext)['google.customerId'] ?? null;
+        $request = $this->requestMapper($dto, $validateOnly);
 
         $this->logger->info('Updating Google Ads campaign', [
-            'resourceName' => $resourceName,
-            'customerId' => $customerId,
+            'resourceName' => $dto->getProviderContextValue('resourceName'),
+            'customerId' => $dto->getProviderContextValue('google.customerId'),
         ]);
 
         $response = $this->client->raw()
             ->getCampaignServiceClient()
             ->mutateCampaigns($request);
 
-        if ($validateOnly) {
-            return Result::ok();
-        }
-
-        $canonical = $this->responseMapper($response, $dto);
-
-        return Result::ok($canonical);
+        return $validateOnly
+            ? Result::ok()
+            : Result::ok($this->responseMapper($response, $dto));
     }
 
-    public function spec(CampaignCanonicalDTO $dto): void
+    public function requestMapper(CanonicalDTOContract $dto, bool $validateOnly = false): mixed
     {
-        $violations = [];
 
-        $resourceName = $dto->getProviderContextValue('resourceName');
-
-        if (! $resourceName) {
-            $violations[] = ['field' => 'resourceName', 'rule' => 'required', 'mapsTo' => 'campaign.resource_name'];
-        }
-
-        if (! $dto->name && ! $dto->status) {
-            $violations[] = ['field' => '(name|status)', 'rule' => 'at least one updatable field required', 'mapsTo' => 'campaign'];
-        }
-
-        if ($violations) {
-            throw ValidationException::fromArray('campaign.update', $violations);
-        }
-    }
-
-    public function requestMapper(CampaignCanonicalDTO $dto, bool $validateOnly = false): MutateCampaignsRequest
-    {
         $resourceName = $dto->getProviderContextValue('resourceName');
         if (! $resourceName) {
             throw new InvalidArgumentException('Campaign update requires providerContext["resourceName"].');
@@ -99,6 +84,11 @@ final class UpdateOperation
         }
         if ($dto->status !== null) {
             $campaignPayload['status'] = CampaignStatus::value($dto->status);
+        }
+
+        // If no mutable fields were provided, return invalid
+        if ($dto->name === null && $dto->status === null) {
+            return new MutateCampaignsRequest(); // placeholder, perform() will catch via preflight
         }
 
         $campaign = new Campaign($campaignPayload);
@@ -118,24 +108,26 @@ final class UpdateOperation
             ->setResponseContentType(ResponseContentType::MUTABLE_RESOURCE);
     }
 
-    public function responseMapper(MutateCampaignsResponse $response, CampaignCanonicalDTO $source): CampaignCanonicalDTO
+    public function responseMapper(mixed $response, mixed $source): CanonicalDTOContract
     {
+        if (! $response instanceof MutateCampaignsResponse || ! $source instanceof CampaignCanonicalDTO) {
+            throw new InvalidArgumentException('UpdateOperation::responseMapper expects (MutateCampaignsResponse, CampaignCanonicalDTO)');
+        }
+
         $result = $response->getResults()[0] ?? null;
         $resource = $result?->getCampaign();
         $resourceName = $resource?->getResourceName() ?? $result?->getResourceName();
 
+        $status = $resource?->getStatus();
+        $statusName = $status !== null ? CampaignStatus::name($status) : $source->status;
+
         return CampaignCanonicalDTO::fromArray(array_filter([
             'externalId' => $resource ? (string) $resource->getId() : $source->externalId,
             'name' => $resource?->getName() ?? $source->name,
-            'status' => $resource?->getStatus() ?? $source->status,
+            'status' => $statusName,
             'budgetResourceName' => $resource?->getCampaignBudget() ?? $source->budgetResourceName,
-            'providerContext' => array_filter(
-                array_merge(
-                    $source->providerContext,
-                    ['resourceName' => $resourceName]
-                ),
-                fn ($value) => $value !== null && $value !== ''
-            ),
+            'providerContext' => $source->providerContext + ['resourceName' => $resourceName],
         ]));
     }
+
 }

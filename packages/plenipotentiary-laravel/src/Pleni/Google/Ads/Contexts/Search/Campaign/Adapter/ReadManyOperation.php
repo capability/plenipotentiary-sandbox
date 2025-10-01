@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter;
 
+use Google\Ads\GoogleAds\V21\Enums\CampaignStatusEnum\CampaignStatus;
 use Google\Ads\GoogleAds\V21\Services\SearchGoogleAdsRequest;
 use Plenipotentiary\Laravel\Contracts\Client\ProviderClientContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
@@ -12,7 +13,6 @@ use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Dir;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Op;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Page;
-use Plenipotentiary\Laravel\Support\Operation\ValidationException;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 
@@ -41,12 +41,6 @@ final class ReadManyOperation
 
     public function perform(Lookup $criteria, string $customerId): Result
     {
-        try {
-            $this->spec($customerId);
-        } catch (ValidationException $e) {
-            return Result::invalid($e->toArray());
-        }
-
         $request = $this->requestMapper($criteria, $customerId);
 
         $this->logger->info('Executing Google Ads campaign readMany', [
@@ -59,17 +53,6 @@ final class ReadManyOperation
             ->search($request);
 
         return Result::ok($this->responseMapper($response, $customerId));
-    }
-
-    public function spec(string $customerId): void
-    {
-        if ($customerId === '') {
-            throw ValidationException::fromArray('campaign.readMany', [[
-                'field' => 'customerId',
-                'rule' => 'required',
-                'mapsTo' => 'customerId',
-            ]]);
-        }
     }
 
     private function requestMapper(Lookup $criteria, string $customerId): SearchGoogleAdsRequest
@@ -97,10 +80,12 @@ final class ReadManyOperation
         foreach ($response->iterateAllElements() as $row) {
             $campaign = $row->getCampaign();
 
+            $status = $campaign->getStatus();
+
             $items[] = CampaignCanonicalDTO::fromArray([
                 'externalId' => (string) $campaign->getId(),
                 'name' => $campaign->getName(),
-                'status' => $campaign->getStatus(),
+                'status' => $status !== null ? CampaignStatus::name($status) : null,
                 'budgetResourceName' => $campaign->getCampaignBudget(),
                 'providerContext' => array_filter([
                     'google.customerId' => $customerId,
