@@ -11,6 +11,7 @@ use Bricre\EbaySdkBuyBrowse\Configuration;
 use GuzzleHttp\Client as GuzzleClient;
 use Plenipotentiary\Laravel\Contracts\Client\HttpProviderClientContract;
 use Psr\Http\Message\ResponseInterface;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support\EbayConfig;
 
 final class eBaySdkClient implements HttpProviderClientContract
 {
@@ -132,8 +133,8 @@ final class eBaySdkClient implements HttpProviderClientContract
         $requestOptions['headers'] = array_merge(
             $requestOptions['headers'] ?? [],
             [
-                'X-EBAY-C-MARKETPLACE-ID' => env('EBAY_MARKETPLACE_ID', 'EBAY_US'),
-                'X-EBAY-C-ENDUSERCTX' => env('EBAY_ENDUSERCTX', 'affiliateCampaignId=<ePNCampaignId>,affiliateReferenceId=<referenceId>'),
+                'X-EBAY-C-MARKETPLACE-ID' => EbayConfig::marketplaceId(),
+                'X-EBAY-C-ENDUSERCTX' => EbayConfig::endUserCtx(),
             ]
         );
 

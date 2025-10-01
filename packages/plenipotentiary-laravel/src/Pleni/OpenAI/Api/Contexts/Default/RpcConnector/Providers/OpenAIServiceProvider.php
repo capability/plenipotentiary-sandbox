@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Contexts\Default\RpcConnector\Providers;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Contexts\Default\RpcConnector\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\ApiRpcAdapterContract;

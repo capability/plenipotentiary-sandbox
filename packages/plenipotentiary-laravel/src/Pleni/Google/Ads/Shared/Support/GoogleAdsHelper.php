@@ -47,7 +47,7 @@ final class GoogleAdsHelper
      */
     public static function loginCustomerId(): string
     {
-        return (string) env('GOOGLE_ADS_LOGIN_CUSTOMER_ID', '');
+        return GoogleAdsConfig::loginCustomerId();
     }
 
     /**
@@ -55,6 +55,6 @@ final class GoogleAdsHelper
      */
     public static function linkedCustomerId(): string
     {
-        return (string) env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '');
+        return GoogleAdsConfig::linkedCustomerId();
     }
 }
