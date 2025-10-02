@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Support\Operation;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Support\InputSpecValidator;
+use Plenipotentiary\Laravel\Support\Validation\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
 
 /**

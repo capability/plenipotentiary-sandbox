@@ -5,38 +5,61 @@ declare(strict_types=1);
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support;
 
 /**
- * Centralised configuration loader for eBay Browse.
- * All env() lookups should be done here.
+ * Centralised configuration for eBay Browse API.
+ * 
+ * This configuration class encapsulates all eBay-specific settings,
+ * keeping them isolated from the rest of the application.
  */
 final class EbayConfig
 {
-    public static function clientId(): string
+    public function __construct(
+        private readonly string $accessToken,
+        private readonly string $marketplaceId = 'EBAY_US',
+        private readonly bool $isSandbox = false,
+        private readonly ?string $clientId = null,
+        private readonly ?string $clientSecret = null,
+        private readonly ?string $refreshToken = null,
+        private readonly ?string $redirectUri = null,
+        private readonly ?string $endUserCtx = null,
+    ) {}
+
+    public function accessToken(): string
     {
-        return (string) env('EBAY_CLIENT_ID', '');
+        return $this->accessToken;
     }
 
-    public static function clientSecret(): string
+    public function marketplaceId(): string
     {
-        return (string) env('EBAY_CLIENT_SECRET', '');
+        return $this->marketplaceId;
     }
 
-    public static function refreshToken(): string
+    public function isSandbox(): bool
     {
-        return (string) env('EBAY_REFRESH_TOKEN', '');
+        return $this->isSandbox;
     }
 
-    public static function redirectUri(): ?string
+    public function clientId(): ?string
     {
-        return env('EBAY_REDIRECT_URI') ?: null;
+        return $this->clientId;
     }
 
-    public static function marketplaceId(): string
+    public function clientSecret(): ?string
     {
-        return (string) env('EBAY_MARKETPLACE_ID', 'EBAY_US');
+        return $this->clientSecret;
     }
 
-    public static function endUserCtx(): string
+    public function refreshToken(): ?string
     {
-        return (string) env('EBAY_ENDUSERCTX', 'affiliateCampaignId=<ePNCampaignId>,affiliateReferenceId=<referenceId>');
+        return $this->refreshToken;
+    }
+
+    public function redirectUri(): ?string
+    {
+        return $this->redirectUri;
+    }
+
+    public function endUserCtx(): ?string
+    {
+        return $this->endUserCtx;
     }
 }

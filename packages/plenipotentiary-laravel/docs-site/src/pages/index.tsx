@@ -8,13 +8,14 @@ import HomepageFeatures from "@site/src/components/HomepageFeatures";
 import HomepageTldr from "@site/src/components/HomepageTldr";
 import MakeScaffoldSection from "@site/src/components/MakeScaffoldSection";
 import DeveloperWorkflow from "@site/src/components/DeveloperWorkflow";
-import ApiEndpointAdapterSection from "@site/src/components/ApiEndpointAdapterSection";
+import PatternDecisionGuide from "@site/src/components/PatternDecisionGuide";
 import HomepageFAQ from "@site/src/components/HomepageFAQ";
 import HomepageBackground from "@site/src/components/HomepageBackground";
 import SectionDivider from "@site/src/components/SectionDivider";
 import Heading from "@theme/Heading";
 
 import styles from "./index.module.css";
+import ApiFirstWorkflow from "../components/ApiFirstWorkflow";
 
 function HomepageHeader() {
   const { siteConfig } = useDocusaurusContext();
@@ -80,11 +81,11 @@ export default function Home(): ReactNode {
         <HomepageFeatures />
         <HomepageTldr />
         <SectionDivider />
-        <DeveloperWorkflow />
+        <ApiFirstWorkflow />
         <SectionDivider />
         <MakeScaffoldSection />
         <SectionDivider />
-        <ApiEndpointAdapterSection />
+        <PatternDecisionGuide />
         <SectionDivider />
         <HomepageFAQ />
         <SectionDivider />

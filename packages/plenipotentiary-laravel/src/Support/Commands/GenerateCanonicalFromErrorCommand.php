@@ -7,7 +7,7 @@ namespace Plenipotentiary\Laravel\Support\Commands;
 use Illuminate\Console\Command;
 use JsonException;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Support\CanonicalFactory;
+use Plenipotentiary\Laravel\Support\Factory\CanonicalFactory;
 use Plenipotentiary\Laravel\Support\InputSource\ArraySource;
 
 final class GenerateCanonicalFromErrorCommand extends Command

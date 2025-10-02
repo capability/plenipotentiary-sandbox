@@ -1,43 +1,40 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 const sidebars: SidebarsConfig = {
   docs: [
-    'introduction',
+    "introduction",
     {
-      type: 'category',
-      label: 'Getting Started',
+      type: "category",
+      label: "Getting Started",
       collapsed: false,
+      items: ["getting-started/installation", "getting-started/quickstart"],
+    },
+    {
+      type: "category",
+      label: "Core Concepts",
       items: [
-        'getting-started/installation',
-        'getting-started/quickstart',
+        "concepts/auth",
+        "concepts/contracts",
+        "concepts/developer-workflow",
+        "concepts/dtos",
+        "concepts/gateways",
+        "concepts/workflows",
+        "concepts/logging",
+        "concepts/repository",
+        "concepts/testing",
       ],
     },
     {
-      type: 'category',
-      label: 'Core Concepts',
+      type: "category",
+      label: "Providers",
       items: [
-        'concepts/contracts',
-        'concepts/developer-workflow',
-        'concepts/dtos',
-        'concepts/gateways',
-        'concepts/workflows',
-        'concepts/logging',
-        'concepts/repository',
-        'concepts/testing',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Providers',
-      items: [
-        'providers/google/overview',
-        'providers/ebay/overview',
+        "providers/google/overview",
+        "providers/ebay/overview",
         // add more as you scaffold them
       ],
     },
-    'faq',
+    "faq",
   ],
 };
 
 export default sidebars;
-
