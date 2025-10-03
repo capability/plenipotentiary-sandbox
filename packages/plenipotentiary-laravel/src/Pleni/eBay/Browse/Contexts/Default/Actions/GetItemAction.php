@@ -11,7 +11,7 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Action for retrieving eBay item details using the Operation pattern.
- * 
+ *
  * This action retrieves full details of a specific eBay item.
  * Use this when you need comprehensive information about an item
  * including description, pricing, seller info, shipping options, etc.
@@ -24,8 +24,8 @@ final class GetItemAction
 
     /**
      * Get full item details using a pre-built operation.
-     * 
-     * @param GetItemDetailsOperation $operation The operation to execute
+     *
+     * @param  GetItemDetailsOperation  $operation  The operation to execute
      * @return Result<GetItemDetailsDTO, array> Success contains item details DTO
      */
     public function execute(GetItemDetailsOperation $operation): Result
@@ -36,6 +36,7 @@ final class GetItemAction
         if ($result->isOk()) {
             $data = $result->unwrap();
             $dto = GetItemDetailsDTO::fromApiResponse($data);
+
             return Result::ok($dto);
         }
 
@@ -44,9 +45,9 @@ final class GetItemAction
 
     /**
      * Get full item details by item ID (convenience method).
-     * 
-     * @param string $itemId The eBay item ID (format: v1|legacyId|variationId)
-     * @param array $options Additional options (see GetItemDetailsOperation)
+     *
+     * @param  string  $itemId  The eBay item ID (format: v1|legacyId|variationId)
+     * @param  array  $options  Additional options (see GetItemDetailsOperation)
      */
     public function getById(string $itemId, array $options = []): Result
     {
@@ -60,7 +61,7 @@ final class GetItemAction
 
     /**
      * Get compact item details for change detection.
-     * 
+     *
      * This is useful for checking if item availability, price,
      * or status has changed since last check.
      */
@@ -71,7 +72,7 @@ final class GetItemAction
 
     /**
      * Get item with product information.
-     * 
+     *
      * Includes additional product-level details.
      */
     public function getWithProduct(string $itemId): Result

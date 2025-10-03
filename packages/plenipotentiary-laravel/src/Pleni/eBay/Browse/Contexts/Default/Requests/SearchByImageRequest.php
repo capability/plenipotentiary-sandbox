@@ -11,13 +11,13 @@ use Saloon\Traits\Body\HasJsonBody;
 
 /**
  * Search for eBay items using an image.
- * 
+ *
  * This request allows you to search for items on eBay using an image.
  * The image can be provided as a base64-encoded string.
- * 
+ *
  * This is useful for visual search functionality where users can
  * upload or provide an image to find similar items.
- * 
+ *
  * @see https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/searchByImage
  */
 final class SearchByImageRequest extends Request implements HasBody
@@ -27,14 +27,14 @@ final class SearchByImageRequest extends Request implements HasBody
     protected Method $method = Method::POST;
 
     /**
-     * @param string $image Base64-encoded image string
-     * @param string|null $categoryIds Comma-separated category IDs to limit search
-     * @param string|null $filter Filter string (e.g., "price:[10..50]")
-     * @param int $limit Number of items per page (1-200, default: 50)
-     * @param int $offset Pagination offset
-     * @param string|null $sort Sort order
-     * @param string|null $aspectFilter Aspect filter
-     * @param string|null $fieldgroups Field groups to include
+     * @param  string  $image  Base64-encoded image string
+     * @param  string|null  $categoryIds  Comma-separated category IDs to limit search
+     * @param  string|null  $filter  Filter string (e.g., "price:[10..50]")
+     * @param  int  $limit  Number of items per page (1-200, default: 50)
+     * @param  int  $offset  Pagination offset
+     * @param  string|null  $sort  Sort order
+     * @param  string|null  $aspectFilter  Aspect filter
+     * @param  string|null  $fieldgroups  Field groups to include
      */
     public function __construct(
         private readonly string $image,
@@ -69,6 +69,6 @@ final class SearchByImageRequest extends Request implements HasBody
             'sort' => $this->sort,
             'aspect_filter' => $this->aspectFilter,
             'fieldgroups' => $this->fieldgroups,
-        ], fn($value) => $value !== null);
+        ], fn ($value) => $value !== null);
     }
 }

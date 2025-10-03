@@ -6,15 +6,15 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 
 /**
  * Operation for retrieving detailed information about a specific eBay item.
- * 
+ *
  * This operation encapsulates the request to get full details for a single item,
  * including shipping, return policy, seller information, and product details.
  */
 final class GetItemDetailsOperation
 {
     /**
-     * @param string $itemId The eBay item ID
-     * @param string|null $fieldgroups Optional field groups (PRODUCT, COMPACT, ADDITIONAL_SELLER_DETAILS)
+     * @param  string  $itemId  The eBay item ID
+     * @param  string|null  $fieldgroups  Optional field groups (PRODUCT, COMPACT, ADDITIONAL_SELLER_DETAILS)
      */
     public function __construct(
         public readonly string $itemId,
@@ -77,7 +77,7 @@ final class GetItemDetailsOperation
 
         if ($this->fieldgroups !== null) {
             $validFieldgroups = ['PRODUCT', 'COMPACT', 'ADDITIONAL_SELLER_DETAILS'];
-            if (!in_array($this->fieldgroups, $validFieldgroups, true)) {
+            if (! in_array($this->fieldgroups, $validFieldgroups, true)) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         'Invalid fieldgroups. Must be one of: %s',

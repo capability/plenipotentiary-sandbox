@@ -5,16 +5,20 @@ Quick reference for choosing the right pattern for your API integration.
 ## Decision Tree
 
 ```
-Is it a resource with full lifecycle (Create/Read/Update/Delete)?
-├─ YES → Use CRUD Pattern
-│         Examples: Campaigns, Customers, Products, Orders
+Is it an AI agent using MCP (Model Context Protocol)?
+├─ YES → Use MCP Pattern
+│         Examples: File system agents, database query agents, code analyzers
 │
-└─ NO → Is it an action/query operation?
-          ├─ Simple, one-off → Use Procedure Pattern
-          │                   Examples: Quick scripts, admin tools
-          │
-          └─ Complex, reusable → Use Operation Pattern
-                                Examples: Search, Generate, Verify
+└─ NO → Is it a resource with full lifecycle (Create/Read/Update/Delete)?
+         ├─ YES → Use CRUD Pattern
+         │         Examples: Campaigns, Customers, Products, Orders
+         │
+         └─ NO → Is it an action/query operation?
+                   ├─ Simple, one-off → Use Procedure Pattern
+                   │                   Examples: Quick scripts, admin tools
+                   │
+                   └─ Complex, reusable → Use Operation Pattern
+                                         Examples: Search, Generate, Verify
 ```
 
 ---
@@ -88,7 +92,42 @@ $result = $searchAction->handle('laptop', ['price_max' => 500]);
 
 ---
 
-### 3. Procedure Pattern (Simple RPC)
+### 3. MCP Pattern (AI Agent Operations)
+
+**When:** AI agents using Model Context Protocol for local resources
+
+**Structure:**
+```
+MCP/Contexts/Default/
+  ├── Operations/
+  │   └── CallTool/
+  │       ├── CallToolOperation.php
+  │       ├── CallToolGateway.php
+  │       ├── CallToolDTO.php
+  │       └── CallToolResult.php
+  └── Actions/
+      └── CallToolAction.php
+```
+
+**Developer writes:**
+```php
+$result = $callToolAction->handle(
+    server: 'filesystem',
+    tool: 'read_file',
+    arguments: ['path' => $path],
+    agentId: 'my-agent'
+);
+```
+
+**Examples:**
+- File system agents
+- Database query agents
+- Code search/analysis agents
+- Multi-step agent workflows
+
+---
+
+### 4. Procedure Pattern (Simple RPC)
 
 **When:** Quick prototypes, simple one-off operations
 
@@ -115,7 +154,7 @@ $result = $gateway->call('searchItems', [
 
 ---
 
-### 4. REST Pattern (Dedicated Requests)
+### 5. REST Pattern (Dedicated Requests)
 
 **When:** Many endpoints, need type-safe dedicated classes
 
@@ -146,16 +185,19 @@ $result = $gateway->execute($request);
 
 ## Feature Matrix
 
-| Feature | CRUD | Operation | Procedure | REST |
-|---------|------|-----------|-----------|------|
-| **Type Safety** | ✅✅✅ | ✅✅✅ | ✅ | ✅✅✅ |
-| **Validation** | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
-| **Discoverability** | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
-| **Ease of Setup** | ✅ | ✅✅ | ✅✅✅ | ✅✅ |
-| **Persistence** | ✅✅✅ | ✅✅ | ✅ | ✅✅ |
-| **Idempotency** | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
-| **Laravel Integration** | ✅✅✅ | ✅✅✅ | ✅✅ | ✅✅ |
-| **IDE Support** | ✅✅✅ | ✅✅✅ | ✅ | ✅✅✅ |
+| Feature | CRUD | Operation | MCP | Procedure | REST |
+|---------|------|-----------|-----|-----------|------|
+| **Type Safety** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅ | ✅✅✅ |
+| **Validation** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
+| **Discoverability** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
+| **Ease of Setup** | ✅ | ✅✅ | ✅✅ | ✅✅✅ | ✅✅ |
+| **Persistence** | ✅✅✅ | ✅✅ | ✅✅ | ✅ | ✅✅ |
+| **Idempotency** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅ | ✅✅ |
+| **Laravel Integration** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅✅ | ✅✅ |
+| **IDE Support** | ✅✅✅ | ✅✅✅ | ✅✅✅ | ✅ | ✅✅✅ |
+| **Agent Safety** | ❌ | ❌ | ✅✅✅ | ❌ | ❌ |
+| **Budget Tracking** | ❌ | ❌ | ✅✅✅ | ❌ | ❌ |
+| **Audit Logging** | ✅✅ | ✅✅ | ✅✅✅ | ✅ | ✅✅ |
 
 ---
 
@@ -329,6 +371,18 @@ Google/Ads/
       └── Transfer/Rest/        ← REST Pattern (for complex endpoints)
 ```
 
+### MCP + API Integration Example
+
+```
+app/Agents/
+  └── CampaignOptimizerAgent.php
+
+Uses:
+  ├── MCP Pattern          → Read analytics, call LLM
+  ├── CRUD Pattern         → Update Google Ads campaigns
+  └── REST Pattern         → Bill customer via Stripe
+```
+
 **Use each where it fits!**
 
 ---
@@ -369,6 +423,14 @@ $result = $searchAction->handle($dto);
 - ✅ Laravel integration (controllers, jobs, commands)
 - Examples: Search, Generate, Verify, Calculate
 
+### Choose MCP When:
+- ✅ Building AI agents
+- ✅ Need local resource access (filesystem, database)
+- ✅ Need observability into agent actions
+- ✅ Need budget/rate limit controls
+- ✅ Need audit trail for compliance
+- Examples: File system agents, database query agents, code analyzers
+
 ### Choose Procedure When:
 - ✅ Quick prototypes
 - ✅ Simple one-off operations
@@ -382,3 +444,5 @@ $result = $searchAction->handle($dto);
 - Examples: 50+ endpoint APIs
 
 **Most non-CRUD APIs should use the Operation Pattern!**
+
+**AI agents should use the MCP Pattern for safety and observability!**

@@ -14,7 +14,7 @@ use Throwable;
 
 /**
  * OpenAI API Procedure/RPC adapter using Saloon.
- * 
+ *
  * This adapter provides a simple RPC-style interface for calling OpenAI
  * endpoints without creating dedicated request classes. Operations are matched
  * internally and executed via Saloon HTTP requests.
@@ -57,7 +57,7 @@ final class OpenAIApiProcedureAdapter implements ProcedureAdapterContract
             ]);
 
             $mapped = $this->errorMapper->map($exception);
-            
+
             return Result::err([
                 'code' => $mapped->code(),
                 'message' => $mapped->getMessage(),
@@ -83,7 +83,7 @@ final class OpenAIApiProcedureAdapter implements ProcedureAdapterContract
     {
         // Map operation names to endpoint details
         $endpoint = $this->mapOperationToEndpoint($operation, $payload);
-        
+
         return new OpenAIApiDynamicRequest(
             method: $endpoint['method'],
             endpoint: $endpoint['path'],
@@ -117,7 +117,7 @@ final class OpenAIApiProcedureAdapter implements ProcedureAdapterContract
             ],
             'models.retrieve', 'retrieveModel' => [
                 'method' => Method::GET,
-                'path' => '/models/' . ($payload['model'] ?? ''),
+                'path' => '/models/'.($payload['model'] ?? ''),
             ],
             default => throw new \InvalidArgumentException("Unsupported operation: {$operation}"),
         };
@@ -126,7 +126,7 @@ final class OpenAIApiProcedureAdapter implements ProcedureAdapterContract
     private function mapHttpError(Response $response): Result
     {
         $body = $response->json();
-        
+
         return Result::err([
             'code' => 'HTTP_ERROR',
             'message' => $body['error']['message'] ?? 'Unknown error',

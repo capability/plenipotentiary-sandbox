@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * eBay Browse Procedure/RPC gateway.
- * 
+ *
  * Provides a stable, predictable facade for eBay Browse RPC-style operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -39,7 +39,7 @@ final class eBayBrowseProcedureGateway implements ProcedureGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'ebay.browse.procedure.' . $operation,
+            'ebay.browse.procedure.'.$operation,
             $payload,
             $options
         );

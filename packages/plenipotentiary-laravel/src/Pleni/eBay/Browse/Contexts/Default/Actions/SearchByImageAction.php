@@ -10,7 +10,7 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Action for visual search using images.
- * 
+ *
  * This action enables "search by image" functionality where users
  * can upload a photo to find similar items on eBay.
  */
@@ -22,13 +22,13 @@ final class SearchByImageAction
 
     /**
      * Search for items using an image.
-     * 
-     * @param string $base64Image Base64-encoded image string
-     * @param array $options Additional search options:
-     *                       - categoryIds: Limit search to specific categories
-     *                       - filter: Filter string
-     *                       - limit: Items per page
-     *                       - sort: Sort order
+     *
+     * @param  string  $base64Image  Base64-encoded image string
+     * @param  array  $options  Additional search options:
+     *                          - categoryIds: Limit search to specific categories
+     *                          - filter: Filter string
+     *                          - limit: Items per page
+     *                          - sort: Sort order
      */
     public function execute(string $base64Image, array $options = []): Result
     {
@@ -48,12 +48,12 @@ final class SearchByImageAction
 
     /**
      * Search by image file path.
-     * 
+     *
      * Convenience method that reads a file and encodes it.
      */
     public function executeFromFile(string $filePath, array $options = []): Result
     {
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             return Result::err([
                 'code' => 'FILE_NOT_FOUND',
                 'message' => "Image file not found: {$filePath}",

@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 
 /**
  * Data Transfer Object for eBay item details.
- * 
+ *
  * Provides a stable, type-safe interface for working with detailed item information
  * returned from the eBay Browse API.
  */
@@ -57,7 +57,7 @@ final class GetItemDetailsDTO
     {
         $value = $this->price['value'] ?? '0.00';
         $currency = $this->price['currency'] ?? 'USD';
-        
+
         return "{$currency} {$value}";
     }
 
@@ -82,7 +82,7 @@ final class GetItemDetailsDTO
      */
     public function getSellerFeedbackPercentage(): ?float
     {
-        return isset($this->seller['feedbackPercentage']) 
+        return isset($this->seller['feedbackPercentage'])
             ? (float) $this->seller['feedbackPercentage']
             : null;
     }
@@ -97,7 +97,7 @@ final class GetItemDetailsDTO
         }
 
         foreach ($this->shipping as $option) {
-            if (isset($option['shippingCost']['value']) 
+            if (isset($option['shippingCost']['value'])
                 && (float) $option['shippingCost']['value'] === 0.0
             ) {
                 return true;
@@ -118,7 +118,7 @@ final class GetItemDetailsDTO
 
         $costs = array_filter(
             array_map(
-                fn($option) => $option['shippingCost'] ?? null,
+                fn ($option) => $option['shippingCost'] ?? null,
                 $this->shipping
             )
         );
@@ -127,8 +127,7 @@ final class GetItemDetailsDTO
             return null;
         }
 
-        usort($costs, fn($a, $b) => 
-            (float) ($a['value'] ?? PHP_FLOAT_MAX) <=> (float) ($b['value'] ?? PHP_FLOAT_MAX)
+        usort($costs, fn ($a, $b) => (float) ($a['value'] ?? PHP_FLOAT_MAX) <=> (float) ($b['value'] ?? PHP_FLOAT_MAX)
         );
 
         return $costs[0];
@@ -147,7 +146,7 @@ final class GetItemDetailsDTO
      */
     public function getReturnPeriodDays(): ?int
     {
-        if (!isset($this->returnTerms['returnPeriod']['value'])) {
+        if (! isset($this->returnTerms['returnPeriod']['value'])) {
             return null;
         }
 
@@ -155,7 +154,7 @@ final class GetItemDetailsDTO
         $value = (int) $this->returnTerms['returnPeriod']['value'];
 
         // Convert to days if needed
-        return match($unit) {
+        return match ($unit) {
             'DAY' => $value,
             'WEEK' => $value * 7,
             'MONTH' => $value * 30,

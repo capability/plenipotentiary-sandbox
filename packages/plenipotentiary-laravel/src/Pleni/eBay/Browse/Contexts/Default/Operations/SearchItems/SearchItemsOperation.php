@@ -6,11 +6,11 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 
 /**
  * Operation representing a search for eBay items.
- * 
+ *
  * This operation encapsulates all the parameters needed to perform
  * an eBay item search. It serves as a stable, serializable contract
  * between the domain layer and the gateway/adapter.
- * 
+ *
  * Benefits:
  * - Type-safe parameter passing
  * - Queueable (all properties are serializable)
@@ -21,18 +21,18 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 final class SearchItemsOperation
 {
     /**
-     * @param string $query Search keyword or phrase
-     * @param int $limit Number of results to return (1-200)
-     * @param int $offset Pagination offset (must be 0 or multiple of limit)
-     * @param string|null $categoryIds Comma-separated category IDs to filter by
-     * @param string|null $filter Advanced filter string (e.g., "price:[10..50],condition:{New}")
-     * @param string|null $sort Sort order (price, newlyListed, endingSoonest, distance)
-     * @param string|null $aspectFilter Aspect filter for refinement (e.g., "categoryId:15724,Color:{Red}")
-     * @param string|null $fieldgroups Field groups to include (ASPECT_REFINEMENTS, MATCHING_ITEMS, FULL)
-     * @param string|null $gtin Global Trade Item Number (UPC, EAN, ISBN)
-     * @param string|null $epid eBay Product ID
-     * @param bool $autoCorrect Whether to auto-correct the query keywords
-     * @param string|null $compatibilityFilter Compatibility filter for automotive parts
+     * @param  string  $query  Search keyword or phrase
+     * @param  int  $limit  Number of results to return (1-200)
+     * @param  int  $offset  Pagination offset (must be 0 or multiple of limit)
+     * @param  string|null  $categoryIds  Comma-separated category IDs to filter by
+     * @param  string|null  $filter  Advanced filter string (e.g., "price:[10..50],condition:{New}")
+     * @param  string|null  $sort  Sort order (price, newlyListed, endingSoonest, distance)
+     * @param  string|null  $aspectFilter  Aspect filter for refinement (e.g., "categoryId:15724,Color:{Red}")
+     * @param  string|null  $fieldgroups  Field groups to include (ASPECT_REFINEMENTS, MATCHING_ITEMS, FULL)
+     * @param  string|null  $gtin  Global Trade Item Number (UPC, EAN, ISBN)
+     * @param  string|null  $epid  eBay Product ID
+     * @param  bool  $autoCorrect  Whether to auto-correct the query keywords
+     * @param  string|null  $compatibilityFilter  Compatibility filter for automotive parts
      */
     public function __construct(
         public readonly string $query,
@@ -53,7 +53,7 @@ final class SearchItemsOperation
 
     /**
      * Create from an array of parameters.
-     * 
+     *
      * Useful for building operations from request data, config files, etc.
      */
     public static function fromArray(array $data): self
@@ -97,7 +97,7 @@ final class SearchItemsOperation
 
     /**
      * Validate the operation parameters.
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     private function validate(): void

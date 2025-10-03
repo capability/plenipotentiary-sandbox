@@ -10,7 +10,7 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Gateway for the GetItemDetails operation.
- * 
+ *
  * Provides a stable interface for retrieving detailed information about
  * specific eBay items.
  */
@@ -22,8 +22,8 @@ final class GetItemDetailsGateway
 
     /**
      * Execute a get item details operation.
-     * 
-     * @param GetItemDetailsOperation $operation The operation to execute
+     *
+     * @param  GetItemDetailsOperation  $operation  The operation to execute
      * @return Result<array, array> Success contains item details, error contains failure info
      */
     public function execute(GetItemDetailsOperation $operation): Result

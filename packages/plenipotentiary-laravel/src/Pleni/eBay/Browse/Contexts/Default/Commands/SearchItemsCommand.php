@@ -10,12 +10,12 @@ use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\Search
 
 /**
  * Laravel command for searching eBay items using the Operation pattern.
- * 
+ *
  * This demonstrates how developers would use the eBay Browse API
  * in a CLI context. The command leverages the action layer,
  * keeping the command focused on CLI concerns (input/output)
  * while the action handles business logic.
- * 
+ *
  * Usage examples:
  *   php artisan ebay:search "vintage camera"
  *   php artisan ebay:search "laptop" --category=58058 --limit=20
@@ -55,7 +55,7 @@ class SearchItemsCommand extends Command
         if ($minPrice = $this->option('min-price')) {
             $maxPrice = $this->option('max-price') ?? '*';
             $operationData['filter'] = "price:[{$minPrice}..{$maxPrice}]";
-            $this->line("Price range: \${$minPrice} - " . ($maxPrice === '*' ? 'unlimited' : "\${$maxPrice}"));
+            $this->line("Price range: \${$minPrice} - ".($maxPrice === '*' ? 'unlimited' : "\${$maxPrice}"));
         }
 
         try {
@@ -63,6 +63,7 @@ class SearchItemsCommand extends Command
             $operation = SearchItemsOperation::fromArray($operationData);
         } catch (\InvalidArgumentException $e) {
             $this->error("Invalid search parameters: {$e->getMessage()}");
+
             return Command::FAILURE;
         }
 
@@ -72,14 +73,15 @@ class SearchItemsCommand extends Command
         if ($result->isErr()) {
             $error = $result->unwrapErr();
             $this->error("Search failed: {$error['message']}");
+
             return Command::FAILURE;
         }
 
         // Display results using the DTO
         $dto = $result->unwrap();
-        
+
         $this->newLine();
-        $this->info("Found {$dto->total} items (showing " . count($dto->items) . "):");
+        $this->info("Found {$dto->total} items (showing ".count($dto->items).'):');
         $this->line("Page {$dto->getCurrentPage()} of {$dto->getTotalPages()}");
         $this->newLine();
 

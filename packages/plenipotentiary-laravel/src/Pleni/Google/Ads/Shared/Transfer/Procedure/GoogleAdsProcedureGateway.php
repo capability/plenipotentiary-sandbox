@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Google Ads Procedure/RPC gateway.
- * 
+ *
  * Provides a stable, predictable facade for Google Ads RPC-style operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -39,7 +39,7 @@ final class GoogleAdsProcedureGateway implements ProcedureGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'google.ads.procedure.' . $operation,
+            'google.ads.procedure.'.$operation,
             $payload,
             $options
         );

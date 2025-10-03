@@ -14,7 +14,7 @@ use Saloon\Http\Request;
 
 /**
  * Google Ads REST gateway.
- * 
+ *
  * Provides a stable, predictable facade for Google Ads REST operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -40,7 +40,7 @@ final class GoogleAdsRestGateway implements RestGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'google.ads.rest.' . class_basename($request),
+            'google.ads.rest.'.class_basename($request),
             ['request_class' => $request::class]
         );
 

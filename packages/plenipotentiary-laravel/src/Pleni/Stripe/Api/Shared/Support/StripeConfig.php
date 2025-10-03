@@ -23,6 +23,7 @@ final class StripeConfig
     public static function webhookSecret(): ?string
     {
         $secret = env('STRIPE_WEBHOOK_SECRET', '');
+
         return $secret !== '' ? $secret : null;
     }
 

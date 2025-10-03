@@ -120,9 +120,9 @@ public function apply(RequestInterface $request, array $context = []): RequestIn
 **Example:**
 
 ```
-Secret Key: ***REMOVED***4eC39HqLyjWDarjtT1zdp7dc
-Encoded:    c2tfdGVzdF80ZUMzOUhxTHlqV0RhcmpUMTF6ZHA3ZGM6
-Header:     Authorization: Basic c2tfdGVzdF80ZUMzOUhxTHlqV0RhcmpUMTF6ZHA3ZGM6
+Secret Key:
+Encoded:    
+Header:     Authorization: Basic PLACEHOLER_SEC
 ```
 
 ---

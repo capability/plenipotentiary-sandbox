@@ -11,7 +11,7 @@ use Saloon\Traits\Plugins\HasTimeout;
 
 /**
  * Saloon connector for Stripe REST API.
- * 
+ *
  * Authentication is handled via StripeRestAuthStrategy, which can be:
  * - Injected via constructor (for testing/flexibility)
  * - Auto-created from config (for production use)
@@ -37,7 +37,7 @@ final class StripeApiRestConnector extends Connector
 
         return [
             // Stripe uses HTTP Basic Auth: secret_key as username
-            'Authorization' => 'Basic ' . base64_encode($authStrategy->getSecretKey() . ':'),
+            'Authorization' => 'Basic '.base64_encode($authStrategy->getSecretKey().':'),
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Stripe-Version' => StripeConfig::apiVersion(),
         ];

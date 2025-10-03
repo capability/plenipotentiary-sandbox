@@ -10,7 +10,7 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 /**
  * Saloon connector for OpenAI API Procedure/RPC API.
- * 
+ *
  * Configures the base URL, authentication, and default headers
  * for RPC-style communication with OpenAI API endpoints.
  */
@@ -26,7 +26,7 @@ final class OpenAIApiProcedureConnector extends Connector
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . OpenAIConfig::apiKey(),
+            'Authorization' => 'Bearer '.OpenAIConfig::apiKey(),
             'Content-Type' => 'application/json',
         ];
     }

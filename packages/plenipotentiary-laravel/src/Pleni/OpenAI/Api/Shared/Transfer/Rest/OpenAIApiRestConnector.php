@@ -10,7 +10,7 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 /**
  * Saloon connector for OpenAI API REST API.
- * 
+ *
  * Configures the base URL, authentication, and default headers
  * for communicating with OpenAI API REST endpoints.
  */
@@ -26,7 +26,7 @@ final class OpenAIApiRestConnector extends Connector
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . OpenAIConfig::apiKey(),
+            'Authorization' => 'Bearer '.OpenAIConfig::apiKey(),
             'Content-Type' => 'application/json',
         ];
     }

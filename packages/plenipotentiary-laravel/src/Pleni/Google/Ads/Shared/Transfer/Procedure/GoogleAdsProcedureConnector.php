@@ -10,7 +10,7 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 /**
  * Saloon connector for Google Ads Procedure/RPC API.
- * 
+ *
  * Configures the base URL, authentication, and default headers
  * for RPC-style communication with Google Ads endpoints.
  */
@@ -28,7 +28,7 @@ final class GoogleAdsProcedureConnector extends Connector
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . $this->config->accessToken(),
+            'Authorization' => 'Bearer '.$this->config->accessToken(),
             'developer-token' => $this->config->developerToken(),
             'Content-Type' => 'application/json',
         ];

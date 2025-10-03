@@ -10,7 +10,7 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 /**
  * Saloon connector for Google Ads REST API.
- * 
+ *
  * Configures the base URL, authentication, and default headers
  * for communicating with Google Ads REST endpoints.
  */
@@ -28,7 +28,7 @@ final class GoogleAdsRestConnector extends Connector
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . $this->config->accessToken(),
+            'Authorization' => 'Bearer '.$this->config->accessToken(),
             'developer-token' => $this->config->developerToken(),
             'Content-Type' => 'application/json',
         ];

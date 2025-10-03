@@ -11,14 +11,14 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Action for searching eBay items using the Operation pattern.
- * 
+ *
  * This action demonstrates how developers interact with the eBay Browse API
  * in their application layer. The action is:
  * - Domain-focused (knows about searching items, not eBay specifics)
  * - Type-safe (uses Operation and DTO objects)
  * - Testable (can mock the gateway)
  * - Reusable across controllers, jobs, commands
- * 
+ *
  * The Operation pattern provides:
  * - Structured, validated input via SearchItemsOperation
  * - Stable gateway interface via SearchItemsGateway
@@ -32,11 +32,11 @@ final class SearchItemsAction
 
     /**
      * Search for eBay items using a pre-built operation.
-     * 
+     *
      * This is the primary method - it accepts a fully-formed operation object
      * that has been validated and is ready to execute.
-     * 
-     * @param SearchItemsOperation $operation The search operation to execute
+     *
+     * @param  SearchItemsOperation  $operation  The search operation to execute
      * @return Result<SearchItemsDTO, array> Success contains search results DTO
      */
     public function execute(SearchItemsOperation $operation): Result
@@ -47,6 +47,7 @@ final class SearchItemsAction
         if ($result->isOk()) {
             $data = $result->unwrap();
             $dto = SearchItemsDTO::fromApiResponse($data);
+
             return Result::ok($dto);
         }
 
@@ -55,9 +56,9 @@ final class SearchItemsAction
 
     /**
      * Search for eBay items by keyword (convenience method).
-     * 
-     * @param string $query Search keyword (e.g., "laptop", "vintage camera")
-     * @param array $options Additional search options (see SearchItemsOperation)
+     *
+     * @param  string  $query  Search keyword (e.g., "laptop", "vintage camera")
+     * @param  array  $options  Additional search options (see SearchItemsOperation)
      * @return Result<SearchItemsDTO, array>
      */
     public function search(string $query, array $options = []): Result
@@ -80,7 +81,7 @@ final class SearchItemsAction
         int $limit = 50
     ): Result {
         $filter = "price:[{$minPrice}..{$maxPrice}]";
-        
+
         $operation = new SearchItemsOperation(
             query: $query,
             limit: $limit,

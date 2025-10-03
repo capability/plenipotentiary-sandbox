@@ -225,6 +225,7 @@ final class eBayErrorMapper
     private function mapHttpException(\GuzzleHttp\Exception\RequestException $e): MappedError
     {
         $statusCode = $e->getResponse()?->getStatusCode() ?? 0;
+
         return $this->mapByHttpStatus($statusCode, $e->getMessage(), $e);
     }
 
@@ -252,4 +253,3 @@ final class eBayErrorMapper
         return false;
     }
 }
-

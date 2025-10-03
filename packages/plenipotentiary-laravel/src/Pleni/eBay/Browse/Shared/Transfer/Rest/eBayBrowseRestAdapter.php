@@ -14,7 +14,7 @@ use Throwable;
 
 /**
  * eBay Browse REST adapter using Saloon.
- * 
+ *
  * This adapter handles communication with eBay Browse REST APIs,
  * leveraging saloonphp/saloon for HTTP communication.
  */
@@ -52,7 +52,7 @@ final class eBayBrowseRestAdapter implements RestAdapterContract
             ]);
 
             $mapped = $this->errorMapper->map($exception);
-            
+
             return Result::err([
                 'code' => $mapped->code(),
                 'message' => $mapped->getMessage(),
@@ -65,7 +65,7 @@ final class eBayBrowseRestAdapter implements RestAdapterContract
     private function mapHttpError(Response $response): Result
     {
         $body = $response->json();
-        
+
         return Result::err([
             'code' => 'HTTP_ERROR',
             'message' => $body['errors'][0]['message'] ?? 'Unknown error',

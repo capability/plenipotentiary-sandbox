@@ -14,7 +14,7 @@ use Saloon\Http\Request;
 
 /**
  * OpenAI API REST gateway.
- * 
+ *
  * Provides a stable, predictable facade for OpenAI API REST operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -40,7 +40,7 @@ final class OpenAIApiRestGateway implements RestGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'openai.api.rest.' . class_basename($request),
+            'openai.api.rest.'.class_basename($request),
             ['request_class' => $request::class]
         );
 

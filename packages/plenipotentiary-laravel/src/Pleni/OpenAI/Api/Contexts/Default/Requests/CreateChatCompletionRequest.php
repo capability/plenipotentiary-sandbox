@@ -11,7 +11,7 @@ use Saloon\Traits\Body\HasJsonBody;
 
 /**
  * Example Saloon Request for creating chat completions with OpenAI API.
- * 
+ *
  * This demonstrates the REST/Saloon pattern where each API endpoint
  * is represented by its own self-contained Request class.
  */

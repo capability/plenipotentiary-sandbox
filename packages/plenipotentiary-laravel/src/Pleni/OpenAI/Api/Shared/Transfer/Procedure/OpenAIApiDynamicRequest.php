@@ -11,7 +11,7 @@ use Saloon\Traits\Body\HasJsonBody;
 
 /**
  * Dynamic Saloon request for OpenAI API Procedure/RPC operations.
- * 
+ *
  * This class allows creating requests on-the-fly without dedicated
  * request classes for each endpoint.
  */

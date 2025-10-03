@@ -12,7 +12,7 @@ use Plenipotentiary\Laravel\Pleni\Stripe\Api\Shared\Transfer\Rest\StripeApiRestC
 
 /**
  * Service provider for Stripe shared services.
- * 
+ *
  * This shows how REST-based authentication is wired up in the DI container.
  * Compare this to GoogleAdsServiceProvider to see the SDK vs REST differences.
  */

@@ -10,14 +10,14 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * Gateway for the SearchItems operation.
- * 
+ *
  * This gateway acts as the stable interface for executing eBay item searches.
  * It handles:
  * - Operation validation
  * - Translation from Operation to Request
  * - Delegation to the REST gateway for execution
  * - Cross-cutting concerns (logging, monitoring, idempotency)
- * 
+ *
  * The gateway is the boundary between the domain layer (which knows about
  * "searching for items") and the transfer layer (which knows how to talk
  * to eBay's REST API).
@@ -30,11 +30,11 @@ final class SearchItemsGateway
 
     /**
      * Execute a search operation.
-     * 
+     *
      * This method accepts the domain-focused SearchItemsOperation object
      * and translates it into an eBay-specific REST request.
-     * 
-     * @param SearchItemsOperation $operation The search operation to execute
+     *
+     * @param  SearchItemsOperation  $operation  The search operation to execute
      * @return Result<array, array> Success contains search results, error contains failure info
      */
     public function execute(SearchItemsOperation $operation): Result
@@ -66,7 +66,7 @@ final class SearchItemsGateway
 
     /**
      * Execute multiple searches in parallel (if supported by infrastructure).
-     * 
+     *
      * This demonstrates how the gateway can provide higher-level capabilities
      * while still maintaining the clean separation of concerns.
      */
@@ -75,7 +75,7 @@ final class SearchItemsGateway
         $results = [];
 
         foreach ($operations as $key => $operation) {
-            if (!$operation instanceof SearchItemsOperation) {
+            if (! $operation instanceof SearchItemsOperation) {
                 throw new \InvalidArgumentException(
                     'All operations must be instances of SearchItemsOperation'
                 );
@@ -110,7 +110,7 @@ final class SearchItemsGateway
         int $limit = 50
     ): Result {
         $filter = "price:[{$minPrice}..{$maxPrice}]";
-        
+
         $operation = new SearchItemsOperation(
             query: $query,
             limit: $limit,

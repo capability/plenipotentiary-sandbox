@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * OpenAI API Procedure/RPC gateway.
- * 
+ *
  * Provides a stable, predictable facade for OpenAI API RPC-style operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -39,7 +39,7 @@ final class OpenAIApiProcedureGateway implements ProcedureGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'openai.api.procedure.' . $operation,
+            'openai.api.procedure.'.$operation,
             $payload,
             $options
         );

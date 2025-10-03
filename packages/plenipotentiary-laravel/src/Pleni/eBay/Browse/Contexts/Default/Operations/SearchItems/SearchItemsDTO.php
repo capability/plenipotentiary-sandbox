@@ -6,11 +6,11 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 
 /**
  * Data Transfer Object for eBay item search results.
- * 
+ *
  * This DTO represents the structured output of a search operation.
  * It provides a stable, documented interface for consuming search results
  * regardless of how eBay's API response format might evolve.
- * 
+ *
  * Benefits:
  * - Type-safe access to search results
  * - Decouples domain from eBay's response structure
@@ -20,12 +20,12 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\
 final class SearchItemsDTO
 {
     /**
-     * @param array $items Array of item summaries
-     * @param int $total Total number of matching items
-     * @param int $limit Number of items per page
-     * @param int $offset Current offset
-     * @param array|null $refinements Available refinement options (categories, aspects)
-     * @param array|null $warnings Any warnings from the API
+     * @param  array  $items  Array of item summaries
+     * @param  int  $total  Total number of matching items
+     * @param  int  $limit  Number of items per page
+     * @param  int  $offset  Current offset
+     * @param  array|null  $refinements  Available refinement options (categories, aspects)
+     * @param  array|null  $warnings  Any warnings from the API
      */
     public function __construct(
         public readonly array $items,
@@ -38,7 +38,7 @@ final class SearchItemsDTO
 
     /**
      * Create from eBay API response.
-     * 
+     *
      * This factory method knows how to parse eBay's specific response format
      * and extract the relevant data into our stable DTO structure.
      */
@@ -95,7 +95,7 @@ final class SearchItemsDTO
      */
     public function getNextOffset(): ?int
     {
-        if (!$this->hasMoreResults()) {
+        if (! $this->hasMoreResults()) {
             return null;
         }
 
@@ -108,7 +108,7 @@ final class SearchItemsDTO
     public function getItemIds(): array
     {
         return array_map(
-            fn($item) => $item['itemId'] ?? null,
+            fn ($item) => $item['itemId'] ?? null,
             $this->items
         );
     }
@@ -120,7 +120,7 @@ final class SearchItemsDTO
     {
         return array_filter(
             $this->items,
-            fn($item) => ($item['condition'] ?? null) === $condition
+            fn ($item) => ($item['condition'] ?? null) === $condition
         );
     }
 
@@ -134,7 +134,7 @@ final class SearchItemsDTO
         }
 
         $prices = array_map(
-            fn($item) => (float) ($item['price']['value'] ?? 0),
+            fn ($item) => (float) ($item['price']['value'] ?? 0),
             $this->items
         );
 

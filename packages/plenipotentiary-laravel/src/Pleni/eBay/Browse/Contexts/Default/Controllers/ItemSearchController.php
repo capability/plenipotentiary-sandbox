@@ -10,15 +10,15 @@ use Illuminate\Routing\Controller;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\GetItemAction;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\SearchByImageAction;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\SearchItemsAction;
-use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\SearchItems\SearchItemsOperation;
 use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\GetItemDetails\GetItemDetailsOperation;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Operations\SearchItems\SearchItemsOperation;
 
 /**
  * Controller for eBay item search functionality using the Operation pattern.
- * 
+ *
  * This demonstrates how developers would expose eBay Browse API
  * functionality through their Laravel application's web routes.
- * 
+ *
  * Example routes:
  *   Route::get('/api/ebay/search', [ItemSearchController::class, 'search']);
  *   Route::get('/api/ebay/items/{itemId}', [ItemSearchController::class, 'show']);
@@ -34,7 +34,7 @@ class ItemSearchController extends Controller
 
     /**
      * Search for items by keyword.
-     * 
+     *
      * GET /api/ebay/search?q=laptop&category=58058&limit=20
      */
     public function search(Request $request): JsonResponse
@@ -91,6 +91,7 @@ class ItemSearchController extends Controller
 
         if ($result->isErr()) {
             $error = $result->unwrapErr();
+
             return response()->json([
                 'success' => false,
                 'error' => [
@@ -102,7 +103,7 @@ class ItemSearchController extends Controller
 
         // Return the DTO's structured data
         $dto = $result->unwrap();
-        
+
         return response()->json([
             'success' => true,
             'data' => $dto->toArray(),
@@ -111,7 +112,7 @@ class ItemSearchController extends Controller
 
     /**
      * Get item details by ID.
-     * 
+     *
      * GET /api/ebay/items/{itemId}
      */
     public function show(string $itemId, Request $request): JsonResponse
@@ -144,6 +145,7 @@ class ItemSearchController extends Controller
 
         if ($result->isErr()) {
             $error = $result->unwrapErr();
+
             return response()->json([
                 'success' => false,
                 'error' => [
@@ -164,7 +166,7 @@ class ItemSearchController extends Controller
 
     /**
      * Search for items using an uploaded image.
-     * 
+     *
      * POST /api/ebay/search-by-image
      * Content-Type: multipart/form-data
      * Body: image (file)
@@ -196,6 +198,7 @@ class ItemSearchController extends Controller
 
         if ($result->isErr()) {
             $error = $result->unwrapErr();
+
             return response()->json([
                 'success' => false,
                 'error' => [
@@ -213,7 +216,7 @@ class ItemSearchController extends Controller
 
     /**
      * Get price statistics for a search query.
-     * 
+     *
      * GET /api/ebay/price-stats?q=laptop
      */
     public function priceStats(Request $request): JsonResponse
@@ -245,6 +248,7 @@ class ItemSearchController extends Controller
 
         if ($result->isErr()) {
             $error = $result->unwrapErr();
+
             return response()->json([
                 'success' => false,
                 'error' => [
@@ -255,11 +259,11 @@ class ItemSearchController extends Controller
         }
 
         $dto = $result->unwrap();
-        
+
         // Use the DTO's built-in price range calculation
         $priceRange = $dto->getPriceRange();
 
-        if (!$priceRange) {
+        if (! $priceRange) {
             return response()->json([
                 'success' => false,
                 'error' => [
@@ -282,4 +286,3 @@ class ItemSearchController extends Controller
         ]);
     }
 }
-

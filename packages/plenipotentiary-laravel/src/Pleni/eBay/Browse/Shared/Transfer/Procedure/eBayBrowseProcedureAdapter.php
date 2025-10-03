@@ -14,7 +14,7 @@ use Throwable;
 
 /**
  * eBay Browse Procedure/RPC adapter using Saloon.
- * 
+ *
  * This adapter provides a simple RPC-style interface for calling eBay Browse
  * endpoints without creating dedicated request classes. Operations are matched
  * internally and executed via Saloon HTTP requests.
@@ -57,7 +57,7 @@ final class eBayBrowseProcedureAdapter implements ProcedureAdapterContract
             ]);
 
             $mapped = $this->errorMapper->map($exception);
-            
+
             return Result::err([
                 'code' => $mapped->code(),
                 'message' => $mapped->getMessage(),
@@ -83,7 +83,7 @@ final class eBayBrowseProcedureAdapter implements ProcedureAdapterContract
     {
         // Map operation names to endpoint details
         $endpoint = $this->mapOperationToEndpoint($operation, $payload);
-        
+
         return new eBayBrowseDynamicRequest(
             method: $endpoint['method'],
             endpoint: $endpoint['path'],
@@ -105,7 +105,7 @@ final class eBayBrowseProcedureAdapter implements ProcedureAdapterContract
             ],
             'getItem' => [
                 'method' => Method::GET,
-                'path' => '/buy/browse/v1/item/' . ($payload['itemId'] ?? ''),
+                'path' => '/buy/browse/v1/item/'.($payload['itemId'] ?? ''),
             ],
             'getItemByLegacyId' => [
                 'method' => Method::GET,
@@ -118,7 +118,7 @@ final class eBayBrowseProcedureAdapter implements ProcedureAdapterContract
     private function mapHttpError(Response $response): Result
     {
         $body = $response->json();
-        
+
         return Result::err([
             'code' => 'HTTP_ERROR',
             'message' => $body['errors'][0]['message'] ?? 'Unknown error',

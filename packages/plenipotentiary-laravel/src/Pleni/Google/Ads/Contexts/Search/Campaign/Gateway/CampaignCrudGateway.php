@@ -14,6 +14,8 @@ use Plenipotentiary\Laravel\Exceptions\DomainException;
 use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayCall;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
+use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignUpdate;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
@@ -46,6 +48,10 @@ final class CampaignCrudGateway implements ApiCrudGatewayContract
 
     public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
     {
+        if ($invalid = $this->preflight($this->resolveOperation(CampaignCreate::class), $c)) {
+            return $invalid;
+        }
+
         try {
             $call = new GatewayCall('campaign.create', $c->toArray(), ['validateOnly' => $validateOnly]);
 
@@ -83,6 +89,10 @@ final class CampaignCrudGateway implements ApiCrudGatewayContract
 
     public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
     {
+        if ($invalid = $this->preflight($this->resolveOperation(CampaignUpdate::class), $c)) {
+            return $invalid;
+        }
+
         try {
             $call = new GatewayCall('campaign.update', $c->toArray(), ['validateOnly' => $validateOnly]);
 

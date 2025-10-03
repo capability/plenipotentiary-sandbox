@@ -14,7 +14,7 @@ use Saloon\Http\Request;
 
 /**
  * eBay Browse REST gateway.
- * 
+ *
  * Provides a stable, predictable facade for eBay Browse REST operations.
  * Applies cross-cutting concerns before delegating to the adapter.
  */
@@ -40,7 +40,7 @@ final class eBayBrowseRestGateway implements RestGatewayContract
         ]);
 
         $call = new GatewayCall(
-            'ebay.browse.rest.' . class_basename($request),
+            'ebay.browse.rest.'.class_basename($request),
             ['request_class' => $request::class]
         );
 

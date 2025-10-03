@@ -6,7 +6,7 @@ namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support;
 
 /**
  * Centralised configuration for eBay Browse API.
- * 
+ *
  * This configuration class encapsulates all eBay-specific settings,
  * keeping them isolated from the rest of the application.
  */

@@ -72,7 +72,7 @@ final class CustomerRead implements AdapterVerbContract
 
             public function resolveEndpoint(): string
             {
-                return '/v1/customers/' . $this->dto->externalId;
+                return '/v1/customers/'.$this->dto->externalId;
             }
         };
     }

@@ -17,7 +17,7 @@ use Saloon\Traits\Body\HasFormBody;
 
 /**
  * Create operation for Stripe Customers using Saloon.
- * 
+ *
  * This demonstrates how AdapterVerbContract can be implemented
  * using REST API calls via Saloon.
  */

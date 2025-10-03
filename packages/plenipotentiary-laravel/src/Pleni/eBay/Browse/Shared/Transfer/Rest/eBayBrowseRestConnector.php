@@ -10,7 +10,7 @@ use Saloon\Traits\Plugins\AcceptsJson;
 
 /**
  * Saloon connector for eBay Browse REST API.
- * 
+ *
  * Configures the base URL, authentication, and default headers
  * for communicating with eBay Browse REST endpoints.
  */
@@ -30,7 +30,7 @@ final class eBayBrowseRestConnector extends Connector
     protected function defaultHeaders(): array
     {
         return [
-            'Authorization' => 'Bearer ' . $this->config->accessToken(),
+            'Authorization' => 'Bearer '.$this->config->accessToken(),
             'Content-Type' => 'application/json',
             'X-EBAY-C-MARKETPLACE-ID' => $this->config->marketplaceId(),
         ];

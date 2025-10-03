@@ -10,11 +10,11 @@ use Plenipotentiary\Laravel\Support\Result;
 
 /**
  * CRUD Adapter for Stripe Customers.
- * 
+ *
  * This demonstrates that the CRUD adapter pattern works perfectly
  * with REST APIs using Saloon, not just SDKs. Each operation uses
  * Saloon to make HTTP calls to Stripe's REST API.
- * 
+ *
  * Note: This uses a different contract than CrudAdapterContract
  * because Stripe doesn't have a "lookup" concept like Google Ads does.
  */

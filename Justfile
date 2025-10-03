@@ -457,6 +457,61 @@ docs-down:
 	@{{ensure_host}}
 	{{compose}} stop {{docs_svc}}
 
+# Install docs-site dependencies (npm)
+docs-install:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -c 'cd /app && npm install'
+
+# Clean install docs-site dependencies (removes node_modules first)
+docs-install-clean:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -c 'cd /app && rm -rf node_modules && npm install'
+
+# Start docs dev server (with hot reload)
+docs-dev:
+	@{{ensure_host}}
+	{{compose}} up -d {{docs_svc}}
+	echo "Docs dev server running at http://localhost:3001"
+	{{compose}} logs -f {{docs_svc}}
+
+# Build docs for production
+docs-build:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -c 'cd /app && npm run build'
+
+# Clear Docusaurus cache
+docs-clear:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -c 'cd /app && npm run clear'
+
+# Rebuild docs container (use after adding new dependencies)
+docs-rebuild:
+	@{{ensure_host}}
+	{{compose}} build --no-cache {{docs_svc}}
+	{{compose}} up -d --force-recreate {{docs_svc}}
+	echo "Docs container rebuilt. Server at http://localhost:3001"
+
+# Access docs container shell
+docs-shell:
+	@{{ensure_host}}
+	{{compose}} exec -it {{docs_svc}} sh
+
+# Restart docs server (quick fix for issues)
+docs-restart:
+	@{{ensure_host}}
+	{{compose}} restart {{docs_svc}}
+	echo "Docs server restarted at http://localhost:3001"
+
+# Show docs logs
+docs-logs:
+	@{{ensure_host}}
+	{{compose}} logs -f --tail=100 {{docs_svc}}
+
+# Type check docs-site
+docs-typecheck:
+	@{{ensure_host}}
+	{{compose}} exec -T {{docs_svc}} sh -c 'cd /app && npm run typecheck'
+
 ui-up:
     @{{ensure_host}}
     {{compose}} up -d {{fe_svc}}

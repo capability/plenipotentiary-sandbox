@@ -17,12 +17,12 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Service provider for eBay Browse API integration.
- * 
+ *
  * This provider wires up all the components needed for the eBay Browse API:
  * - REST connector, adapter, and gateway
  * - Actions (automatically resolved via dependency injection)
  * - Commands for CLI usage
- * 
+ *
  * The provider demonstrates clean separation between:
  * - Infrastructure (Saloon connector)
  * - Adapter layer (eBay-specific communication)
@@ -68,13 +68,13 @@ class eBayBrowseServiceProvider extends ServiceProvider
             \Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\GetItemAction::class,
             \Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\SearchByImageAction::class,
         ])
-        ->needs(RestGatewayContract::class)
-        ->give(function ($app) {
-            return new eBayBrowseRestGateway(
-                adapter: $app->make(eBayBrowseRestAdapter::class),
-                logger: $app->make(LoggerInterface::class),
-            );
-        });
+            ->needs(RestGatewayContract::class)
+            ->give(function ($app) {
+                return new eBayBrowseRestGateway(
+                    adapter: $app->make(eBayBrowseRestAdapter::class),
+                    logger: $app->make(LoggerInterface::class),
+                );
+            });
     }
 
     public function boot(): void

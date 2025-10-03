@@ -17,7 +17,7 @@ use Saloon\Traits\Body\HasFormBody;
 
 /**
  * Update operation for Stripe Customers.
- * 
+ *
  * Note: Stripe uses POST for updates, not PUT/PATCH!
  */
 final class CustomerUpdate implements AdapterVerbContract
@@ -91,7 +91,7 @@ final class CustomerUpdate implements AdapterVerbContract
 
             public function resolveEndpoint(): string
             {
-                return '/v1/customers/' . $this->dto->externalId;
+                return '/v1/customers/'.$this->dto->externalId;
             }
 
             protected function defaultBody(): array

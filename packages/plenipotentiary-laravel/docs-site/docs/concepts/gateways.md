@@ -52,10 +52,10 @@
 
    Structure:
      Shared/Transfer/Procedure/
-       ├── {Provider}ProcedureAdapter
-       ├── {Provider}ProcedureGateway  
-       ├── {Provider}ProcedureConnector
-       └── {Provider}DynamicRequest
+       ├── \{Provider\}ProcedureAdapter
+       ├── \{Provider\}ProcedureGateway  
+       ├── \{Provider\}ProcedureConnector
+       └── \{Provider\}DynamicRequest
 
    How it works:
      1. Call with operation name + payload
@@ -82,10 +82,10 @@
 
       Structure:
      Shared/Transfer/Rest/
-       ├── {Provider}RestAdapter
-       ├── {Provider}RestGateway
-       └── {Provider}RestConnector
-     Contexts/{Context}/Requests/
+       ├── \{Provider\}RestAdapter
+       ├── \{Provider\}RestGateway
+       └── \{Provider\}RestConnector
+     Contexts/\{Context\}/Requests/
        ├── SearchCampaignsRequest.php
        ├── SearchItemsRequest.php
        └── CreateChatCompletionRequest.php
@@ -125,36 +125,36 @@
    FILE STRUCTURE SUMMARY
    ═══════════════════════════════════════════════════════════════════════════
 
-   Pleni/{Provider}/{Domain}/
+   Pleni/\{Provider\}/\{Domain\}/
      ├── Contexts/
-     │   └── {Context}/
+     │   └── \{Context\}/
      │       ├── Adapter/              ← CRUD Operations (SDK or REST)
-     │       │   ├── {Resource}Create[Rest].php
-     │       │   ├── {Resource}Update[Rest].php
-     │       │   ├── {Resource}Delete[Rest].php
-     │       │   ├── {Resource}Read[Rest].php
-     │       │   └── {Resource}ApiCrudAdapter.php
+     │       │   ├── \{Resource\}Create[Rest].php
+     │       │   ├── \{Resource\}Update[Rest].php
+     │       │   ├── \{Resource\}Delete[Rest].php
+     │       │   ├── \{Resource\}Read[Rest].php
+     │       │   └── \{Resource\}ApiCrudAdapter.php
      │       ├── DTO/
-     │       │   └── {Resource}CanonicalDTO.php
+     │       │   └── \{Resource\}CanonicalDTO.php
      │       ├── Selector/
-     │       │   └── {Resource}Selector.php
+     │       │   └── \{Resource\}Selector.php
      │       └── Requests/             ← REST Pattern (dedicated classes)
      │           ├── SearchItemsRequest.php
      │           └── CreateCompletionRequest.php
      └── Shared/
          ├── Support/
-         │   ├── {Provider}Config.php
-         │   └── {Provider}ErrorMapper.php
+         │   ├── \{Provider\}Config.php
+         │   └── \{Provider\}ErrorMapper.php
          └── Transfer/
              ├── Procedure/            ← Procedure/RPC Pattern
-             │   ├── {Provider}ProcedureAdapter.php
-             │   ├── {Provider}ProcedureGateway.php
-             │   ├── {Provider}ProcedureConnector.php
-             │   └── {Provider}DynamicRequest.php
+             │   ├── \{Provider\}ProcedureAdapter.php
+             │   ├── \{Provider\}ProcedureGateway.php
+             │   ├── \{Provider\}ProcedureConnector.php
+             │   └── \{Provider\}DynamicRequest.php
              └── Rest/                 ← REST Pattern (infrastructure)
-                 ├── {Provider}RestAdapter.php
-                 ├── {Provider}RestGateway.php
-                 └── {Provider}RestConnector.php
+                 ├── \{Provider\}RestAdapter.php
+                 ├── \{Provider\}RestGateway.php
+                 └── \{Provider\}RestConnector.php
 
    ═══════════════════════════════════════════════════════════════════════════
    REAL WORLD EXAMPLES

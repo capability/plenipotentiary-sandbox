@@ -8,7 +8,7 @@ use Plenipotentiary\Laravel\Contracts\DTO\CanonicalDTOContract;
 
 /**
  * Canonical DTO for Stripe Customer.
- * 
+ *
  * Provider-agnostic representation of a customer.
  */
 final class CustomerCanonicalDTO implements CanonicalDTOContract

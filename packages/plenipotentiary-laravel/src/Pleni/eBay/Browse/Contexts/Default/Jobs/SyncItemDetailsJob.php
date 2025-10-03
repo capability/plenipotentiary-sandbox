@@ -14,11 +14,11 @@ use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Actions\GetItemAc
 
 /**
  * Job for syncing eBay item details in the background.
- * 
+ *
  * This demonstrates how the eBay Browse API can be used in Laravel's
  * queue system. Because the gateway handles idempotency and retry logic,
  * this job can safely be retried on failure.
- * 
+ *
  * Example usage:
  *   dispatch(new SyncItemDetailsJob('v1|272535166916|0', $productId));
  *   SyncItemDetailsJob::dispatch('v1|272535166916|0', 123)->onQueue('ebay-sync');
@@ -28,13 +28,15 @@ class SyncItemDetailsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 3;
+
     public int $timeout = 60;
+
     public int $backoff = 30;
 
     /**
-     * @param string $ebayItemId The eBay item ID to sync
-     * @param int|null $localProductId Optional local product ID for persistence
-     * @param bool $checkCompact Whether to check compact first for changes
+     * @param  string  $ebayItemId  The eBay item ID to sync
+     * @param  int|null  $localProductId  Optional local product ID for persistence
+     * @param  bool  $checkCompact  Whether to check compact first for changes
      */
     public function __construct(
         private readonly string $ebayItemId,
@@ -53,9 +55,10 @@ class SyncItemDetailsJob implements ShouldQueue
             // Step 1: Check if item has changed (optional optimization)
             if ($this->checkCompact) {
                 $compactResult = $getItemAction->getCompact($this->ebayItemId);
-                
+
                 if ($compactResult->isErr()) {
                     $this->handleError($compactResult->unwrapErr());
+
                     return;
                 }
 
@@ -68,6 +71,7 @@ class SyncItemDetailsJob implements ShouldQueue
 
             if ($result->isErr()) {
                 $this->handleError($result->unwrapErr());
+
                 return;
             }
 
@@ -112,7 +116,7 @@ class SyncItemDetailsJob implements ShouldQueue
     {
         // This is where you would save to your local database
         // For example:
-        // 
+        //
         // Product::updateOrCreate(
         //     ['ebay_item_id' => $this->ebayItemId],
         //     [

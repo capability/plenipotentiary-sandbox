@@ -14,7 +14,7 @@ use Throwable;
 
 /**
  * OpenAI API REST adapter using Saloon.
- * 
+ *
  * This adapter handles communication with OpenAI REST APIs,
  * leveraging saloonphp/saloon for HTTP communication.
  */
@@ -52,7 +52,7 @@ final class OpenAIApiRestAdapter implements RestAdapterContract
             ]);
 
             $mapped = $this->errorMapper->map($exception);
-            
+
             return Result::err([
                 'code' => $mapped->code(),
                 'message' => $mapped->getMessage(),
@@ -65,7 +65,7 @@ final class OpenAIApiRestAdapter implements RestAdapterContract
     private function mapHttpError(Response $response): Result
     {
         $body = $response->json();
-        
+
         return Result::err([
             'code' => 'HTTP_ERROR',
             'message' => $body['error']['message'] ?? 'Unknown error',

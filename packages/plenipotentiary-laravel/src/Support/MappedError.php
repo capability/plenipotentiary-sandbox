@@ -8,7 +8,7 @@ use Throwable;
 
 /**
  * Represents a mapped error from a provider-specific exception.
- * 
+ *
  * This class provides a consistent way to represent errors from
  * different providers, including metadata about retryability,
  * HTTP status codes, and error codes.
