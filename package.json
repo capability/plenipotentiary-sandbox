@@ -1,9 +1,16 @@
 {
+  "private": true,
   "packageManager": "pnpm@10.15.1",
   "engines": {
     "node": ">=22"
   },
-  "devDependencies": {
-    "@docusaurus/theme-live-codeblock": "^3.9.0"
+  "workspaces": [
+    "apps/frontend"
+  ],
+  "scripts": {
+    "docs:install": "cd packages/plenipotentiary-laravel/docs-site && npm install",
+    "docs:dev": "cd packages/plenipotentiary-laravel/docs-site && npm run dev",
+    "docs:build": "cd packages/plenipotentiary-laravel/docs-site && npm run build",
+    "docs:serve": "cd packages/plenipotentiary-laravel/docs-site && npm run serve"
   }
 }

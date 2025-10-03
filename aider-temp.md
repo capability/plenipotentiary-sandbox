@@ -1,10 +1,10 @@
-Totally—let’s make the OpenAI REST path implement **ApiRest*** contracts, and clear up the “swappable adapter vs pick one tool” question.
 
 # Recommendation (short & opinionated)
 
 * **Keep a small, stable boundary:** `RestGatewayContract` and `RestAdapterContract`.
 * **Ship one blessed implementation out of the box:** **Saloon** (best DX + features).
 * **Keep the door open (quietly):** because the adapter hangs off an interface, teams *can* swap in Guzzle/Laravel HTTP later—without you maintaining multiple stacks.
+* **Remember:** “RestConnector” is only a **folder name** for organization, not an extra contract/layer. Developers only interact with Gateways and Adapters.
 
 This balances pragmatism (one strong default) with flexibility (no lock-in).
 
@@ -26,7 +26,7 @@ use Capability\Pleni\Support\Result;
 /**
  * Stable entry point for REST-style, “named operation + payload” calls.
  */
-interface ApiRestGatewayContract
+interface RestGatewayContract
 {
     /**
      * @param string $operation  e.g. 'chat.completions.create'
@@ -70,13 +70,14 @@ declare(strict_types=1);
 
 namespace Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector;
 
+use Capability\Pleni\Contracts\Adapter\RestAdapterContract;
 use Capability\Pleni\Contracts\Gateway\RestGatewayContract;
 use Capability\Pleni\Support\Idempotency\IdempotencyHints;
 use Capability\Pleni\Support\Result;
 
 final class OpenAiApiRestGateway implements RestGatewayContract
 {
-    public function __construct(private RestAdapter $adapter) {} // type-hint concrete or interface; see binding below
+    public function __construct(private RestAdapterContract $adapter) {}
 
     public function perform(string $operation, array $input, ?IdempotencyHints $hints = null): Result
     {
@@ -104,7 +105,7 @@ use Psr\Log\LoggerInterface;
 final class OpenAIApiRestAdapter implements RestAdapterContract
 {
     public function __construct(
-        private RestConnector $connector,
+        private THIS NEEDS TO BE SALOON (however that is best handled (interface vs implemntation))
         private OpenAIErrorMapper $errors,
         private LoggerInterface $log,
     ) {}
@@ -177,19 +178,19 @@ final class OpenAIApiRestAdapter implements RestAdapterContract
 ```php
 use Capability\Pleni\Contracts\Gateway\RestGatewayContract;
 use Capability\Pleni\Contracts\Adapter\RestAdapterContract;
-use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Gateway\RestGateway;
-use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Adapter\RestAdapter;
+use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Gateway\OpenAiApiRestGateway;
+use Capability\Pleni\OpenAI\Api\Contexts\Default\RestConnector\Adapter\OpenAiApiRestAdapter;
 
-$this->app->bind(RestGatewayContract::class, RestGateway::class);
+$this->app->bind(RestGatewayContract::class, OpenAiApiRestGateway::class);
 
 // Default to Saloon-based adapter (RestAdapter). Teams can override via config later.
-$this->app->bind(RestAdapterContract::class, RestAdapter::class);
+$this->app->bind(RestAdapterContract::class, OpenAiApiRestAdapter::class);
 
 // If you want the gateway to depend on the interface:
-$this->app->bind(RestGateway::class, function ($app) {
+$this->app->bind(OpenAiApiRestGateway::class, function ($app) {
     /** @var RestAdapterContract $adapter */
     $adapter = $app->make(RestAdapterContract::class);
-    return new RestGateway($adapter);
+    return new OpenAiApiRestGateway($adapter);
 });
 ```
 

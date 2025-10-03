@@ -98,10 +98,12 @@ services:
     working_dir: /app
     ports:
       - "3001:3000"  # host:container
-    # Mount source for hot reload, but keep node_modules inside container
+    # Mount source for hot reload, but keep node_modules and caches inside container
     volumes:
       - ./packages/plenipotentiary-laravel/docs-site:/app
       - /app/node_modules
+      - /app/.docusaurus
+      - /app/build
     environment:
       CI: "false"
     restart: unless-stopped
@@ -206,7 +208,6 @@ volumes:
   vendor_cache:
   composer_cache:
   grafana_data:
-  pnpm_store_docs:
   pnpm_store_ui:
   caddy_data:
   caddy_config:

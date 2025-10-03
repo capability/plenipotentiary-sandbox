@@ -39,4 +39,10 @@ final class GoogleAdsConfig
     {
         return (string) env('GOOGLE_ADS_LINKED_CUSTOMER_ID', '');
     }
+
+    // Instance methods for REST connector
+    public function accessToken(): string
+    {
+        return (string) env('GOOGLE_ADS_ACCESS_TOKEN', '');
+    }
 }

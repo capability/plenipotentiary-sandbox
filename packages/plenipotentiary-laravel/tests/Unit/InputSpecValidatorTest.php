@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Plenipotentiary\Laravel\Support\InputSpecValidator;
+use Plenipotentiary\Laravel\Support\Validation\InputSpecValidator;
 
 describe('InputSpecValidator', function () {
     $spec = [

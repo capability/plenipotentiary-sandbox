@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Plenipotentiary\Laravel\Pleni\eBay\Browse\Shared\Support;
 
-use Plenipotentiary\Laravel\Contracts\Error\ErrorMapperContract;
+use Plenipotentiary\Laravel\Support\MappedError;
 use Throwable;
 
 /**
@@ -13,16 +13,16 @@ use Throwable;
  * Maps eBay-specific exceptions into domain-friendly errors.
  * Handles various eBay API error scenarios and provides meaningful error messages.
  */
-final class eBayErrorMapper implements ErrorMapperContract
+final class eBayErrorMapper
 {
     /**
-     * Map provider-specific exceptions into your app's domain-friendly errors
+     * Map provider-specific exceptions into domain-friendly errors
      */
-    public function map(Throwable $e): Throwable
+    public function map(Throwable $e): MappedError
     {
-        // Handle eBay SDK specific exceptions
-        if ($e instanceof \Bricre\EbaySdkBuyBrowse\ApiException) {
-            return $this->mapEbayApiException($e);
+        // Handle Saloon HTTP exceptions
+        if ($e instanceof \Saloon\Exceptions\Request\RequestException) {
+            return $this->mapSaloonException($e);
         }
 
         // Handle Guzzle HTTP exceptions
@@ -35,11 +35,23 @@ final class eBayErrorMapper implements ErrorMapperContract
             $statusCode = $e->getResponse()?->getStatusCode();
 
             if ($statusCode === 401) {
-                return new \DomainException('eBay authentication failed. Please check your credentials.', 401, $e);
+                return new MappedError(
+                    code: 'AUTHENTICATION_ERROR',
+                    message: 'eBay authentication failed. Please check your credentials.',
+                    httpStatus: 401,
+                    retryable: false,
+                    previous: $e
+                );
             }
 
             if ($statusCode === 403) {
-                return new \DomainException('eBay access forbidden. Check your API permissions and scopes.', 403, $e);
+                return new MappedError(
+                    code: 'AUTHORIZATION_ERROR',
+                    message: 'eBay access forbidden. Check your API permissions and scopes.',
+                    httpStatus: 403,
+                    retryable: false,
+                    previous: $e
+                );
             }
         }
 
@@ -48,163 +60,196 @@ final class eBayErrorMapper implements ErrorMapperContract
             $statusCode = $e->getResponse()?->getStatusCode();
 
             if ($statusCode === 429) {
-                return new \DomainException('eBay API rate limit exceeded. Please retry after the specified time.', 429, $e);
+                return new MappedError(
+                    code: 'RATE_LIMIT_EXCEEDED',
+                    message: 'eBay API rate limit exceeded. Please retry after the specified time.',
+                    httpStatus: 429,
+                    retryable: true,
+                    previous: $e
+                );
             }
         }
 
         // For other exceptions, wrap them as domain exceptions
-        return new \DomainException("eBay API error: {$e->getMessage()}", $e->getCode(), $e);
+        return new MappedError(
+            code: 'UNKNOWN_ERROR',
+            message: "eBay API error: {$e->getMessage()}",
+            httpStatus: $e->getCode() ?: 500,
+            retryable: false,
+            previous: $e
+        );
     }
 
     /**
-     * Map eBay SDK API exceptions
+     * Map Saloon request exceptions
      */
-    private function mapEbayApiException(\Bricre\EbaySdkBuyBrowse\ApiException $e): Throwable
+    private function mapSaloonException(\Saloon\Exceptions\Request\RequestException $e): MappedError
     {
-        $responseBody = $e->getResponseBody();
-        $statusCode = $e->getCode();
+        $response = $e->getResponse();
+        $statusCode = $response->status();
+        $body = $response->json();
 
         // Try to parse eBay error response
-        if ($responseBody) {
-            $errorData = json_decode($responseBody, true);
+        if (isset($body['errors']) && is_array($body['errors'])) {
+            $error = $body['errors'][0] ?? [];
+            $errorId = $error['errorId'] ?? 'UNKNOWN_ERROR';
+            $errorMessage = $error['message'] ?? $e->getMessage();
+            $errorCategory = $error['category'] ?? 'REQUEST_ERROR';
 
-            if (isset($errorData['errors'])) {
-                $error = $errorData['errors'][0] ?? [];
-                $errorId = $error['errorId'] ?? 'UNKNOWN_ERROR';
-                $errorMessage = $error['message'] ?? $e->getMessage();
-                $errorCategory = $error['category'] ?? 'REQUEST_ERROR';
-
-                return $this->mapEbayErrorByCategory($errorCategory, $errorId, $errorMessage, $statusCode, $e);
-            }
+            return $this->mapEbayErrorByCategory($errorCategory, $errorId, $errorMessage, $statusCode, $e);
         }
 
-        // Fallback to generic eBay error
-        return new \DomainException("eBay API error (HTTP {$statusCode}): {$e->getMessage()}", $statusCode, $e);
+        // Map by HTTP status code
+        return $this->mapByHttpStatus($statusCode, $e->getMessage(), $e);
     }
 
     /**
      * Map eBay errors by category
      */
-    private function mapEbayErrorByCategory(string $category, string $errorId, string $message, int $statusCode, Throwable $original): Throwable
-    {
-        switch ($category) {
-            case 'REQUEST_ERROR':
-                return $this->mapRequestError($errorId, $message, $statusCode, $original);
+    private function mapEbayErrorByCategory(
+        string $category,
+        string $errorId,
+        string $message,
+        int $statusCode,
+        Throwable $original
+    ): MappedError {
+        $retryable = $this->isRetryable($category, $errorId, $statusCode);
 
-            case 'SYSTEM_ERROR':
-                return $this->mapSystemError($errorId, $message, $statusCode, $original);
-
-            case 'APPLICATION_ERROR':
-                return $this->mapApplicationError($errorId, $message, $statusCode, $original);
-
-            case 'AUTHENTICATION_ERROR':
-                return new \DomainException("eBay authentication error: {$message}", 401, $original);
-
-            case 'AUTHORIZATION_ERROR':
-                return new \DomainException("eBay authorization error: {$message}", 403, $original);
-
-            default:
-                return new \DomainException("eBay API error ({$category}): {$message}", $statusCode, $original);
-        }
+        return match ($category) {
+            'REQUEST_ERROR' => new MappedError(
+                code: $errorId,
+                message: "Invalid request: {$message}",
+                httpStatus: $statusCode,
+                retryable: false,
+                previous: $original
+            ),
+            'SYSTEM_ERROR' => new MappedError(
+                code: $errorId,
+                message: "eBay system error: {$message}",
+                httpStatus: $statusCode,
+                retryable: true,
+                previous: $original
+            ),
+            'APPLICATION_ERROR' => new MappedError(
+                code: $errorId,
+                message: "eBay application error: {$message}",
+                httpStatus: $statusCode,
+                retryable: $retryable,
+                previous: $original
+            ),
+            'AUTHENTICATION_ERROR' => new MappedError(
+                code: 'AUTHENTICATION_ERROR',
+                message: "Authentication error: {$message}",
+                httpStatus: 401,
+                retryable: false,
+                previous: $original
+            ),
+            'AUTHORIZATION_ERROR' => new MappedError(
+                code: 'AUTHORIZATION_ERROR',
+                message: "Authorization error: {$message}",
+                httpStatus: 403,
+                retryable: false,
+                previous: $original
+            ),
+            default => new MappedError(
+                code: $errorId,
+                message: "eBay error ({$category}): {$message}",
+                httpStatus: $statusCode,
+                retryable: $retryable,
+                previous: $original
+            ),
+        };
     }
 
     /**
-     * Map request errors
+     * Map by HTTP status code
      */
-    private function mapRequestError(string $errorId, string $message, int $statusCode, Throwable $original): Throwable
+    private function mapByHttpStatus(int $statusCode, string $message, Throwable $original): MappedError
     {
-        switch ($errorId) {
-            case 'INVALID_REQUEST':
-                return new \InvalidArgumentException("Invalid eBay request: {$message}", $statusCode, $original);
-
-            case 'MISSING_FIELD':
-                return new \InvalidArgumentException("Missing required field in eBay request: {$message}", $statusCode, $original);
-
-            case 'INVALID_FIELD_VALUE':
-                return new \InvalidArgumentException("Invalid field value in eBay request: {$message}", $statusCode, $original);
-
-            case 'INVALID_PARAMETER':
-                return new \InvalidArgumentException("Invalid parameter in eBay request: {$message}", $statusCode, $original);
-
-            default:
-                return new \DomainException("eBay request error: {$message}", $statusCode, $original);
-        }
-    }
-
-    /**
-     * Map system errors
-     */
-    private function mapSystemError(string $errorId, string $message, int $statusCode, Throwable $original): Throwable
-    {
-        switch ($errorId) {
-            case 'SERVICE_UNAVAILABLE':
-                return new \RuntimeException("eBay service temporarily unavailable: {$message}", 503, $original);
-
-            case 'INTERNAL_SERVER_ERROR':
-                return new \RuntimeException("eBay internal server error: {$message}", 500, $original);
-
-            case 'SERVICE_TIMEOUT':
-                return new \RuntimeException("eBay service timeout: {$message}", 504, $original);
-
-            default:
-                return new \RuntimeException("eBay system error: {$message}", $statusCode, $original);
-        }
-    }
-
-    /**
-     * Map application errors
-     */
-    private function mapApplicationError(string $errorId, string $message, int $statusCode, Throwable $original): Throwable
-    {
-        switch ($errorId) {
-            case 'RATE_LIMIT_EXCEEDED':
-                return new \RuntimeException("eBay rate limit exceeded: {$message}", 429, $original);
-
-            case 'QUOTA_EXCEEDED':
-                return new \RuntimeException("eBay quota exceeded: {$message}", 429, $original);
-
-            case 'ITEM_NOT_FOUND':
-                return new \DomainException("eBay item not found: {$message}", 404, $original);
-
-            case 'INVALID_ITEM_ID':
-                return new \InvalidArgumentException("Invalid eBay item ID: {$message}", $statusCode, $original);
-
-            default:
-                return new \DomainException("eBay application error: {$message}", $statusCode, $original);
-        }
+        return match ($statusCode) {
+            400 => new MappedError(
+                code: 'BAD_REQUEST',
+                message: "Bad request: {$message}",
+                httpStatus: $statusCode,
+                retryable: false,
+                previous: $original
+            ),
+            401 => new MappedError(
+                code: 'AUTHENTICATION_ERROR',
+                message: "Authentication failed: {$message}",
+                httpStatus: $statusCode,
+                retryable: false,
+                previous: $original
+            ),
+            403 => new MappedError(
+                code: 'AUTHORIZATION_ERROR',
+                message: "Access forbidden: {$message}",
+                httpStatus: $statusCode,
+                retryable: false,
+                previous: $original
+            ),
+            404 => new MappedError(
+                code: 'NOT_FOUND',
+                message: "Resource not found: {$message}",
+                httpStatus: $statusCode,
+                retryable: false,
+                previous: $original
+            ),
+            429 => new MappedError(
+                code: 'RATE_LIMIT_EXCEEDED',
+                message: "Rate limit exceeded: {$message}",
+                httpStatus: $statusCode,
+                retryable: true,
+                previous: $original
+            ),
+            500, 502, 503, 504 => new MappedError(
+                code: 'SERVER_ERROR',
+                message: "Server error: {$message}",
+                httpStatus: $statusCode,
+                retryable: true,
+                previous: $original
+            ),
+            default => new MappedError(
+                code: 'HTTP_ERROR',
+                message: "HTTP error ({$statusCode}): {$message}",
+                httpStatus: $statusCode,
+                retryable: $statusCode >= 500,
+                previous: $original
+            ),
+        };
     }
 
     /**
      * Map HTTP exceptions
      */
-    private function mapHttpException(\GuzzleHttp\Exception\RequestException $e): Throwable
+    private function mapHttpException(\GuzzleHttp\Exception\RequestException $e): MappedError
     {
         $statusCode = $e->getResponse()?->getStatusCode() ?? 0;
 
-        switch ($statusCode) {
-            case 400:
-                return new \InvalidArgumentException("Bad request to eBay API: {$e->getMessage()}", $statusCode, $e);
+        return $this->mapByHttpStatus($statusCode, $e->getMessage(), $e);
+    }
 
-            case 401:
-                return new \DomainException("eBay authentication failed: {$e->getMessage()}", $statusCode, $e);
-
-            case 403:
-                return new \DomainException("eBay access forbidden: {$e->getMessage()}", $statusCode, $e);
-
-            case 404:
-                return new \DomainException("eBay resource not found: {$e->getMessage()}", $statusCode, $e);
-
-            case 429:
-                return new \RuntimeException("eBay rate limit exceeded: {$e->getMessage()}", $statusCode, $e);
-
-            case 500:
-                return new \RuntimeException("eBay server error: {$e->getMessage()}", $statusCode, $e);
-
-            case 503:
-                return new \RuntimeException("eBay service unavailable: {$e->getMessage()}", $statusCode, $e);
-
-            default:
-                return new \RuntimeException("eBay HTTP error ({$statusCode}): {$e->getMessage()}", $statusCode, $e);
+    /**
+     * Determine if an error is retryable
+     */
+    private function isRetryable(string $category, string $errorId, int $statusCode): bool
+    {
+        // System errors are usually retryable
+        if ($category === 'SYSTEM_ERROR') {
+            return true;
         }
+
+        // Rate limits are retryable
+        if ($errorId === 'RATE_LIMIT_EXCEEDED' || $errorId === 'QUOTA_EXCEEDED') {
+            return true;
+        }
+
+        // 5xx errors are retryable
+        if ($statusCode >= 500) {
+            return true;
+        }
+
+        // Everything else is not retryable by default
+        return false;
     }
 }
