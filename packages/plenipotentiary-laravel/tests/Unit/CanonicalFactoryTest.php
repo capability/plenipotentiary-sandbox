@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Plenipotentiary\Laravel\Support\CanonicalFactory;
+use Plenipotentiary\Laravel\Support\Factory\CanonicalFactory;
 use Plenipotentiary\Laravel\Support\InputSource\ArraySource;
 use Plenipotentiary\Laravel\Tests\Unit\Stubs\FakeCanonicalDto;
 

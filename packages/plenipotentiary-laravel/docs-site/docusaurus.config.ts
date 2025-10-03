@@ -12,7 +12,8 @@ const config = {
   favicon: "img/favicon.ico",
   organizationName: "capability", // GitHub organization
   projectName: "plenipotentiary-sandbox", // repo name
-  themes: ["@docusaurus/theme-live-codeblock"],
+  // themes: ["@docusaurus/theme-live-codeblock"], // Temporarily disabled - package not installing correctly
+  plugins: [require.resolve("./plugins/tailwind-config.cjs")],
   presets: [
     [
       "@docusaurus/preset-classic",
@@ -33,11 +34,12 @@ const config = {
   ],
   themeConfig: {
     colorMode: {
-      defaultMode: "dark",
+      defaultMode: "light",
+      disableSwitch: true,
       respectPrefersColorScheme: false,
     },
     prism: {
-      theme: prismThemes.dracula,
+      theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
     navbar: {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\OpenAI\Shared\Support;
+namespace Plenipotentiary\Laravel\Pleni\OpenAI\Api\Shared\Support;
 
 /**
  * Centralised configuration loader for OpenAI.

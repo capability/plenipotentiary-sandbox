@@ -1,41 +1,62 @@
-# Website
+# Docusaurus Documentation Site
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
-## Installation
+## Package Manager
 
-```bash
-yarn
-```
+**This site uses npm** (not pnpm or yarn). While the monorepo root uses pnpm for the main applications, the documentation site is isolated and uses npm for consistency with GitHub Actions deployment.
 
 ## Local Development
 
+### Using Docker (Recommended)
+
+From the repository root:
+
 ```bash
-yarn start
+docker-compose up docs
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
+The site will be available at http://127.0.0.1:3001/
+
+### Native Development
+
+If running locally without Docker:
+
+```bash
+cd packages/plenipotentiary-laravel/docs-site
+npm install
+npm run dev
+```
+
+The site will be available at http://localhost:3000/
 
 ## Build
 
 ```bash
-yarn build
+npm run build
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+This generates static content into the `build` directory.
 
 ## Deployment
 
-Using SSH:
+The site automatically deploys to GitHub Pages when changes are pushed to the `main` branch. The deployment workflow is defined in `.github/workflows/deploy-docusaurus.yml`.
+
+### Manual Deployment Trigger
+
+You can manually trigger a deployment from the GitHub Actions tab using the "workflow_dispatch" option.
+
+## Adding Dependencies
+
+Always use npm to maintain consistency:
 
 ```bash
-USE_SSH=true yarn deploy
+npm install <package-name>
 ```
 
-Not using SSH:
+After adding dependencies, rebuild the Docker container:
 
 ```bash
-GIT_USER=<Your GitHub username> yarn deploy
+docker-compose build --no-cache docs
+docker-compose up -d docs
 ```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.

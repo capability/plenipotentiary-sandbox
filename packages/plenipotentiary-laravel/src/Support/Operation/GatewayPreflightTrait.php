@@ -6,8 +6,8 @@ namespace Plenipotentiary\Laravel\Support\Operation;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Support\InputSpecValidator;
 use Plenipotentiary\Laravel\Support\Result;
+use Plenipotentiary\Laravel\Support\Validation\InputSpecValidator;
 
 /**
  * Trait to run a uniform preflight validation before delegating to an Operation.
