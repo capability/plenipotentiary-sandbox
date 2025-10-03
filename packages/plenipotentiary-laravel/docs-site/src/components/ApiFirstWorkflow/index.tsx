@@ -11,6 +11,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Workflow,
+  Sparkles,
 } from "lucide-react";
 
 type WorkflowPhase =
@@ -249,21 +250,38 @@ interface Result {
       </>
     ),
     code: `// CampaignCanonicalDTO.php - Generated from YOUR spec
-final class CampaignCanonicalDTO
+final class CampaignCanonicalDTO implements CanonicalDTOContract
 {
-    public function __construct(
-        public readonly string $name,
-        public readonly int $budget,
-        public readonly string $status = 'PAUSED',
-    ) {}
-    
+    /** @var array<string,string> */
+    public array $providerContext = [];
+
+    public ?string $internalId = null;
+
+    public ?string $externalId = null;
+
+    public ?string $name = null;
+
+    public ?string $status = null;
+
+    public ?string $budgetResourceName = null;
+
+    public ?int $cpcBidMicros = null;
+
+    public ?int $budgetMicros = null;
+
     public static function fromArray(array $data): self
     {
-        return new self(
-            name: $data['name'],
-            budget: $data['budget'],
-            status: $data['status'] ?? 'PAUSED',
-        );
+        $dto = new self;
+        $dto->providerContext = self::filterContext($data['providerContext'] ?? $data['accountKeys'] ?? []);
+        $dto->internalId = $data['internalId'] ?? null;
+        $dto->externalId = $data['externalId'] ?? null;
+        $dto->name = $data['name'] ?? null;
+        $dto->status = $data['status'] ?? null;
+        $dto->budgetResourceName = $data['budgetResourceName'] ?? null;
+        $dto->cpcBidMicros = isset($data['cpcBidMicros']) ? (int) $data['cpcBidMicros'] : null;
+        $dto->budgetMicros = isset($data['budgetMicros']) ? (int) $data['budgetMicros'] : null;
+
+        return $dto;
     }
 }
 
