@@ -105,7 +105,7 @@ final class SearchItemsRequest extends Request
 Then, use it in your application:
 ```php
 use Plenipotentiary\Laravel\Contracts\Gateway\RestGatewayContract;
-use Plenipotentiary\Laravel\Pleni\eBay\Browse\Requests\SearchItemsRequest;
+use Plenipotentiary\Laravel\Pleni\eBay\Browse\Contexts\Default\Requests\SearchItemsRequest;
 
 class EBaySearchAction
 {

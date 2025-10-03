@@ -15,6 +15,9 @@ final class PleniCoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Register policy defaults
+        $this->app->register(PleniPolicyDefaultsServiceProvider::class);
+
         // Bind base-level abstractions here if needed in the future.
         // For now this is intentionally kept minimal, contracts are
         // implemented only in specific provider ServiceProviders.

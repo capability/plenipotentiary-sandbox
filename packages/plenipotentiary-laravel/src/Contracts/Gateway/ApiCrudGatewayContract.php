@@ -13,7 +13,7 @@ use Plenipotentiary\Laravel\Support\Result;
  * Provider-agnostic gateway contract for CRUD operations.
  *
  * Acts as the central entry point where logging, jobs, and events can hook in.
- * Delegates to a provider-specific ApiCrudAdapterContract behind the scenes.
+ * Delegates to a provider-specific CrudAdapterContract behind the scenes.
  */
 interface ApiCrudGatewayContract
 {
