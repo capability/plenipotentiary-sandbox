@@ -388,7 +388,7 @@ $result = $searchAction->handle('laptop', ['price_max' => 500]);
             Different abstraction levels for different integration types
           </p>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {patterns.map((pattern) => {
               const Icon = pattern.icon;
               const isActive = activePattern === pattern.id;
@@ -575,7 +575,7 @@ $result = $searchAction->handle('laptop', ['price_max' => 500]);
               <Shield className="w-8 h-8 text-emerald-600" />
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">
-                  Gateway Layer: Scaffolded, Not Mandated
+                  Gateway Layer: Your Stable Platform
                 </h2>
                 <p className="text-slate-600">
                   The stable boundary that provides robustness
@@ -593,7 +593,7 @@ $result = $searchAction->handle('laptop', ['price_max' => 500]);
               </p>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {crossCuttingConcerns.map((concern) => {
                 const Icon = concern.icon;
                 const colorMap = {
