@@ -52,6 +52,19 @@ final class CampaignCreate implements AdapterVerbContract
         return self::INPUT_SPEC;
     }
 
+    /**
+     * Development helper - use during API exploration phase.
+     * Converts raw array to DTO then calls perform().
+     *
+     * @deprecated Remove once INPUT_SPEC is finalized and use perform() directly
+     */
+    public function performWithArray(array $input, bool $validateOnly = false): Result
+    {
+        $dto = CampaignCanonicalDTO::fromArray($input);
+
+        return $this->perform($dto, $validateOnly);
+    }
+
     public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result
     {
 
@@ -81,7 +94,10 @@ final class CampaignCreate implements AdapterVerbContract
             ->getCampaignServiceClient()
             ->mutateCampaigns($request);
 
-        return Result::ok($this->responseMapper($response, $dto));
+        $canonicalDto = $this->responseMapper($response, $dto);
+
+        // Return both the canonical DTO AND the raw Google Ads response
+        return Result::ok($canonicalDto, $response);
     }
 
     public function requestMapper(CanonicalDTOContract $dto, bool $validateOnly = false): mixed

@@ -203,11 +203,11 @@ export default function PlenipotentiaryArchitecture() {
     },
     {
       id: "mcp",
-      title: "MCP Pattern - AI Agent Safety",
+      title: "MCP Pattern - AI Agent Tool Access",
       icon: Brain,
       color: "pink",
       description:
-        "Model Context Protocol for AI agents with budget tracking, rate limiting, and complete audit trails.",
+        "Laravel client for consuming MCP servers - provide filesystem, database, or custom tools to AI agents (like Claude) with budget tracking, rate limiting, and complete audit trails.",
       transport: "MCP (stdio/SSE)",
       examples: [
         "Filesystem Tools",
@@ -295,6 +295,74 @@ export default function PlenipotentiaryArchitecture() {
           </div>
         </div>
 
+        {/* Visual Flow Diagram */}
+        <div className="mb-10 bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
+          <h3 className="text-xl font-bold text-slate-900 mb-6 text-center">
+            How Plenipotentiary Works: The Flow
+          </h3>
+
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
+            {/* Your Application */}
+            <div className="flex-1 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-300 rounded-xl p-4 text-center">
+              <Code2 className="w-10 h-10 text-blue-600 mx-auto mb-2" />
+              <h4 className="font-bold text-slate-900 mb-1">Your Application</h4>
+              <p className="text-xs text-slate-600">Controllers, Jobs, Commands</p>
+              <div className="mt-2 text-xs text-slate-500 italic">
+                You write this
+              </div>
+            </div>
+
+            <ArrowRight className="w-6 h-6 text-slate-400 flex-shrink-0 hidden md:block" />
+            <div className="md:hidden">↓</div>
+
+            {/* Gateway (Provided) */}
+            <div className="flex-1 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-xl p-4 text-center">
+              <Shield className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
+              <h4 className="font-bold text-slate-900 mb-1">Gateway</h4>
+              <p className="text-xs text-slate-600">Stable, consistent contracts</p>
+              <div className="mt-2 text-xs font-bold text-emerald-700">
+                ✓ Plenipotentiary provides
+              </div>
+            </div>
+
+            <ArrowRight className="w-6 h-6 text-slate-400 flex-shrink-0 hidden md:block" />
+            <div className="md:hidden">↓</div>
+
+            {/* Adapter (You Write) */}
+            <div className="flex-1 bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300 rounded-xl p-4 text-center">
+              <Layers className="w-10 h-10 text-purple-600 mx-auto mb-2" />
+              <h4 className="font-bold text-slate-900 mb-1">Adapter</h4>
+              <p className="text-xs text-slate-600">API integration logic</p>
+              <div className="mt-2 text-xs text-slate-500 italic">
+                You write this
+              </div>
+            </div>
+
+            <ArrowRight className="w-6 h-6 text-slate-400 flex-shrink-0 hidden md:block" />
+            <div className="md:hidden">↓</div>
+
+            {/* External API */}
+            <div className="flex-1 bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-xl p-4 text-center">
+              <Globe className="w-10 h-10 text-orange-600 mx-auto mb-2" />
+              <h4 className="font-bold text-slate-900 mb-1">External API</h4>
+              <p className="text-xs text-slate-600">Stripe, Google, etc.</p>
+              <div className="mt-2 text-xs text-slate-500 italic">
+                Third-party service
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <div className="flex gap-3">
+              <AlertCircle className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-slate-700 leading-relaxed">
+                <strong>What Plenipotentiary Provides:</strong> The Gateway layer (stable contracts, validation, policies) and scaffolding commands to generate boilerplate.
+                <strong className="block mt-1">What You Write:</strong> Your application code and the Adapter (actual API integration logic). This is NOT a magic wrapper—you still implement the integration, but with structure and safety guardrails.
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* 1. Your Application Domain */}
         <div className="mb-8">
           <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-slate-300 relative overflow-hidden">
@@ -342,28 +410,207 @@ export default function PlenipotentiaryArchitecture() {
               {/* Code Example */}
               <div className="bg-slate-50 rounded-xl p-5 border border-slate-200">
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
-                  Consistent interface across all patterns:
+                  Consistent Result Interface Across All Patterns
                 </p>
-                <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                  {`// Controller
-public function search(Request $request, SearchAction $action) {
-    $result = $action->handle($request->input('query'));
-    return $result->isOk() 
-        ? response()->json($result->unwrap())
-        : response()->json($result->error(), 400);
+                <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                  Every pattern returns <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">Result&lt;CanonicalDTO&gt;</code> - consistent, predictable, testable.
+                  From simplest to most complex syntax:
+                </p>
+
+                <div className="space-y-4">
+                  {/* Simple: Basic check */}
+                  <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">1</div>
+                      <span className="text-xs font-bold text-slate-700">Simplest: Basic Success Check</span>
+                    </div>
+                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`$result = $gateway->create($dto);
+
+if ($result->isOk()) {
+    // Success! Use the canonical DTO
+    $campaign = $result->unwrap();
+    echo $campaign->externalId; // '12345'
+}`}</code></pre>
+                  </div>
+
+                  {/* Medium: Error handling */}
+                  <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">2</div>
+                      <span className="text-xs font-bold text-slate-700">Error Handling</span>
+                    </div>
+                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`$result = $gateway->update($dto);
+
+if ($result->isErr()) {
+    // Provider error (network, API limit, etc.)
+    $error = $result->error();
+    Log::error('Update failed', $error);
+    return response()->json($error, 500);
+}`}</code></pre>
+                  </div>
+
+                  {/* Complex: Full validation + raw response */}
+                  <div className="bg-white p-4 rounded-lg border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">3</div>
+                      <span className="text-xs font-bold text-slate-700">Complete: Provider Errors + Raw Response Access</span>
+                    </div>
+                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`$result = $gateway->create($dto);
+// Gateway already validated $dto against INPUT_SPEC before calling adapter
+// If INPUT_SPEC failed, we wouldn't reach the adapter at all
+
+// Provider rejected our data (Google's validation, not ours)
+if ($result->isInvalid()) {
+    // Google Ads rejected the campaign (budget too low, invalid name, etc.)
+    $rawResponse = $result->rawResponse(); // Check Google's actual error
+    return response()->json([
+        'message' => 'Provider rejected data',
+        'violations' => $result->violations()
+    ], 422);
 }
 
-// Job
-dispatch(new SyncItemsJob($query));
+// Provider error (network, API limit, auth failure, etc.)
+if ($result->isErr()) {
+    return response()->json($result->error(), 500);
+}
 
-// Command
-php artisan ebay:search "laptop" --limit=10
+// Success: Get canonical DTO AND raw provider response
+$campaign = $result->unwrap();           // Canonical DTO (consistent)
+$rawResponse = $result->rawResponse();   // Provider response (for debugging)
 
-// Action (Lorisleiva)
-$result = $searchAction->handle('laptop', ['price_max' => 500]);
+Log::info('Campaign created', [
+    'externalId' => $campaign->externalId,
+    'resourceName' => $rawResponse->getResults()[0]->getResourceName(),
+]);`}</code></pre>
+                  </div>
 
-// All return: Result<T> with isOk() | isErr() | isInvalid()`}
-                </pre>
+                  {/* What rawResponse() gives you */}
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
+                    <div className="flex items-start gap-2">
+                      <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-xs text-slate-700 leading-relaxed">
+                        <strong className="text-amber-900">What is rawResponse()?</strong>
+                        <p className="mt-1">
+                          <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">unwrap()</code> returns your <strong>canonical DTO</strong> (consistent across all providers).
+                        </p>
+                        <p className="mt-1">
+                          <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">rawResponse()</code> returns the <strong>actual provider response</strong> (Google's MutateCampaignsResponse, Stripe's Charge object, etc.).
+                        </p>
+                        <p className="mt-2 text-amber-900">
+                          <strong>Use it for:</strong> Debugging, logging provider-specific metadata, accessing fields not in your canonical DTO.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Laravel Integration Examples */}
+                <div className="mt-4 pt-4 border-t border-slate-200">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                    Consistent Interface Across All Laravel Patterns
+                  </p>
+                  <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+                    Every pattern returns <code className="bg-slate-200 px-1 py-0.5 rounded font-mono">Result&lt;T&gt;</code> with the same methods:
+                    <code className="bg-slate-200 px-1 py-0.5 rounded font-mono ml-1">isOk()</code>,
+                    <code className="bg-slate-200 px-1 py-0.5 rounded font-mono ml-1">isErr()</code>,
+                    <code className="bg-slate-200 px-1 py-0.5 rounded font-mono ml-1">isInvalid()</code>,
+                    <code className="bg-slate-200 px-1 py-0.5 rounded font-mono ml-1">unwrap()</code>,
+                    <code className="bg-slate-200 px-1 py-0.5 rounded font-mono ml-1">rawResponse()</code>
+                  </p>
+
+                  <div className="space-y-3">
+                    {/* Controller - Simplest */}
+                    <div className="bg-white p-3 rounded border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-emerald-700">Controller (Simplest)</span>
+                      </div>
+                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`public function store(Request $req, CreateCampaignAction $action) {
+    $result = $action->handle($req->validated());
+
+    return $result->isOk()
+        ? response()->json($result->unwrap())
+        : response()->json($result->error(), 400);
+}`}</code></pre>
+                    </div>
+
+                    {/* Job - Medium */}
+                    <div className="bg-white p-3 rounded border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-blue-700">Job (Error Handling)</span>
+                      </div>
+                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`class SyncCampaignsJob implements ShouldQueue {
+    public function handle(CampaignGateway $gateway) {
+        $result = $gateway->readMany(['status' => 'ENABLED']);
+
+        if ($result->isErr()) {
+            $this->fail($result->error());
+            return;
+        }
+
+        $campaigns = $result->unwrap();
+        // Sync to database...
+    }
+}`}</code></pre>
+                    </div>
+
+                    {/* Command - Complex */}
+                    <div className="bg-white p-3 rounded border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-purple-700">Command (Provider Errors + Raw Response)</span>
+                      </div>
+                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`class CreateCampaignCommand extends Command {
+    public function handle(CampaignGateway $gateway) {
+        $result = $gateway->create($this->buildDto());
+        // Gateway already checked INPUT_SPEC before calling adapter
+
+        // Provider (Google Ads) rejected our data
+        if ($result->isInvalid()) {
+            $this->error('Google Ads rejected the campaign:');
+
+            // Check raw response for Google's actual error details
+            $raw = $result->rawResponse();
+            $googleError = $raw->getPartialFailureError();
+
+            foreach ($result->violations() as $v) {
+                $this->line("  {$v['field']}: {$v['message']}");
+            }
+            return 1;
+        }
+
+        // Provider error (network, auth, rate limit, etc.)
+        if ($result->isErr()) {
+            $this->error($result->error()['message']);
+            return 1;
+        }
+
+        // Success: canonical DTO + raw response
+        $campaign = $result->unwrap();
+        $this->info("Created: {$campaign->externalId}");
+
+        // Access raw Google Ads response for detailed logging
+        $raw = $result->rawResponse();
+        $this->comment("Resource: {$raw->getResults()[0]->getResourceName()}");
+
+        return 0;
+    }
+}`}</code></pre>
+                    </div>
+
+                    {/* Action */}
+                    <div className="bg-white p-3 rounded border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-700">Action (Lorisleiva) - Same Interface</span>
+                      </div>
+                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto"><code className="font-mono">{`$result = CreateCampaignAction::run(['name' => 'Black Friday']);
+
+// Same Result<T> interface everywhere
+if ($result->isOk()) {
+    $campaign = $result->unwrap();
+    $rawResponse = $result->rawResponse();
+}`}</code></pre>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -648,17 +895,124 @@ $result = $searchAction->handle('laptop', ['price_max' => 500]);
                     becomes an invaluable kickstart - everyone knows exactly
                     what fields are needed, validation rules, and defaults.
                   </p>
-                  <div className="bg-slate-900 rounded-lg p-3">
-                    <pre className="text-xs text-slate-300 leading-relaxed overflow-x-auto">
-                      {`public const INPUT_SPEC = [
+                  <div className="bg-slate-900 rounded-lg p-3 overflow-x-auto">
+                    <pre className="text-xs text-slate-300 leading-relaxed m-0">
+                      <code className="font-mono whitespace-pre">{`public const INPUT_SPEC = [
     'query' => ['rules' => ['required', 'string', 'min:2']],
     'limit' => ['rules' => ['integer', 'max:200'], 'default' => 50],
     'priceMax' => ['rules' => ['numeric']],
 ];
 
 // Gateway validates automatically via INPUT_SPEC
-// Teams immediately understand the contract`}
+// Teams immediately understand the contract`}</code>
                     </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 p-5 bg-pink-50 rounded-xl border border-pink-200">
+              <div className="flex items-start gap-3">
+                <Brain className="w-6 h-6 text-pink-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-pink-900 mb-3">
+                    Understanding the MCP Pattern: AI Agents with Safe Tool Access
+                  </h4>
+
+                  <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
+                    <p>
+                      The MCP pattern is fundamentally different from the other four patterns. You're not integrating with a traditional API—you're building <strong>infrastructure to give AI agents safe, controlled access to tools</strong> via Anthropic's Model Context Protocol.
+                    </p>
+
+                    <div className="bg-white p-4 rounded-lg border border-pink-200">
+                      <h5 className="font-bold text-slate-900 mb-2 text-sm">The Complete Flow</h5>
+                      <div className="space-y-2 text-xs">
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">1.</span>
+                          <span><strong>User asks:</strong> "Find all inactive customers and send re-engagement emails"</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">2.</span>
+                          <span><strong>Your Laravel app</strong> sends this to Claude API with available MCP tools listed</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">3.</span>
+                          <span><strong>Claude thinks:</strong> "I need to query the database" and requests <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">query_database</code> tool</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">4.</span>
+                          <span><strong>Your MCP Gateway executes</strong> the query via MCP server (budget/rate limit policies run here)</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">5.</span>
+                          <span><strong>Results go back to Claude</strong> who analyzes: "Found 52 inactive customers"</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">6.</span>
+                          <span><strong>Claude requests</strong> 52 <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">send_email</code> tool calls</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">7.</span>
+                          <span><strong>Your MCP Gateway executes</strong> each email via Mailchimp MCP server (budget tracking: $0.53 spent, $49.47 remaining)</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-pink-600 font-bold">8.</span>
+                          <span><strong>Claude reports:</strong> "Sent 52 re-engagement emails to inactive customers"</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-900 mb-2">Why Safety Features Are Critical</h5>
+                      <p className="mb-2">
+                        AI agents can make dozens or hundreds of tool calls autonomously. Without guardrails:
+                      </p>
+                      <ul className="space-y-1.5 ml-4 list-none">
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-600 font-bold">•</span>
+                          <span>Claude queries your database 10,000 times → $100 in costs before you notice</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-600 font-bold">•</span>
+                          <span>Runaway loop sends 50,000 emails in 10 seconds → provider blocks you</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-red-600 font-bold">•</span>
+                          <span>No audit trail → can't debug what went wrong or replay the session</span>
+                        </li>
+                      </ul>
+                      <p className="mt-2">
+                        Your MCP Gateway with <strong>budget policies</strong> (max $50/day), <strong>rate limits</strong> (max 100 calls/minute), and <strong>complete audit logs</strong> prevents all of this.
+                      </p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-4 rounded-lg border border-pink-300">
+                      <h5 className="font-bold text-pink-900 mb-2">Current State vs. Future Vision</h5>
+                      <div className="space-y-2">
+                        <div>
+                          <strong className="text-pink-900">What's Built Now:</strong>
+                          <ul className="ml-4 mt-1 space-y-1 list-none">
+                            <li>• MCP Gateway with budget tracking & rate limiting</li>
+                            <li>• Tool execution via MCP servers (filesystem, database, etc.)</li>
+                            <li>• Complete audit trail of every tool call</li>
+                            <li>• Can be used for deterministic PHP workflows or external tool access</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <strong className="text-pink-900">Coming Soon (AI Orchestrator):</strong>
+                          <ul className="ml-4 mt-1 space-y-1 list-none">
+                            <li>• Anthropic SDK integration (Claude + your MCP tools)</li>
+                            <li>• OpenAI function calling integration (GPT + your MCP tools)</li>
+                            <li>• Multi-turn conversation handling</li>
+                            <li>• Tool registry for defining which agents can use which tools</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="bg-white p-3 rounded border border-pink-200 mb-0">
+                      <strong className="text-pink-900">Key Distinction:</strong> You're <strong>not building MCP servers</strong> (those already exist: @modelcontextprotocol/server-filesystem, server-slack, etc.). You're <strong>consuming them from Laravel</strong> with the same Gateway/Adapter consistency as your other integrations, but adding AI-agent-specific safety policies that prevent runaway costs and system overload.
+                    </p>
                   </div>
                 </div>
               </div>

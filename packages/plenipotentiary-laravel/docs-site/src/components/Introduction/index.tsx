@@ -195,7 +195,7 @@ export default function Introduction() {
                   <Terminal className="w-4 h-4 text-slate-400 ml-2" />
                   <span className="text-xs text-slate-400 font-mono">terminal</span>
                 </div>
-                <div className="p-6 min-h-[200px] flex items-center">
+                <div className="p-6 h-[240px] flex items-center">
                   <pre className="text-sm leading-loose m-0 w-full">
                     <code className="text-emerald-400 font-mono whitespace-pre-wrap">
                       {displayedText}

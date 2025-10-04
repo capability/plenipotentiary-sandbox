@@ -6,12 +6,12 @@ import {
   Brain,
   CheckCircle,
   Boxes,
-  Info,
   Shield,
   FileCode,
+  Globe,
 } from "lucide-react";
 
-type PatternType = "crud" | "operation" | "procedure" | "mcp";
+type PatternType = "crud" | "operation" | "rest" | "procedure" | "mcp";
 
 interface Pattern {
   id: PatternType;
@@ -112,6 +112,51 @@ $result = $searchAction->handle($dto);`,
     color: "emerald",
   },
   {
+    id: "rest",
+    name: "REST Pattern",
+    tagline: "Saloon Request/Response",
+    when: "Clean RESTful APIs where Saloon's native pattern is perfect",
+    structure: `app/Integration/{Provider}/
+  ├── {Provider}Connector.php       (Saloon Connector)
+  ├── Requests/
+  │   ├── CreatePaymentRequest.php  (Saloon Request)
+  │   ├── GetCustomerRequest.php
+  │   └── ProcessRefundRequest.php
+
+  // Optional: Add Gateway only if you need
+  // validation, policies, or persistence
+  └── Gateway/
+      └── {Provider}Gateway.php`,
+    example: `// Pure Saloon - use if you don't need Gateway features
+$stripe = new StripeConnector($apiKey);
+$response = $stripe->send(new CreatePaymentRequest(
+    amount: 5000,
+    currency: 'usd'
+));
+
+// With Gateway - use when you need validation/policies
+$result = $gateway->createPayment(CreatePaymentDTO::fromArray([
+    'amount' => 5000,
+    'currency' => 'usd'
+]));`,
+    useCases: [
+      "Stripe Payments",
+      "SendGrid Emails",
+      "Twilio SMS",
+      "Most RESTful APIs",
+    ],
+    features: {
+      typeSafety: 90,
+      validation: 60,
+      discoverability: 90,
+      easeOfSetup: 95,
+      persistence: 20,
+      idempotency: 60,
+    },
+    icon: Globe,
+    color: "cyan",
+  },
+  {
     id: "procedure",
     name: "Procedure Pattern",
     tagline: "Simple RPC",
@@ -145,28 +190,35 @@ $result = $searchAction->handle($dto);`,
   {
     id: "mcp",
     name: "MCP Pattern",
-    tagline: "AI Agent Tools",
-    when: "Model Context Protocol for AI agent integrations",
+    tagline: "AI Agent Tool Access",
+    when: "Giving AI agents (Claude, GPT) safe, controlled access to tools via Model Context Protocol",
     structure: `Pleni/MCP/
-  ├── Tools/
-  │   └── {ToolName}Tool.php
-  ├── Servers/
-  │   └── {ServerName}Server.php
-  └── Policies/
-      ├── BudgetPolicy.php
-      └── RateLimitPolicy.php`,
-    example: `$tool = new AnalyzeCustomerTool();
-$result = $tool->execute([
-  'customer_id' => 12345,
-  'analysis_depth' => 'full',
-]);
+  ├── Contexts/Default/
+  │   └── Operations/CallTool/
+  │       ├── CallToolOperation.php
+  │       ├── CallToolGateway.php
+  │       └── CallToolDTO.php
+  ├── Shared/
+  │   ├── Transport/McpClient.php
+  │   ├── Support/McpServerRegistry.php
+  │   └── Policies/
+  │       ├── AgentBudgetPolicy.php
+  │       └── AgentRateLimitPolicy.php`,
+    example: `// Call MCP tool (filesystem, database, etc.)
+$result = app(CallToolAction::class)->handle(
+    server: 'filesystem',
+    tool: 'read_file',
+    arguments: ['path' => storage_path('logs/laravel.log')],
+    agentId: 'log-analyzer'
+);
 
-// Auto-tracked, budget-limited, audited`,
+// Budget tracked, rate limited, fully audited
+// Perfect for AI agents calling tools`,
     useCases: [
-      "AI Log Analyzer",
-      "Customer Insights",
-      "Data Pipeline Agents",
-      "Autonomous Workflows",
+      "Filesystem Access for AI",
+      "Database Query Tools",
+      "Log Analysis Agents",
+      "Deterministic PHP Workflows",
     ],
     features: {
       typeSafety: 100,
@@ -232,6 +284,12 @@ export default function PatternInteractiveGuide() {
         border: "border-purple-500",
         text: "text-purple-600",
       },
+      cyan: {
+        bg: "bg-cyan-500",
+        bgLight: "bg-cyan-50",
+        border: "border-cyan-500",
+        text: "text-cyan-600",
+      },
     };
     return colorMap[color] || colorMap.blue;
   };
@@ -248,12 +306,12 @@ export default function PatternInteractiveGuide() {
             </h2>
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Four proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper.
+            Five proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper.
           </p>
         </div>
 
         {/* Pattern Selection */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
           {patterns.map((pattern) => {
             const Icon = pattern.icon;
             const isActive = selectedPattern === pattern.id;
@@ -399,22 +457,6 @@ export default function PatternInteractiveGuide() {
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Saloon for Simple REST */}
-        <div className="mt-10 p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border-l-4 border-blue-500 rounded-r-2xl shadow-md">
-          <div className="flex gap-4">
-            <Info className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="font-bold text-slate-900 mb-2">Just Need Simple REST?</h3>
-              <p className="text-slate-700 leading-relaxed mb-3">
-                If you're integrating a straightforward RESTful API and don't need cross-cutting concerns like persistence, queuing, policy enforcement, or audit logging, <strong>use Saloon directly</strong>. Plenipotentiary is built on Saloon and uses it for all HTTP transport.
-              </p>
-              <p className="text-slate-700 leading-relaxed">
-                Saloon's native Connector and Request pattern is tried, tested, and perfect for clean REST integrations. Use Plenipotentiary's patterns when you need the Gateway architecture, business logic separation, or advanced features like MCP integration.
-              </p>
             </div>
           </div>
         </div>
