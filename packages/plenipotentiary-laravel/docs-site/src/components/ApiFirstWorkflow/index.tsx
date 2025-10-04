@@ -50,25 +50,36 @@ const workflowSteps: Step[] = [
       </>
     ),
     code: `// CampaignCreate.php - Start here, all in one place
-public function perform(array $input): Result
+// Based on Google's AddCampaigns.php example (see CreateCampaignExample.php in repo root)
+
+public function performWithArray(array $input): Result
 {
-    // Paste Google Ads SDK example, make it work
+    // Development helper - takes raw array, explores the API
+    // Google SDK example: lines 126-149 from AddCampaigns.php
+
     $campaign = new Campaign([
         'name' => $input['name'],
-        'budget' => $input['budget'],
-        'status' => CampaignStatus::PAUSED,
+        'advertising_channel_type' => AdvertisingChannelType::SEARCH,
+        'status' => CampaignStatus::PAUSED, // Start paused
+        'manual_cpc' => new ManualCpc(),
+        'campaign_budget' => $input['budgetResourceName'], // From budget creation
     ]);
-    
+
     $operation = new CampaignOperation();
     $operation->setCreate($campaign);
-    
-    // Real API call - see what happens!
+
+    // Google SDK: lines 153-156 from AddCampaigns.php
     $response = $this->client
         ->getCampaignServiceClient()
-        ->mutateCampaigns($customerId, [$operation]);
-    
-    // Mock response for now
-    return Result::ok(['id' => '12345']);
+        ->mutateCampaigns(
+            MutateCampaignsRequest::build(
+                $input['customerId'],
+                [$operation]
+            )
+        );
+
+    // See what comes back - understand the structure!
+    return Result::ok(['resourceName' => $response->getResults()[0]->getResourceName()]);
 }`,
     outcome: "You understand the API call flow",
     antipattern: "Starting with abstractions before understanding the API",
@@ -90,6 +101,7 @@ public function perform(array $input): Result
       </>
     ),
     code: `// CampaignCreate.php
+// YOUR contract - what YOUR domain needs, not everything Google supports
 public const INPUT_SPEC = [
     'name' => [
         'rules' => ['required', 'string', 'min:1', 'max:128'],
@@ -103,6 +115,7 @@ public const INPUT_SPEC = [
     'budgetResourceName' => [
         'rules' => ['nullable', 'string'],
     ],
+    // customerId comes from providerContext - auto-injected from env
     'providerContext.google.customerId' => [
         'rules' => ['required', 'string'],
         'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
@@ -311,22 +324,34 @@ final class CampaignCanonicalFactory
         there when you were learning the API. They appear when you need them.
       </>
     ),
-    code: `// Idempotency (automatic)
-$result = $gateway->create($dto, 
-    idempotencyKey: 'campaign-' . $dto->name
-);
+    code: `// Result is consistent: always Result<CanonicalDTO>
+$result = $gateway->create($dto);
 
 // Validation (from INPUT_SPEC)
-$result = $gateway->create($dto);
 if ($result->isInvalid()) {
-    return $result->errors(); // ['budget' => 'must be >= 1000']
+    return $result->violations(); // ['budget' => 'must be >= 1000']
 }
 
 // Error Mapping (provider → domain)
 if ($result->isErr()) {
-    // GoogleAdsError → DomainError
     return $result->error(); // Normalized structure
 }
+
+// Success: Get the canonical DTO
+if ($result->isOk()) {
+    $campaign = $result->unwrap(); // CampaignCanonicalDTO
+    $campaign->externalId; // '12345'
+    $campaign->name; // 'My Campaign'
+
+    // ALSO: Access raw provider response for debugging/logging
+    $rawResponse = $result->rawResponse(); // MutateCampaignsResponse
+    $rawResponse->getResults()[0]->getResourceName();
+}
+
+// Idempotency (automatic)
+$result = $gateway->create($dto,
+    idempotencyKey: 'campaign-' . $dto->name
+);
 
 // Queueing (Laravel integration)
 dispatch(new CreateCampaignJob($dto));
@@ -371,7 +396,7 @@ export default function APIWorkflow() {
           <div className="inline-flex items-center justify-center gap-3 mb-4">
             <Workflow className="w-10 h-10 text-emerald-600" />
             <h2 className="text-3xl font-bold text-slate-900 m-0">
-              Developer Workflow
+              Developer Workflow - CRUD SDK Example
             </h2>
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
@@ -381,8 +406,8 @@ export default function APIWorkflow() {
         </div>
 
         {/* Progress Steps */}
-        <div className="mb-14">
-          <div className="flex items-center justify-center gap-2 relative">
+        <div className="mb-14 px-2">
+          <div className="flex items-center justify-center gap-1 sm:gap-2 relative overflow-x-auto pb-2 pt-2">
             {workflowSteps.map((s, index) => {
               const Icon = s.icon;
               const isActive = s.id === currentStep;
@@ -390,11 +415,11 @@ export default function APIWorkflow() {
 
               return (
                 <React.Fragment key={s.id}>
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center flex-shrink-0">
                     <button
                       onClick={() => handleStepSelect(s.id)}
                       className={`
-                        w-16 h-16 rounded-full flex items-center justify-center
+                        w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center
                         transition-all duration-300 relative group cursor-pointer
                         ${
                           isActive
@@ -416,7 +441,7 @@ export default function APIWorkflow() {
                       title={s.title}
                     >
                       <Icon
-                        className={`w-7 h-7 ${
+                        className={`w-5 h-5 sm:w-7 sm:h-7 ${
                           isActive || isCompleted
                             ? "text-white"
                             : "text-slate-400"
@@ -433,7 +458,7 @@ export default function APIWorkflow() {
                   </div>
                   {index < workflowSteps.length - 1 && (
                     <div
-                      className={`w-16 h-1 rounded-full transition-all duration-300 ${
+                      className={`w-8 sm:w-16 h-1 rounded-full transition-all duration-300 flex-shrink-0 ${
                         isCompleted
                           ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
                           : "bg-slate-300"

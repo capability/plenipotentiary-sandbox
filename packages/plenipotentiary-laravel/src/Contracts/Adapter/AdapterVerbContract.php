@@ -25,6 +25,15 @@ interface AdapterVerbContract
     public function perform(CanonicalDTOContract $dto, bool $validateOnly = false): Result;
 
     /**
+     * Development helper - use during API exploration phase.
+     * Converts raw array to DTO then calls perform().
+     *
+     * @deprecated Remove once INPUT_SPEC is finalized and use perform() directly
+     * @param array<string,mixed> $input
+     */
+    public function performWithArray(array $input, bool $validateOnly = false): Result;
+
+    /**
      * Map a canonical DTO into a provider request object.
      */
     public function requestMapper(CanonicalDTOContract $dto, bool $validateOnly = false): mixed;

@@ -14,15 +14,16 @@ final class Result implements JsonSerializable
         private readonly string $kind,          // ok|err|invalid
         private readonly ?CanonicalDTOContract $dto = null,
         private readonly mixed $payload = null, // any meta or error details
+        private readonly mixed $rawResponse = null, // raw provider response (for debugging/logging)
     ) {}
 
-    public static function ok(CanonicalDTOContract $dto): self
+    public static function ok(CanonicalDTOContract $dto, mixed $rawResponse = null): self
     {
-        return new self('ok', $dto, $dto);
+        return new self('ok', $dto, $dto, $rawResponse);
     }
 
     /** Accepts \Throwable|string|array */
-    public static function err(mixed $error, ?CanonicalDTOContract $dto = null): self
+    public static function err(mixed $error, ?CanonicalDTOContract $dto = null, mixed $rawResponse = null): self
     {
         if ($error instanceof \Throwable) {
             $error = [
@@ -34,7 +35,7 @@ final class Result implements JsonSerializable
             $error = ['error' => $error];
         }
 
-        return new self('err', $dto, $error);
+        return new self('err', $dto, $error, $rawResponse);
     }
 
     /** $violations = [ ['field'=>'name','rule'=>'required', ...], ... ] */
@@ -43,7 +44,7 @@ final class Result implements JsonSerializable
         return new self('invalid', $dto, [
             'expected' => $expected,
             'violations' => array_values($violations),
-        ]);
+        ], null);
     }
 
     public function isOk(): bool
@@ -88,10 +89,19 @@ final class Result implements JsonSerializable
         return $this->dto;
     }
 
+    /**
+     * Get the raw provider response (e.g., MutateCampaignsResponse from Google Ads).
+     * Useful for debugging, logging, or accessing provider-specific metadata.
+     */
+    public function rawResponse(): mixed
+    {
+        return $this->rawResponse;
+    }
+
     /** Map ok value, passthrough otherwise */
     public function map(callable $fn): self
     {
-        return $this->isOk() && $this->dto ? self::ok($fn($this->dto)) : $this;
+        return $this->isOk() && $this->dto ? self::ok($fn($this->dto), $this->rawResponse) : $this;
     }
 
     /** Map error payload when err|invalid, passthrough ok */
