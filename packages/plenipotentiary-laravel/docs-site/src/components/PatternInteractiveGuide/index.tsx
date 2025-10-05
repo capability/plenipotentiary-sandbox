@@ -9,6 +9,8 @@ import {
   Shield,
   FileCode,
   Globe,
+  Info,
+  ArrowRight,
 } from "lucide-react";
 
 type PatternType = "crud" | "operation" | "rest" | "procedure" | "mcp";
@@ -43,6 +45,8 @@ const patterns: Pattern[] = [
   ├── Adapter/
   │   ├── {Resource}CrudAdapter.php
   │   ├── {Resource}Create.php
+  │   ├── {Resource}Read.php
+  │   ├── {Resource}ReadMany.php
   │   ├── {Resource}Update.php
   │   └── {Resource}Delete.php
   ├── Gateway/
@@ -77,23 +81,27 @@ $result = $gateway->create($campaign);`,
     id: "operation",
     name: "Operation Pattern",
     tagline: "Use Case Driven",
-    when: "Non-CRUD operations like search, generate, verify, calculate",
-    structure: `Contexts/Default/
-  ├── Operations/
-  │   └── {UseCase}/
-  │       ├── {UseCase}Operation.php
-  │       ├── {UseCase}Gateway.php
-  │       ├── {UseCase}DTO.php
-  │       └── {UseCase}Result.php
-  └── Actions/
-      └── {UseCase}Action.php`,
-    example: `$dto = SearchItemsDTO::fromArray([
+    when: "Non-CRUD operations on SDKs - search, generate, verify, calculate",
+    structure: `Pleni/{Provider}/{Domain}/
+  ├── Contexts/Default/Operations/
+  │   ├── {UseCase}/
+  │   │   ├── {UseCase}Operation.php
+  │   │   ├── {UseCase}DTO.php
+  │   │   └── {UseCase}Result.php
+  │   └── Actions/
+  │       └── {UseCase}Action.php
+  │
+  └── Shared/Transfer/
+      ├── {Provider}{Domain}OperationGateway.php
+      └── {Provider}{Domain}OperationAdapter.php`,
+    example: `// Like CRUD but for non-CRUD use cases
+$dto = SearchItemsDTO::fromArray([
   'query' => 'laptop',
   'priceMax' => 500,
   'condition' => 'NEW',
 ]);
 
-$result = $searchAction->handle($dto);`,
+$result = $gateway->searchItems($dto);`,
     useCases: [
       "eBay Browse Search",
       "OpenAI Completions",
@@ -116,17 +124,20 @@ $result = $searchAction->handle($dto);`,
     name: "REST Pattern",
     tagline: "Saloon Request/Response",
     when: "Clean RESTful APIs where Saloon's native pattern is perfect",
-    structure: `app/Integration/{Provider}/
-  ├── {Provider}Connector.php       (Saloon Connector)
-  ├── Requests/
-  │   ├── CreatePaymentRequest.php  (Saloon Request)
-  │   ├── GetCustomerRequest.php
-  │   └── ProcessRefundRequest.php
+    structure: `Pleni/{Provider}/{Domain}/
+  ├── Shared/Transfer/Rest/
+  │   └── {Provider}{Domain}RestConnector.php
+  │
+  └── Contexts/Default/{Resource}/
+      └── Requests/
+          ├── CreatePaymentRequest.php
+          ├── GetCustomerRequest.php
+          └── ProcessRefundRequest.php
 
-  // Optional: Add Gateway only if you need
-  // validation, policies, or persistence
-  └── Gateway/
-      └── {Provider}Gateway.php`,
+  Optional (if using Gateway pattern):
+  ├── Shared/Transfer/Rest/
+  │   ├── {Provider}{Domain}RestGateway.php
+  │   └── {Provider}{Domain}RestAdapter.php`,
     example: `// Pure Saloon - use if you don't need Gateway features
 $stripe = new StripeConnector($apiKey);
 $response = $stripe->send(new CreatePaymentRequest(
@@ -161,10 +172,16 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
     name: "Procedure Pattern",
     tagline: "Simple RPC",
     when: "Quick prototypes, simple one-off operations",
-    structure: `Shared/Transfer/Procedure/
-  ├── {Provider}ProcedureAdapter.php
-  ├── {Provider}ProcedureGateway.php
-  └── {Provider}ProcedureConnector.php`,
+    structure: `Pleni/{Provider}/{Domain}/
+  ├── Contexts/Default/Procedures/
+  │   ├── SearchItems.php
+  │   ├── SendNotification.php
+  │   └── ProcessRefund.php
+  │
+  └── Shared/Procedure/
+      ├── {Provider}{Domain}ProcedureAdapter.php
+      ├── {Provider}{Domain}ProcedureGateway.php
+      └── {Provider}{Domain}ProcedureConnector.php`,
     example: `$result = $gateway->call('searchItems', [
   'q' => 'laptop',
   'limit' => 50,
@@ -190,8 +207,8 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
   {
     id: "mcp",
     name: "MCP Pattern",
-    tagline: "AI Agent Tool Access",
-    when: "Giving AI agents (Claude, GPT) safe, controlled access to tools via Model Context Protocol",
+    tagline: "AI Agents Calling YOUR Tools",
+    when: "Your AI agent needs controlled access to tools in YOUR system (filesystem, database, APIs)",
     structure: `Pleni/MCP/
   ├── Contexts/Default/
   │   └── Operations/CallTool/
@@ -204,21 +221,21 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
   │   └── Policies/
   │       ├── AgentBudgetPolicy.php
   │       └── AgentRateLimitPolicy.php`,
-    example: `// Call MCP tool (filesystem, database, etc.)
+    example: `// AI agent calls YOUR tool (reverse direction!)
 $result = app(CallToolAction::class)->handle(
-    server: 'filesystem',
-    tool: 'read_file',
-    arguments: ['path' => storage_path('logs/laravel.log')],
-    agentId: 'log-analyzer'
+    server: 'customer-database',
+    tool: 'get_customer_orders',
+    arguments: ['customer_id' => 12345],
+    agentId: 'support-agent-claude'
 );
 
 // Budget tracked, rate limited, fully audited
-// Perfect for AI agents calling tools`,
+// AI accesses YOUR resources safely`,
     useCases: [
-      "Filesystem Access for AI",
-      "Database Query Tools",
-      "Log Analysis Agents",
-      "Deterministic PHP Workflows",
+      "AI Reading Customer Data",
+      "AI Querying Databases",
+      "AI Accessing Filesystem",
+      "AI Calling Internal APIs",
     ],
     features: {
       typeSafety: 100,
@@ -245,8 +262,8 @@ const FeatureBar = ({ label, value }: { label: string; value: number }) => (
           value >= 80
             ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
             : value >= 60
-              ? "bg-gradient-to-r from-amber-400 to-amber-600"
-              : "bg-gradient-to-r from-red-400 to-red-600"
+            ? "bg-gradient-to-r from-amber-400 to-amber-600"
+            : "bg-gradient-to-r from-red-400 to-red-600"
         }`}
         style={{ width: `${value}%` }}
       />
@@ -256,7 +273,8 @@ const FeatureBar = ({ label, value }: { label: string; value: number }) => (
 
 export default function PatternInteractiveGuide() {
   const [selectedPattern, setSelectedPattern] = useState<PatternType>("crud");
-  const currentPattern = patterns.find((p) => p.id === selectedPattern) || patterns[0];
+  const currentPattern =
+    patterns.find((p) => p.id === selectedPattern) || patterns[0];
 
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, any> = {
@@ -301,12 +319,11 @@ export default function PatternInteractiveGuide() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
             <Boxes className="w-10 h-10 text-emerald-600" />
-            <h2 className="text-3xl font-bold text-slate-900 m-0">
-              Patterns
-            </h2>
+            <h2 className="text-3xl font-bold text-slate-900 m-0">Patterns</h2>
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Five proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper.
+            Five proven patterns for different integration styles. Pick the one
+            that matches your API, not a one-size-fits-all wrapper.
           </p>
         </div>
 
@@ -320,23 +337,33 @@ export default function PatternInteractiveGuide() {
               <button
                 key={pattern.id}
                 onClick={() => setSelectedPattern(pattern.id)}
-                className={`p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                className={`p-6 rounded-2xl border-2 transition-all duration-300 text-left flex flex-col ${
                   isActive
                     ? `${colors.bgLight} ${colors.border} shadow-lg`
                     : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md"
                 }`}
               >
-                <div className="flex items-center gap-3 mb-3">
+                {/* Fixed height container for icon + name */}
+                <div className="h-16 flex items-center gap-3 mb-3">
                   <div
-                    className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 ${
                       isActive ? colors.bg : "bg-slate-100"
                     }`}
                   >
-                    <Icon className={`w-6 h-6 ${isActive ? "text-white" : "text-slate-600"}`} />
+                    <Icon
+                      className={`w-6 h-6 ${
+                        isActive ? "text-white" : "text-slate-600"
+                      }`}
+                    />
                   </div>
-                  <div className="font-bold text-base text-slate-900">{pattern.name}</div>
+                  <div className="font-bold text-base text-slate-900 leading-tight">
+                    {pattern.name}
+                  </div>
                 </div>
-                <div className="text-sm text-slate-600">{pattern.tagline}</div>
+                {/* Tagline always starts here regardless of name wrapping */}
+                <div className="text-sm text-slate-600 leading-snug">
+                  {pattern.tagline}
+                </div>
               </button>
             );
           })}
@@ -460,6 +487,164 @@ export default function PatternInteractiveGuide() {
             </div>
           </div>
         </div>
+
+        {/* MCP Pattern Explanation - Only shows when MCP is selected */}
+        {selectedPattern === "mcp" && (
+          <div className="mt-8 bg-gradient-to-r from-purple-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-2xl shadow-md p-6">
+            <div className="flex items-start gap-4 mb-6">
+              <Info className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <h3 className="font-bold text-lg text-slate-900">
+                MCP Pattern vs. AI Integration Pattern
+              </h3>
+            </div>
+
+            <div className="space-y-6">
+              {/* Direction Comparison */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Integrating WITH AI */}
+                <div className="bg-white rounded-lg p-4 border border-purple-200">
+                  <h4 className="font-semibold text-base text-slate-900 mb-2 flex items-center gap-2">
+                    <ArrowRight className="w-5 h-5 text-blue-600" />
+                    Calling Claude API (Operation Pattern)
+                  </h4>
+                  <p className="text-sm text-slate-600 mb-3">
+                    Your app → Claude API
+                  </p>
+                  <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-800 border-b border-slate-700">
+                      <div className="flex gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      </div>
+                      <span className="text-xs text-slate-400 ml-2 font-mono">
+                        operation.php
+                      </span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs leading-relaxed m-0">
+                      <code className="text-slate-300 font-mono">
+                        {`// You call Claude for completions
+$response = $claudeGateway->create(
+  CreateCompletionDTO::fromArray([
+    'model' => 'claude-3-5-sonnet',
+    'messages' => [...]
+  ])
+);`}
+                      </code>
+                    </pre>
+                  </div>
+                </div>
+
+                {/* AI Calling YOUR Tools */}
+                <div className="bg-white rounded-lg p-4 border border-purple-200">
+                  <h4 className="font-semibold text-base text-slate-900 mb-2 flex items-center gap-2">
+                    <ArrowRight className="w-5 h-5 text-purple-600" />
+                    Claude Calls YOUR Tools (MCP Pattern)
+                  </h4>
+                  <p className="text-sm text-slate-600 mb-3">
+                    Claude → Your system's tools
+                  </p>
+                  <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-800 border-b border-slate-700">
+                      <div className="flex gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      </div>
+                      <span className="text-xs text-slate-400 ml-2 font-mono">
+                        mcp.php
+                      </span>
+                    </div>
+                    <pre className="p-4 overflow-x-auto text-xs leading-relaxed m-0">
+                      <code className="text-slate-300 font-mono">
+                        {`// Claude calls YOUR database
+$result = $mcpGateway->callTool(
+  CallToolDTO::fromArray([
+    'server' => 'customer-db',
+    'tool' => 'get_orders',
+    'agentId' => 'claude-support'
+  ])
+);`}
+                      </code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+
+              {/* Why MCP Pattern Matters */}
+              <div className="bg-white rounded-lg p-4 border border-purple-200">
+                <h4 className="font-semibold text-base text-slate-900 mb-3">
+                  Why MCP Pattern Matters
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-700">
+                  <div>
+                    <p className="font-semibold text-red-600 mb-2">
+                      ❌ Without MCP:
+                    </p>
+                    <ul className="space-y-1.5 ml-4 list-disc">
+                      <li>Fetch ALL customer data upfront</li>
+                      <li>Dump everything in prompt</li>
+                      <li>Hope it fits in context window</li>
+                      <li>No budget tracking</li>
+                      <li>No audit trail</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-emerald-600 mb-2">
+                      ✅ With MCP:
+                    </p>
+                    <ul className="space-y-1.5 ml-4 list-disc">
+                      <li>AI asks for specific data when needed</li>
+                      <li>Budget limits (max 100 queries/agent)</li>
+                      <li>Rate limiting (10 queries/minute)</li>
+                      <li>Full audit trail of AI access</li>
+                      <li>Policies can require human approval</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real Example */}
+              <div className="bg-white rounded-lg p-4 border border-purple-200">
+                <h4 className="font-semibold text-base text-slate-900 mb-3">
+                  Real-World Example: Customer Support Agent
+                </h4>
+                <p className="text-sm text-slate-600 mb-3">
+                  You run Claude in your Laravel app. When a user asks about
+                  their order, Claude needs to check your database:
+                </p>
+                <ol className="text-sm text-slate-700 space-y-1.5 ml-4 list-decimal">
+                  <li>
+                    <strong>User asks:</strong> "What did I order last month?"
+                  </li>
+                  <li>
+                    <strong>You send to Claude</strong> (Operation Pattern -
+                    your app → Claude API)
+                  </li>
+                  <li>
+                    <strong>Claude responds:</strong> "I need to call
+                    get_customer_orders"
+                  </li>
+                  <li>
+                    <strong>You execute tool via MCP</strong> (MCP Pattern -
+                    Claude's request → YOUR tool)
+                  </li>
+                  <li>
+                    <strong>MCP enforces policies:</strong> Budget check, rate
+                    limit, permissions
+                  </li>
+                  <li>
+                    <strong>You send result back to Claude</strong> with the
+                    order data
+                  </li>
+                  <li>
+                    <strong>Claude responds to user</strong> with the answer
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

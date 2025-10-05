@@ -15,7 +15,7 @@ use Plenipotentiary\Laravel\Support\Result;
  * Acts as the central entry point where logging, jobs, and events can hook in.
  * Delegates to a provider-specific CrudAdapterContract behind the scenes.
  */
-interface ApiCrudGatewayContract
+interface CrudGatewayContract
 {
     public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result;
 

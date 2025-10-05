@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Gateway;
+namespace Plenipotentiary\Laravel\Pleni\JSONPlaceholder\API\Contexts\Default\Todo\Gateway;
 
 use Plenipotentiary\Laravel\Contracts\Adapter\AdapterVerbContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\CrudAdapterContract;
@@ -14,22 +14,20 @@ use Plenipotentiary\Laravel\Exceptions\DomainException;
 use Plenipotentiary\Laravel\Exceptions\DomainInvalidException;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayCall;
 use Plenipotentiary\Laravel\Pleni\Contracts\Policy\GatewayPolicyChain;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignCreate;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Adapter\CampaignUpdate;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\DTO\CampaignCanonicalDTO;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Contexts\Search\Campaign\Selector\CampaignSelector;
-use Plenipotentiary\Laravel\Pleni\Google\Ads\Shared\Lookup\Lookup;
+use Plenipotentiary\Laravel\Pleni\JSONPlaceholder\API\Contexts\Default\Todo\Adapter\TodoCreate;
+use Plenipotentiary\Laravel\Pleni\JSONPlaceholder\API\Contexts\Default\Todo\Adapter\TodoUpdate;
+use Plenipotentiary\Laravel\Pleni\JSONPlaceholder\API\Contexts\Default\Todo\DTO\TodoCanonicalDTO;
 use Plenipotentiary\Laravel\Support\Result;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
- * Provider-agnostic gateway class.
+ * Provider-agnostic gateway for Todo CRUD operations.
  *
- * Delegates CRUD operations to provider-specific adapters.
- * Central location for logging, events, or job dispatch.
+ * Demonstrates that CRUD pattern works the same for REST APIs (via Saloon)
+ * as it does for SDKs (like Google Ads).
  */
-final class CampaignCrudGateway implements CrudGatewayContract
+final class TodoCrudGateway implements CrudGatewayContract
 {
     use \Plenipotentiary\Laravel\Support\Operation\GatewayPreflightTrait;
 
@@ -46,74 +44,74 @@ final class CampaignCrudGateway implements CrudGatewayContract
         return app(GatewayPolicyChain::class);
     }
 
-    public function create(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
+    public function create(TodoCanonicalDTO $dto, bool $validateOnly = false): Result
     {
-        if ($invalid = $this->preflight($this->resolveOperation(CampaignCreate::class), $c)) {
+        if ($invalid = $this->preflight($this->resolveOperation(TodoCreate::class), $dto)) {
             return $invalid;
         }
 
         try {
-            $call = new GatewayCall('campaign.create', $c->toArray(), ['validateOnly' => $validateOnly]);
+            $call = new GatewayCall('todo.create', $dto->toArray(), ['validateOnly' => $validateOnly]);
 
-            return $this->chain()->invoke(fn () => $this->adapter->create($c, $validateOnly), $call);
+            return $this->chain()->invoke(fn () => $this->adapter->create($dto, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
     }
 
-    public function find(CampaignSelector $sel): Result
+    public function find(TodoCanonicalDTO $dto): Result
     {
-        $this->logger->info('Gateway: find campaign', ['selector' => $sel->value()]);
+        $this->logger->info('Gateway: find todo', ['id' => $dto->id]);
 
         try {
-            $call = new GatewayCall('campaign.find', $sel->toCanonicalDTO()->toArray());
+            $call = new GatewayCall('todo.find', $dto->toArray());
 
-            return $this->chain()->invoke(fn () => $this->adapter->find($sel), $call);
+            return $this->chain()->invoke(fn () => $this->adapter->find($dto), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
     }
 
-    public function lookup(Lookup $criteria, string $customerId): Result
+    public function list(?int $userId = null): Result
     {
-        $this->logger->info('Gateway: lookup campaigns', ['customerId' => $customerId]);
+        $this->logger->info('Gateway: list todos', ['userId' => $userId]);
 
         try {
-            $call = new GatewayCall('campaign.lookup', ['customerId' => $customerId]);
+            $call = new GatewayCall('todo.list', ['userId' => $userId]);
 
-            return $this->chain()->invoke(fn () => $this->adapter->lookup($criteria, $customerId), $call);
+            return $this->chain()->invoke(fn () => $this->adapter->list($userId), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
     }
 
-    public function update(CampaignCanonicalDTO $c, bool $validateOnly = false): Result
+    public function update(TodoCanonicalDTO $dto, bool $validateOnly = false): Result
     {
-        if ($invalid = $this->preflight($this->resolveOperation(CampaignUpdate::class), $c)) {
+        if ($invalid = $this->preflight($this->resolveOperation(TodoUpdate::class), $dto)) {
             return $invalid;
         }
 
         try {
-            $call = new GatewayCall('campaign.update', $c->toArray(), ['validateOnly' => $validateOnly]);
+            $call = new GatewayCall('todo.update', $dto->toArray(), ['validateOnly' => $validateOnly]);
 
-            return $this->chain()->invoke(fn () => $this->adapter->update($c, $validateOnly), $call);
+            return $this->chain()->invoke(fn () => $this->adapter->update($dto, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
     }
 
-    public function delete(CampaignSelector $sel, bool $validateOnly = false): Result
+    public function delete(TodoCanonicalDTO $dto, bool $validateOnly = false): Result
     {
-        $this->logger->info('Gateway: delete campaign', ['selector' => $sel->value()]);
+        $this->logger->info('Gateway: delete todo', ['id' => $dto->id]);
 
-        if ($invalid = $this->preflight($this->adapter, $sel->toCanonicalDTO())) {
+        if ($invalid = $this->preflight($this->adapter, $dto)) {
             return $invalid;
         }
 
         try {
-            $call = new GatewayCall('campaign.delete', $sel->toCanonicalDTO()->toArray(), ['validateOnly' => $validateOnly]);
+            $call = new GatewayCall('todo.delete', $dto->toArray(), ['validateOnly' => $validateOnly]);
 
-            return $this->chain()->invoke(fn () => $this->adapter->delete($sel, $validateOnly), $call);
+            return $this->chain()->invoke(fn () => $this->adapter->delete($dto, $validateOnly), $call);
         } catch (Throwable $exception) {
             return $this->mapException($exception);
         }
@@ -143,9 +141,6 @@ final class CampaignCrudGateway implements CrudGatewayContract
         ]);
     }
 
-    /**
-     * Resolve a concrete operation instance (Create/Update/Delete/...).
-     */
     private function resolveOperation(string $operationClass): AdapterVerbContract
     {
         return $this->adapter instanceof CrudAdapterContract

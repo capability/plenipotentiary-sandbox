@@ -3,7 +3,7 @@ import {
   Database,
   Zap,
   Wrench,
-  Network,
+  Globe,
   CheckCircle,
   Terminal,
   FolderTree,
@@ -106,9 +106,9 @@ const patterns: Pattern[] = [
   {
     id: "rest",
     name: "REST Pattern",
-    icon: Network,
-    color: "purple",
-    description: "Dedicated request classes for APIs with many endpoints",
+    icon: Globe,
+    color: "cyan",
+    description: "Saloon Request/Response for clean RESTful APIs",
     provider: "GitHub",
     domain: "API",
     resource: "Repositories",
@@ -118,11 +118,11 @@ const patterns: Pattern[] = [
     id: "mcp",
     name: "MCP Pattern",
     icon: Brain,
-    color: "cyan",
-    description: "Model Context Protocol for AI agent tool calls",
-    provider: "MCP",
-    domain: "Default",
-    resource: "CallTool",
+    color: "purple",
+    description: "AI agents calling YOUR tools (database, filesystem, APIs)",
+    provider: "CustomerDatabase",
+    domain: "Tools",
+    resource: "GetCustomerOrders",
     requiredOptions: [],
   },
 ];
@@ -261,16 +261,16 @@ const realWorldExamples: RealWorldExample[] = [
   {
     id: "github-repos",
     name: "GitHub Repository Integration",
-    icon: Network,
+    icon: Globe,
     provider: "GitHub",
     domain: "API",
     resource: "Repositories",
     pattern: "rest",
     description:
-      "GitHub API integration with 50+ endpoints. REST Pattern with dedicated request classes for type-safe API calls (SearchRepos, GetRepo, CreateRepo, UpdateRepo, etc.).",
+      "GitHub API integration with 50+ endpoints. REST Pattern uses Saloon's Request/Connector pattern with dedicated request classes for each endpoint (SearchRepos, GetRepo, CreateRepo, UpdateRepo, etc.). Clean, type-safe API calls.",
     presetOptions: ["requests", "tests"],
     useCase:
-      "Many endpoints benefit from dedicated Request classes with per-endpoint validation and type safety",
+      "When you need Saloon's familiar Request pattern with optional Gateway features (policies, validation, persistence)",
     crossCuttingConcerns: [
       {
         id: "rate-limit",
@@ -312,17 +312,17 @@ const realWorldExamples: RealWorldExample[] = [
   },
   {
     id: "ai-log-analyzer",
-    name: "AI Log Analyzer Agent",
+    name: "AI Log Analyzer Tool",
     icon: Brain,
-    provider: "MCP",
-    domain: "Default",
-    resource: "CallTool",
+    provider: "Filesystem",
+    domain: "Tools",
+    resource: "ReadLogFile",
     pattern: "mcp",
     description:
-      "AI agent that reads application logs via MCP filesystem server, analyzes errors with Claude/GPT, and suggests fixes. MCP Pattern with Actions for agent workflows and budget/rate limit controls.",
-    presetOptions: ["actions", "tests"],
+      "Expose a tool that lets AI agents read application logs from your filesystem. The agent analyzes errors with Claude/GPT and suggests fixes. MCP Pattern with budget/rate limit controls to prevent runaway costs.",
+    presetOptions: ["actions", "policies", "mcp-server", "audit", "tests"],
     useCase:
-      "AI agents need observability, safety guardrails (budget/rate limits), and audit trails for tool calls",
+      "Give AI agents controlled access to your filesystem with safety guardrails, budget limits, and full audit trails",
     crossCuttingConcerns: [
       {
         id: "agent-budget",
@@ -348,7 +348,7 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Activity,
         location: "Pleni/Policies/LoggingPolicy.php",
         description:
-          "Log all agent tool calls, prompts, and responses for debugging and audit.",
+          "Log which files the AI accessed, when, and what it read for debugging and compliance.",
         level: "global",
       },
       {
@@ -357,24 +357,24 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Shield,
         location: "Pleni/MCP/Shared/Policies/AgentAuditPolicy.php",
         description:
-          "Track which files/tools the agent accessed, when, and why for compliance.",
+          "Full audit trail of all filesystem access by AI agents for compliance and security review.",
         level: "pattern",
       },
     ],
   },
   {
     id: "ai-customer-insight",
-    name: "Customer Insight Agent",
+    name: "Customer Database Query Tool",
     icon: Brain,
-    provider: "MCP",
-    domain: "CustomerAnalytics",
-    resource: "AnalyzeCustomer",
+    provider: "CustomerDatabase",
+    domain: "Tools",
+    resource: "QueryCustomerData",
     pattern: "mcp",
     description:
-      "AI agent that queries customer database (via MCP), analyzes purchase patterns with LLM, checks inventory levels, and auto-generates personalized product recommendations with dynamic pricing. Combines multiple MCP servers (database, analytics, LLM) in one workflow.",
-    presetOptions: ["actions", "jobs", "tests"],
+      "Expose a tool that lets AI agents query your customer database (orders, preferences, purchase history). The agent analyzes patterns, checks inventory, and generates personalized recommendations. MCP Pattern enforces query limits and logs all data access.",
+    presetOptions: ["actions", "jobs", "policies", "mcp-server", "audit", "tests"],
     useCase:
-      "Multi-step agent workflow combining data access, AI analysis, and business logic with full audit trail",
+      "Give AI agents safe, audited access to sensitive customer data with strict budget and rate limits",
     crossCuttingConcerns: [
       {
         id: "agent-budget",
@@ -400,7 +400,7 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Activity,
         location: "Pleni/Policies/LoggingPolicy.php",
         description:
-          "Log entire agent workflow: database queries, LLM prompts, recommendations generated.",
+          "Log all database queries executed by AI: which customer data was accessed, when, and by which agent.",
         level: "global",
       },
       {
@@ -409,7 +409,7 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Shield,
         location: "Pleni/MCP/Shared/Policies/AgentAuditPolicy.php",
         description:
-          "Track customer data access and AI-generated pricing for compliance and transparency.",
+          "Track all customer data access by AI agents for GDPR compliance and security audits.",
         level: "pattern",
       },
       {
@@ -417,9 +417,9 @@ const realWorldExamples: RealWorldExample[] = [
         name: "Idempotency",
         icon: RotateCcw,
         location:
-          "Pleni/MCP/Contexts/CustomerAnalytics/AnalyzeCustomer/Support/AnalysisIdempotencyHints.php",
+          "Pleni/CustomerDatabase/Tools/QueryCustomerData/Support/QueryIdempotencyHints.php",
         description:
-          "Prevent duplicate analysis when queued job is retried. Cache results by customer ID + timestamp.",
+          "Prevent duplicate queries when agent workflow is retried. Cache results by customer ID + query hash.",
         level: "context",
       },
     ],
@@ -506,6 +506,30 @@ const scaffoldOptions: ScaffoldOption[] = [
     description: "Generate seeder classes",
     folders: [],
     filesGenerated: 1,
+  },
+  {
+    id: "policies",
+    label: "Policy Chain",
+    flag: "--with-policies",
+    description: "Generate budget, rate limit, and permission policies",
+    folders: ["Policies/"],
+    filesGenerated: 3,
+  },
+  {
+    id: "mcp-server",
+    label: "MCP Server Definition",
+    flag: "--with-mcp-server",
+    description: "Generate MCP server config and tool schemas",
+    folders: ["MCP/"],
+    filesGenerated: 2,
+  },
+  {
+    id: "audit",
+    label: "Audit Trail",
+    flag: "--with-audit",
+    description: "Generate audit logging for AI tool access tracking",
+    folders: ["Audit/"],
+    filesGenerated: 2,
   },
 ];
 
@@ -664,28 +688,48 @@ export default function MakeScaffoldInteractive() {
           ]
         : selectedPattern === "operation"
         ? [
+            "Operations live in:",
+            "Pleni/{Provider}/{Domain}/Contexts/Default/Operations/{UseCase}/",
             "├── {UseCase}Operation.php",
-            "├── {UseCase}Gateway.php",
             "├── {UseCase}DTO.php",
             "└── {UseCase}Result.php",
+            "│",
+            "Actions live in:",
+            "Pleni/{Provider}/{Domain}/Contexts/Default/Operations/Actions/",
+            "└── {UseCase}Action.php",
+            "│",
+            "Shared infrastructure:",
+            "Pleni/{Provider}/{Domain}/Shared/Transfer/",
+            "├── {Provider}{Domain}OperationGateway.php",
+            "└── {Provider}{Domain}OperationAdapter.php",
           ]
         : selectedPattern === "rest"
         ? [
-            "├── {Provider}{Domain}RestAdapter.php",
             "├── {Provider}{Domain}RestConnector.php",
-            "├── {Provider}{Domain}RestGateway.php",
             "│",
-            "├── Requests live in:",
-            "└── ../../Contexts/{Context}/{Resource}/Requests/",
-            "    ├── GenerateReportRequest.php",
-            "    ├── ExportDataRequest.php",
-            "    ├── CalculatePricingRequest.php",
-            "    └── ValidateInventoryRequest.php",
+            "Requests live in:",
+            "Pleni/{Provider}/{Domain}/Contexts/Default/{Resource}/Requests/",
+            "├── CreatePaymentRequest.php",
+            "├── GetCustomerRequest.php",
+            "├── ProcessRefundRequest.php",
+            "└── UpdatePaymentRequest.php",
+            "│",
+            "Optional (Gateway pattern):",
+            "├── {Provider}{Domain}RestGateway.php",
+            "└── {Provider}{Domain}RestAdapter.php",
           ]
         : [
-            "├── {Provider}ProcedureAdapter.php",
-            "├── {Provider}ProcedureGateway.php",
-            "└── {Provider}ProcedureConnector.php",
+            "Procedures live in:",
+            "Pleni/{Provider}/{Domain}/Contexts/Default/Procedures/",
+            "├── SearchItems.php",
+            "├── SendNotification.php",
+            "└── ProcessRefund.php",
+            "│",
+            "Shared infrastructure:",
+            "Pleni/{Provider}/{Domain}/Shared/Procedure/",
+            "├── {Provider}{Domain}ProcedureAdapter.php",
+            "├── {Provider}{Domain}ProcedureGateway.php",
+            "└── {Provider}{Domain}ProcedureConnector.php",
           ];
 
     const optionalFolders: string[] = [];

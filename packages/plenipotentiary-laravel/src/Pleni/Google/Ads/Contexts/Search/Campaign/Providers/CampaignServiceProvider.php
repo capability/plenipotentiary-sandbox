@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Plenipotentiary\Laravel\Contracts\Adapter\CrudAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\ProcedureAdapterContract;
 use Plenipotentiary\Laravel\Contracts\Adapter\RestAdapterContract;
-use Plenipotentiary\Laravel\Contracts\Gateway\ApiCrudGatewayContract;
+use Plenipotentiary\Laravel\Contracts\Gateway\CrudGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\ProcedureGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Gateway\RestGatewayContract;
 use Plenipotentiary\Laravel\Contracts\Idempotency\IdempotencyHints;
@@ -43,7 +43,7 @@ final class CampaignServiceProvider extends ServiceProvider
 
         // Adapter / Gateway
         $this->app->singleton(CrudAdapterContract::class, CampaignCrudAdapter::class);
-        $this->app->singleton(ApiCrudGatewayContract::class, CampaignCrudGateway::class);
+        $this->app->singleton(CrudGatewayContract::class, CampaignCrudGateway::class);
 
         // Repository binding
         $this->app->bind(CampaignRepositoryContract::class, function ($app) {
