@@ -97,7 +97,7 @@ public function performWithArray(array $input): Result
         <strong>actually need</strong> from your business use case. Not
         everything the API supports, just what <em>you</em> need. Write it as{" "}
         <code>INPUT_SPEC</code>. It's not replicating the API docs, it's your
-        domains contact and it promotes staring adapters.
+        domains contact and it promotes sharing adapters.
       </>
     ),
     code: `// CampaignCreate.php
