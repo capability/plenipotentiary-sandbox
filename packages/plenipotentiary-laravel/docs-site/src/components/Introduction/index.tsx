@@ -343,10 +343,10 @@ export default function Introduction() {
                   artisan:make
                 </code>{" "}
                 for third-party APIs: declare the provider, domain, context, and
-                resource and instantly scaffold the contracts, DTOs, gateways
-                and test harness you need. You still implement the Adapter (it's
-                not magic), but the code now sits in a consistent, testable,
-                tool-friendly structure.
+                resource and instantly scaffold the DTOs, gateways, adapters
+                and test harness you need. Plenipotentiary provides the contracts.
+                You still implement the adapter logic (it's not magic), but the
+                code now sits in a consistent, testable, tool-friendly structure.
               </p>
               <p className="text-base text-slate-700 leading-relaxed mb-0">
                 Flysystem-style consistency for APIs, while recognizing not
