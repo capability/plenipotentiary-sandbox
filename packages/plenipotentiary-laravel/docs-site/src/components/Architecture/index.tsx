@@ -286,10 +286,10 @@ export default function PlenipotentiaryArchitecture() {
               <h3 className="font-bold text-slate-900 mb-2">Core Principle</h3>
               <p className="text-slate-700 leading-relaxed">
                 <strong>Abstract the Abstractable (CRUD):</strong> Pleni
-                supports CRUD where it fits but doesn't pretend it covers
-                everything. It offers multiple integration patterns to match
-                different API shapes—each built on Laravel's native tooling and
-                proven libraries like Saloon for HTTP.
+                supports CRUD where it fits, but most real integrations need
+                additional patterns. It offers multiple integration patterns to
+                match different API shapes, each built on Laravel's native
+                tooling and proven libraries like Saloon for HTTP.
               </p>
             </div>
           </div>
@@ -308,10 +308,10 @@ export default function PlenipotentiaryArchitecture() {
               <h4 className="font-bold text-slate-900 mb-1">
                 Your Application
               </h4>
-              <p className="text-xs text-slate-600">
+              <p className="text-sm text-slate-600">
                 Controllers, Jobs, Commands
               </p>
-              <div className="mt-2 text-xs text-slate-500 italic">
+              <div className="mt-2 text-sm text-slate-500 italic">
                 You write this
               </div>
             </div>
@@ -323,10 +323,10 @@ export default function PlenipotentiaryArchitecture() {
             <div className="flex-1 bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-xl p-4 text-center">
               <Shield className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
               <h4 className="font-bold text-slate-900 mb-1">Gateway</h4>
-              <p className="text-xs text-slate-600">
+              <p className="text-sm text-slate-600">
                 Stable, consistent contracts
               </p>
-              <div className="mt-2 text-xs font-bold text-emerald-700">
+              <div className="mt-2 text-sm font-bold text-emerald-700">
                 ✓ Plenipotentiary provides
               </div>
             </div>
@@ -338,8 +338,8 @@ export default function PlenipotentiaryArchitecture() {
             <div className="flex-1 bg-gradient-to-br from-purple-50 to-purple-100 border-2 border-purple-300 rounded-xl p-4 text-center">
               <Layers className="w-10 h-10 text-purple-600 mx-auto mb-2" />
               <h4 className="font-bold text-slate-900 mb-1">Adapter</h4>
-              <p className="text-xs text-slate-600">API integration logic</p>
-              <div className="mt-2 text-xs text-slate-500 italic">
+              <p className="text-sm text-slate-600">API integration logic</p>
+              <div className="mt-2 text-sm text-slate-500 italic">
                 You write this
               </div>
             </div>
@@ -351,33 +351,39 @@ export default function PlenipotentiaryArchitecture() {
             <div className="flex-1 bg-gradient-to-br from-orange-50 to-orange-100 border-2 border-orange-300 rounded-xl p-4 text-center">
               <Globe className="w-10 h-10 text-orange-600 mx-auto mb-2" />
               <h4 className="font-bold text-slate-900 mb-1">External API</h4>
-              <p className="text-xs text-slate-600">Stripe, Google, etc.</p>
-              <div className="mt-2 text-xs text-slate-500 italic">
+              <p className="text-sm text-slate-600">Stripe, Google, etc.</p>
+              <div className="mt-2 text-sm text-slate-500 italic">
                 Third-party service
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-            <div className="flex gap-3">
-              <AlertCircle className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-slate-700 leading-relaxed">
-                <div>
-                  <strong>What Plenipotentiary Provides:</strong>{" "}
-                  <div>
-                    The Gateway layer (stable contracts, validation, policies)
-                    and scaffolding commands to generate boilerplate.
-                  </div>
-                </div>
-                <div>
-                  <strong>What You Write:</strong>{" "}
-                  <div>
-                    Your application code and the Adapter (actual API
-                    integration logic). This is NOT a magic wrapper—you still
-                    implement the integration, but with structure and safety
-                    guardrails.
-                  </div>
-                </div>
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Left: What You Write */}
+              <div className="bg-white rounded-lg p-4 border-l-4 border-slate-400">
+                <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                  <Code2 className="w-5 h-5 text-slate-600" />
+                  What You Write
+                </h4>
+                <p className="text-base text-slate-700 leading-relaxed">
+                  Your application code and the Adapter (actual API
+                  integration logic). This is NOT a magic wrapper; you still
+                  implement the integration, but with structure and safety
+                  guardrails.
+                </p>
+              </div>
+
+              {/* Right: What Plenipotentiary Provides */}
+              <div className="bg-white rounded-lg p-4 border-l-4 border-emerald-500">
+                <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-emerald-600" />
+                  What Plenipotentiary Provides
+                </h4>
+                <p className="text-base text-slate-700 leading-relaxed">
+                  The Gateway layer (stable contracts, validation, policies)
+                  and scaffolding commands to generate boilerplate.
+                </p>
               </div>
             </div>
           </div>
@@ -397,7 +403,7 @@ export default function PlenipotentiaryArchitecture() {
               </p>
 
               <div className="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
-                <p className="text-sm text-slate-700 leading-relaxed">
+                <p className="text-base text-slate-700 leading-relaxed">
                   <strong>This is how your code will look.</strong> You still
                   need to code the integration (adapter) - this isn't magic or
                   over-abstraction. Plenipotentiary is{" "}
@@ -432,7 +438,7 @@ export default function PlenipotentiaryArchitecture() {
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
                   Consistent Result Interface Across All Patterns
                 </p>
-                <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                <p className="text-base text-slate-600 mb-4 leading-relaxed">
                   Every pattern returns{" "}
                   <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">
                     Result&lt;CanonicalDTO&gt;
@@ -452,7 +458,7 @@ export default function PlenipotentiaryArchitecture() {
                         Simplest: Basic Success Check
                       </span>
                     </div>
-                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                       <code className="font-mono">{`$result = $gateway->create($dto);
 
 if ($result->isOk()) {
@@ -473,7 +479,7 @@ if ($result->isOk()) {
                         Error Handling
                       </span>
                     </div>
-                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                       <code className="font-mono">{`$result = $gateway->update($dto);
 
 if ($result->isErr()) {
@@ -495,7 +501,7 @@ if ($result->isErr()) {
                         Complete: Provider Errors + Raw Response Access
                       </span>
                     </div>
-                    <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                       <code className="font-mono">{`$result = $gateway->create($dto);
 // Gateway already validated $dto against INPUT_SPEC before calling adapter
 // If INPUT_SPEC failed, we wouldn't reach the adapter at all
@@ -599,7 +605,7 @@ Log::info('Campaign created', [
                           Controller (Simplest)
                         </span>
                       </div>
-                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`public function store(Request $req, CreateCampaignAction $action) {
     $result = $action->handle($req->validated());
 
@@ -617,7 +623,7 @@ Log::info('Campaign created', [
                           Job (Error Handling)
                         </span>
                       </div>
-                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`class SyncCampaignsJob implements ShouldQueue {
     public function handle(CampaignGateway $gateway) {
         $result = $gateway->readMany(['status' => 'ENABLED']);
@@ -641,7 +647,7 @@ Log::info('Campaign created', [
                           Command (Provider Errors + Raw Response)
                         </span>
                       </div>
-                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`class CreateCampaignCommand extends Command {
     public function handle(CampaignGateway $gateway) {
         $result = $gateway->create($this->buildDto());
@@ -688,7 +694,7 @@ Log::info('Campaign created', [
                           Action (Lorisleiva) - Same Interface
                         </span>
                       </div>
-                      <pre className="text-xs text-slate-700 leading-relaxed overflow-x-auto">
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`$result = CreateCampaignAction::run(['name' => 'Black Friday']);
 
 // Same Result<T> interface everywhere
@@ -721,7 +727,8 @@ if ($result->isOk()) {
             Four Gateway/Adapter Patterns
           </h2>
           <p className="text-center text-slate-600 mb-6">
-            Different abstraction levels for different integration types
+            Different abstraction levels for different integration types. REST
+            pattern uses Saloon natively without the Gateway layer.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -765,7 +772,7 @@ if ($result->isOk()) {
                     </div>
                   </div>
 
-                  <p className="text-sm text-slate-600 mb-3 leading-relaxed">
+                  <p className="text-base text-slate-600 mb-3 leading-relaxed">
                     {pattern.description}
                   </p>
 
@@ -920,7 +927,7 @@ if ($result->isOk()) {
             </div>
 
             <div className="mb-6 p-4 bg-white rounded-xl border border-emerald-200">
-              <p className="text-sm text-slate-700 leading-relaxed">
+              <p className="text-base text-slate-700 leading-relaxed">
                 <strong>Gateway = Stable platform.</strong> Your application
                 calls the Gateway, never the vendor API directly. When provider
                 APIs change, only the Adapter changes - your Gateway stays
@@ -975,26 +982,29 @@ if ($result->isOk()) {
                   <h4 className="font-bold text-blue-900 mb-2">
                     Team Collaboration via INPUT_SPEC
                   </h4>
-                  <p className="text-sm text-blue-800 leading-relaxed mb-3">
+                  <p className="text-base text-blue-800 leading-relaxed mb-4">
                     All adapters define{" "}
-                    <code className="px-2 py-0.5 bg-blue-100 rounded text-blue-900 font-mono text-xs">
+                    <code className="px-2 py-0.5 bg-blue-100 rounded text-blue-900 font-mono text-sm">
                       INPUT_SPEC
                     </code>{" "}
                     as their contract. When teams share adapters, INPUT_SPEC
                     becomes an invaluable kickstart - everyone knows exactly
                     what fields are needed, validation rules, and defaults.
                   </p>
-                  <div className="bg-slate-900 rounded-lg p-3 overflow-x-auto">
-                    <pre className="text-xs text-slate-300 leading-relaxed m-0">
-                      <code className="font-mono whitespace-pre">{`public const INPUT_SPEC = [
-    'query' => ['rules' => ['required', 'string', 'min:2']],
-    'limit' => ['rules' => ['integer', 'max:200'], 'default' => 50],
-    'priceMax' => ['rules' => ['numeric']],
-];
-
-// Gateway validates automatically via INPUT_SPEC
-// Teams immediately understand the contract`}</code>
-                    </pre>
+                  <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                    <div className="font-mono text-sm">
+                      <div className="text-purple-400">public const <span className="text-yellow-300">INPUT_SPEC</span> = [</div>
+                      <div className="ml-4 text-slate-300">
+                        <div>'query' =&gt; ['rules' =&gt; ['required', 'string', 'min:2']],</div>
+                        <div>'limit' =&gt; ['rules' =&gt; ['integer', 'max:200'], 'default' =&gt; 50],</div>
+                        <div>'priceMax' =&gt; ['rules' =&gt; ['numeric']],</div>
+                      </div>
+                      <div className="text-purple-400">];</div>
+                      <div className="mt-3 text-slate-500 italic">
+                        <div>// Gateway validates automatically via INPUT_SPEC</div>
+                        <div>// Teams immediately understand the contract</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
