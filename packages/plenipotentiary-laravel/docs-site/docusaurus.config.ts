@@ -46,7 +46,7 @@ const config = {
       title: "Plenipotentiary",
       logo: {
         alt: "Plenipotentiary Logo",
-        src: "img/logox32.svg",
+        src: "img/pleni_logo_white.svg",
       },
       items: [
         { type: "doc", docId: "introduction", label: "Docs", position: "left" },

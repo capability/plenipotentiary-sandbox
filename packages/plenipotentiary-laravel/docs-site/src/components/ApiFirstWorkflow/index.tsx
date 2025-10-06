@@ -497,8 +497,8 @@ export default function APIWorkflow() {
 
             {/* Outcome & Antipattern Cards */}
             <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <div className="rounded-lg border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-white shadow px-4 pt-4 pb-3">
-                <div className="flex items-start gap-2">
+              <div className="rounded-lg border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 to-white shadow px-4 py-4">
+                <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
                   </div>
@@ -506,18 +506,15 @@ export default function APIWorkflow() {
                     <h3 className="text-sm font-bold text-emerald-700 uppercase tracking-wide m-0 mb-2">
                       Our Approach
                     </h3>
-                    <h4 className="font-semibold text-slate-900 mb-0.5 leading-snug">
+                    <p className="font-semibold text-slate-900 leading-snug m-0">
                       {step.outcome}
-                    </h4>
-                    <p className="text-xs text-emerald-700 font-medium">
-                      What you achieve
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-lg border-2 border-red-300 bg-gradient-to-br from-red-50 to-white shadow px-4 pt-4 pb-3">
-                <div className="flex items-start gap-2">
+              <div className="rounded-lg border-2 border-red-300 bg-gradient-to-br from-red-50 to-white shadow px-4 py-4">
+                <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
                     <XCircle className="w-4 h-4 text-red-600" />
                   </div>
@@ -525,28 +522,17 @@ export default function APIWorkflow() {
                     <h3 className="text-sm font-bold text-red-700 uppercase tracking-wide m-0 mb-2">
                       Magic Universal Wrapper Mistakes
                     </h3>
-                    <h4 className="font-semibold text-slate-900 mb-0.5 leading-snug">
+                    <p className="font-semibold text-slate-900 leading-snug m-0">
                       {step.antipattern}
-                    </h4>
-                    <p className="text-xs text-red-700 font-medium">
-                      What to avoid
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Code Example Title and Navigation Row */}
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <FileCode className="w-4 h-4 text-slate-500" />
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider m-0">
-                  Code Example
-                </h3>
-              </div>
-
-              {/* Navigation Buttons */}
-              <div className="flex items-center gap-3">
+            {/* Navigation Buttons */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
                 {stepIndex > 0 && (
                   <button
                     onClick={() =>
@@ -558,7 +544,9 @@ export default function APIWorkflow() {
                     Previous
                   </button>
                 )}
+              </div>
 
+              <div>
                 {stepIndex < workflowSteps.length - 1 ? (
                   <button
                     onClick={handleStepComplete}
@@ -577,6 +565,14 @@ export default function APIWorkflow() {
                   </button>
                 )}
               </div>
+            </div>
+
+            {/* Code Example Title */}
+            <div className="flex items-center gap-2 mb-3">
+              <FileCode className="w-4 h-4 text-slate-500" />
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider m-0">
+                Code Example
+              </h3>
             </div>
 
             {/* Code Example */}
