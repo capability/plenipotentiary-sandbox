@@ -97,7 +97,8 @@ export default function Introduction() {
                 Plenipotentiary
               </h1>
               <p className="text-xl text-slate-600 text-center font-medium">
-                Scaffolding and patterns for Laravel API/SDK integrations
+                Structure, scaffolding, and sanity for API/SDK integrations in
+                Laravel
               </p>
             </div>
 
@@ -150,7 +151,7 @@ export default function Introduction() {
             </h3>
             <p className="text-base text-slate-700 leading-relaxed mb-4">
               <strong className="text-emerald-700">
-                Uniform interface for heterogeneous integrations.
+                A consistent way to work with diverse APIs.
               </strong>
             </p>
             <p className="text-base text-slate-700 leading-relaxed mb-4">
@@ -181,6 +182,11 @@ export default function Introduction() {
               <li className="list-disc">
                 <strong>Swappability</strong> - change providers without
                 touching business logic
+              </li>
+              <li className="list-disc">
+                <strong>Focusability</strong> - AI code agents perform best
+                within defined, repeatable patterns. Repetition turns AI output
+                into reliability.
               </li>
             </ul>
           </div>
