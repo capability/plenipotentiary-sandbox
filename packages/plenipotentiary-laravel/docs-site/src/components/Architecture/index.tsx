@@ -177,9 +177,9 @@ export default function PlenipotentiaryArchitecture() {
         "Custom APIs",
       ],
       adapterFiles: [
-        "SearchItems/SearchItemsOperation.php",
-        "CreateCompletion/CreateCompletionOperation.php",
-        "VerifyAvailability/VerifyOperation.php",
+        "Adapter/SearchItems/SearchItemsOperation.php",
+        "Adapter/CreateCompletion/CreateCompletionOperation.php",
+        "Adapter/VerifyAvailability/VerifyOperation.php",
       ],
       gatewayMethods: [
         "search($dto)",
@@ -204,7 +204,7 @@ export default function PlenipotentiaryArchitecture() {
         "Prototyping",
         "One-off Tasks",
       ],
-      adapterFiles: ["ProcedureAdapter.php (handles all)"],
+      adapterFiles: ["Adapter/ProcedureAdapter.php (handles all)"],
       gatewayMethods: ["call($operation, $payload)"],
       repositoryNote: "Optional/swappable",
       returnType: "Result<mixed>",
