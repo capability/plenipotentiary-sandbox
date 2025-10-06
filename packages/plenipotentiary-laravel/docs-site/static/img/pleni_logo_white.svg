@@ -1,0 +1,31 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="200" height="200" fill="#ffffff" rx="8"/>
+
+  <!-- 5 distinct pattern blocks arranged in a pentagon/modular formation -->
+  <g transform="translate(100, 100)">
+    <!-- Center connecting hub (the domain/gateway) -->
+    <circle cx="0" cy="0" r="15" fill="#24292e"/>
+
+    <!-- 5 pattern blocks radiating out -->
+    <!-- CRUD - top -->
+    <rect x="-12" y="-65" width="24" height="24" fill="#24292e" rx="4"/>
+    <line x1="0" y1="-41" x2="0" y2="-15" stroke="#24292e" stroke-width="3"/>
+
+    <!-- Operation - top right -->
+    <rect x="28" y="-45" width="24" height="24" fill="#24292e" rx="4"/>
+    <line x1="35" y1="-28" x2="12" y2="-8" stroke="#24292e" stroke-width="3"/>
+
+    <!-- Procedure - bottom right -->
+    <rect x="28" y="21" width="24" height="24" fill="#24292e" rx="4"/>
+    <line x1="35" y1="28" x2="12" y2="8" stroke="#24292e" stroke-width="3"/>
+
+    <!-- MCP - bottom left -->
+    <rect x="-52" y="21" width="24" height="24" fill="#24292e" rx="4"/>
+    <line x1="-35" y1="28" x2="-12" y2="8" stroke="#24292e" stroke-width="3"/>
+
+    <!-- REST - top left -->
+    <rect x="-52" y="-45" width="24" height="24" fill="#24292e" rx="4"/>
+    <line x1="-35" y1="-28" x2="-12" y2="-8" stroke="#24292e" stroke-width="3"/>
+  </g>
+</svg>

@@ -45,7 +45,7 @@ const examples: Example[] = [
 ];
 
 export default function Introduction() {
-  const logoUrl = useBaseUrl("/img/logo-words-1024.png");
+  const logoUrl = useBaseUrl("/img/pleni_logo.svg");
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
@@ -89,9 +89,12 @@ export default function Introduction() {
               <img
                 src={logoUrl}
                 alt="Plenipotentiary"
-                className="mb-4"
+                className="mb-2"
                 style={{ maxWidth: "280px", height: "auto" }}
               />
+              <h1 className="text-4xl font-bold text-slate-900 mb-4 tracking-tight">
+                Plenipotentiary
+              </h1>
               <p className="text-xl text-slate-600 text-center font-medium">
                 Scaffolding and patterns for Laravel API/SDK integrations
               </p>
@@ -124,9 +127,9 @@ export default function Introduction() {
                   The Core Problem:
                 </p>
                 <p className="text-base text-slate-700">
+                  How do you{" "}
                   <strong>
-                    How do you maintain consistency across heterogeneous
-                    integrations
+                    maintain consistency across heterogeneous integrations
                   </strong>{" "}
                   without losing access to provider-specific features or
                   building leaky abstractions?
@@ -222,9 +225,9 @@ export default function Introduction() {
 
         {/* Gateway Pattern Benefits */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-slate-200">
-          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center flex items-center justify-center gap-2">
-            <Shield className="w-6 h-6 text-emerald-600" />
-            The Gateway Pattern: Your Architectural Anchor
+          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center flex items-center justify-center gap-2 flex-wrap">
+            <Shield className="w-6 h-6 md:w-7 md:h-7 text-emerald-600 flex-shrink-0" />
+            <span>The Gateway Pattern: Your Architectural Anchor</span>
           </h3>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -343,10 +346,11 @@ export default function Introduction() {
                   artisan:make
                 </code>{" "}
                 for third-party APIs: declare the provider, domain, context, and
-                resource and instantly scaffold the DTOs, gateways, adapters
-                and test harness you need. Plenipotentiary provides the contracts.
+                resource and instantly scaffold the DTOs, gateways, adapters and
+                test harness you need. Plenipotentiary provides the contracts.
                 You still implement the adapter logic (it's not magic), but the
-                code now sits in a consistent, testable, tool-friendly structure.
+                code now sits in a consistent, testable, tool-friendly
+                structure.
               </p>
               <p className="text-base text-slate-700 leading-relaxed mb-0">
                 Flysystem-style consistency for APIs, while recognizing not
