@@ -148,12 +148,14 @@ export default function PlenipotentiaryArchitecture() {
       adapterFiles: [
         "CampaignCreate.php",
         "CampaignRead.php",
+        "CampaignReadMany.php",
         "CampaignUpdate.php",
         "CampaignDelete.php",
       ],
       gatewayMethods: [
         "create($dto)",
         "read($id)",
+        "readMany($filter)",
         "update($dto)",
         "delete($id)",
       ],

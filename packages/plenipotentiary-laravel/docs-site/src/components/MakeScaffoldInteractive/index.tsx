@@ -862,68 +862,68 @@ export default function MakeScaffoldInteractive() {
           {/* Left Column - Options */}
           <div>
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
-              <div className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 px-6 py-4">
-                <div className="flex items-center justify-between">
+              <div className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 px-4 sm:px-6 py-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <FileCode className="w-6 h-6 text-white" />
-                    <h3 className="text-xl font-bold text-white m-0">
+                    <FileCode className="w-5 h-5 sm:w-6 sm:h-6 text-white flex-shrink-0" />
+                    <h3 className="text-lg sm:text-xl font-bold text-white m-0">
                       Step 2: Choose Optional Components
                     </h3>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={selectAll}
-                      className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium text-white transition-colors"
+                      className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-medium text-white transition-colors"
                     >
                       Select All
                     </button>
                     <button
                       onClick={clearAll}
-                      className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium text-white transition-colors"
+                      className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-xs sm:text-sm font-medium text-white transition-colors"
                     >
                       Clear
                     </button>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
-                <div className="space-y-3">
+              <div className="p-4 sm:p-6">
+                <div className="space-y-2 sm:space-y-3">
                   {scaffoldOptions.map((option) => {
                     const isSelected = selectedOptions.has(option.id);
                     return (
                       <button
                         key={option.id}
                         onClick={() => toggleOption(option.id)}
-                        className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 ${
+                        className={`w-full text-left p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 ${
                           isSelected
                             ? "bg-emerald-50 border-emerald-500 shadow-md"
                             : "bg-slate-50 border-slate-200 hover:border-emerald-300 hover:bg-slate-100"
                         }`}
                       >
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-start gap-2 sm:gap-3">
                           <div
-                            className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                            className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                               isSelected
                                 ? "bg-emerald-500 border-emerald-500"
                                 : "bg-white border-slate-300"
                             }`}
                           >
                             {isSelected && (
-                              <CheckCircle className="w-4 h-4 text-white" />
+                              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                             )}
                           </div>
-                          <div className="flex-1">
-                            <div className="font-semibold text-slate-900 mb-1">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-sm sm:text-base text-slate-900 mb-1">
                               {option.label}
                             </div>
-                            <div className="text-sm text-slate-600 mb-2">
+                            <div className="text-xs sm:text-sm text-slate-600 mb-2">
                               {option.description}
                             </div>
-                            <div className="flex items-center gap-2 text-xs">
-                              <code className="px-2 py-1 bg-slate-200 rounded text-slate-700 font-mono">
+                            <div className="flex items-center gap-2 text-xs flex-wrap">
+                              <code className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-slate-200 rounded text-slate-700 font-mono text-xs break-all">
                                 {option.flag}
                               </code>
-                              <span className="text-slate-500">
+                              <span className="text-slate-500 whitespace-nowrap">
                                 +{option.filesGenerated} files
                               </span>
                             </div>
