@@ -9,6 +9,7 @@ import {
   Network,
   Target,
   Terminal,
+  Brain,
 } from "lucide-react";
 
 interface Example {
@@ -435,15 +436,34 @@ export default function Introduction() {
                     terminal
                   </span>
                 </div>
-                <div className="p-6 h-[240px] flex items-center">
+                <div className="p-6 h-[240px] min-h-[240px] flex items-start overflow-hidden">
                   <pre className="text-sm leading-loose m-0 w-full">
-                    <code className="text-emerald-400 font-mono whitespace-pre-wrap">
+                    <code className="text-emerald-400 font-mono whitespace-pre-wrap break-words">
                       {displayedText}
                       <span className="inline-block w-2 h-5 bg-emerald-400 ml-1 animate-pulse"></span>
                     </code>
                   </pre>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Code Agents Note */}
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl shadow-lg px-5 pt-5 pb-3 border-l-4 border-indigo-500">
+          <div className="flex items-start gap-3">
+            <Brain className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-base text-slate-700 leading-relaxed">
+                <strong className="text-indigo-900">
+                  AI agents thrive on patterns.
+                </strong>{" "}
+                Once you have real-world adapter examples, AI can generate
+                additional adapters that follow your established conventions.
+                With scaffolded tests already in place, it becomes a matter of
+                briefly reviewing AI-generated code rather than writing from
+                scratch; the patterns and test harness provide the guardrails.
+              </p>
             </div>
           </div>
         </div>

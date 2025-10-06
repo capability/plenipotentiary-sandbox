@@ -27,6 +27,12 @@ import {
 export default function PlenipotentiaryArchitecture() {
   const [activePattern, setActivePattern] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState<string | null>(null);
+  const [activeExampleTab, setActiveExampleTab] = useState<
+    "simple" | "error" | "complete"
+  >("simple");
+  const [activeLaravelTab, setActiveLaravelTab] = useState<
+    "controller" | "job" | "command" | "action"
+  >("controller");
 
   const getColorClasses = (color: string) => {
     const colorMap = {
@@ -367,10 +373,9 @@ export default function PlenipotentiaryArchitecture() {
                   What You Write
                 </h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  Your application code and the Adapter (actual API
-                  integration logic). This is NOT a magic wrapper; you still
-                  implement the integration, but with structure and safety
-                  guardrails.
+                  Your application code and the Adapter (actual API integration
+                  logic). This is NOT a magic wrapper; you still implement the
+                  integration, but with structure and safety guardrails.
                 </p>
               </div>
 
@@ -381,8 +386,8 @@ export default function PlenipotentiaryArchitecture() {
                   What Plenipotentiary Provides
                 </h4>
                 <p className="text-base text-slate-700 leading-relaxed">
-                  The Gateway layer (stable contracts, validation, policies)
-                  and scaffolding commands to generate boilerplate.
+                  The Gateway layer (stable contracts, validation, policies) and
+                  scaffolding commands to generate boilerplate.
                 </p>
               </div>
             </div>
@@ -447,40 +452,78 @@ export default function PlenipotentiaryArchitecture() {
                   complex syntax:
                 </p>
 
+                {/* Tab Navigation */}
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setActiveExampleTab("simple")}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      activeExampleTab === "simple"
+                        ? "bg-emerald-500 text-white shadow-md"
+                        : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                    }`}
+                  >
+                    1. Simple
+                  </button>
+                  <button
+                    onClick={() => setActiveExampleTab("error")}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      activeExampleTab === "error"
+                        ? "bg-blue-500 text-white shadow-md"
+                        : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                    }`}
+                  >
+                    2. Error Handling
+                  </button>
+                  <button
+                    onClick={() => setActiveExampleTab("complete")}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                      activeExampleTab === "complete"
+                        ? "bg-purple-500 text-white shadow-md"
+                        : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                    }`}
+                  >
+                    3. Complete
+                  </button>
+                </div>
+
+                {/* Tab Content */}
                 <div className="space-y-4">
                   {/* Simple: Basic check */}
-                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
-                        1
+                  {activeExampleTab === "simple" && (
+                    <div className="bg-white p-4 rounded-lg border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
+                          1
+                        </div>
+                        <span className="text-xs font-bold text-slate-700">
+                          Simplest: Basic Success Check
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-700">
-                        Simplest: Basic Success Check
-                      </span>
-                    </div>
-                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                      <code className="font-mono">{`$result = $gateway->create($dto);
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                        <code className="font-mono">{`$result = $gateway->create($dto);
 
 if ($result->isOk()) {
     // Success! Use the canonical DTO
     $campaign = $result->unwrap();
     echo $campaign->externalId; // '12345'
 }`}</code>
-                    </pre>
-                  </div>
+                      </pre>
+                    </div>
+                  )}
 
                   {/* Medium: Error handling */}
-                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
-                        2
+                  {activeExampleTab === "error" && (
+                    <div className="bg-white p-4 rounded-lg border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 rounded bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">
+                          2
+                        </div>
+                        <span className="text-xs font-bold text-slate-700">
+                          Error Handling
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-700">
-                        Error Handling
-                      </span>
-                    </div>
-                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                      <code className="font-mono">{`$result = $gateway->update($dto);
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                        <code className="font-mono">{`$result = $gateway->update($dto);
 
 if ($result->isErr()) {
     // Provider error (network, API limit, etc.)
@@ -488,21 +531,23 @@ if ($result->isErr()) {
     Log::error('Update failed', $error);
     return response()->json($error, 500);
 }`}</code>
-                    </pre>
-                  </div>
+                      </pre>
+                    </div>
+                  )}
 
                   {/* Complex: Full validation + raw response */}
-                  <div className="bg-white p-4 rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">
-                        3
+                  {activeExampleTab === "complete" && (
+                    <div className="bg-white p-4 rounded-lg border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 rounded bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-bold">
+                          3
+                        </div>
+                        <span className="text-xs font-bold text-slate-700">
+                          Complete: Provider Errors + Raw Response Access
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-700">
-                        Complete: Provider Errors + Raw Response Access
-                      </span>
-                    </div>
-                    <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                      <code className="font-mono">{`$result = $gateway->create($dto);
+                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                        <code className="font-mono">{`$result = $gateway->create($dto);
 // Gateway already validated $dto against INPUT_SPEC before calling adapter
 // If INPUT_SPEC failed, we wouldn't reach the adapter at all
 
@@ -529,8 +574,9 @@ Log::info('Campaign created', [
     'externalId' => $campaign->externalId,
     'resourceName' => $rawResponse->getResults()[0]->getResourceName(),
 ]);`}</code>
-                    </pre>
-                  </div>
+                      </pre>
+                    </div>
+                  )}
 
                   {/* What rawResponse() gives you */}
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
@@ -597,34 +643,110 @@ Log::info('Campaign created', [
                     </code>
                   </p>
 
+                  {/* Laravel Pattern Tabs */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <button
+                      onClick={() => setActiveLaravelTab("controller")}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                        activeLaravelTab === "controller"
+                          ? "bg-emerald-500 text-white shadow-md"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      }`}
+                    >
+                      Controller
+                    </button>
+                    <button
+                      onClick={() => setActiveLaravelTab("job")}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                        activeLaravelTab === "job"
+                          ? "bg-blue-500 text-white shadow-md"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      }`}
+                    >
+                      Job
+                    </button>
+                    <button
+                      onClick={() => setActiveLaravelTab("command")}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                        activeLaravelTab === "command"
+                          ? "bg-purple-500 text-white shadow-md"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      }`}
+                    >
+                      Command
+                    </button>
+                    <button
+                      onClick={() => setActiveLaravelTab("action")}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                        activeLaravelTab === "action"
+                          ? "bg-slate-500 text-white shadow-md"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      }`}
+                    >
+                      Action
+                    </button>
+                  </div>
+
                   <div className="space-y-3">
                     {/* Controller - Simplest */}
-                    <div className="bg-white p-3 rounded border border-slate-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-emerald-700">
-                          Controller (Simplest)
-                        </span>
-                      </div>
-                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                        <code className="font-mono">{`public function store(Request $req, CreateCampaignAction $action) {
-    $result = $action->handle($req->validated());
+                    {activeLaravelTab === "controller" && (
+                      <div className="space-y-3">
+                        <div className="bg-white p-3 rounded border border-slate-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-bold text-emerald-700">
+                              Option 1: Direct Gateway Usage
+                            </span>
+                          </div>
+                          <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                            <code className="font-mono">{`public function store(Request $req, CampaignGateway $gateway) {
+    $dto = CampaignCreateDTO::fromArray($req->validated());
+    $result = $gateway->create($dto);
 
     return $result->isOk()
         ? response()->json($result->unwrap())
         : response()->json($result->error(), 400);
 }`}</code>
-                      </pre>
-                    </div>
+                          </pre>
+                        </div>
+
+                        <div className="bg-white p-3 rounded border border-slate-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-bold text-emerald-700">
+                              Option 2: Via Action (recommended)
+                            </span>
+                          </div>
+                          <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                            <code className="font-mono">{`public function store(Request $req, CreateCampaignAction $action) {
+    $result = $action->handle($req->validated());
+
+    return $result->isOk()
+        ? response()->json($result->unwrap())
+        : response()->json($result->error(), 400);
+}
+
+// The Action internally uses the Gateway:
+// class CreateCampaignAction {
+//     public function __construct(private CampaignGateway $gateway) {}
+//     public function handle(array $data): Result {
+//         $dto = CampaignCreateDTO::fromArray($data);
+//         return $this->gateway->create($dto);
+//     }
+// }`}</code>
+                          </pre>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Job - Medium */}
-                    <div className="bg-white p-3 rounded border border-slate-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-blue-700">
-                          Job (Error Handling)
-                        </span>
-                      </div>
-                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                        <code className="font-mono">{`class SyncCampaignsJob implements ShouldQueue {
+                    {activeLaravelTab === "job" && (
+                      <div className="bg-white p-3 rounded border border-slate-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-bold text-blue-700">
+                            Job (Error Handling)
+                          </span>
+                        </div>
+                        <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                          <code className="font-mono">{`class SyncCampaignsJob implements ShouldQueue {
     public function handle(CampaignGateway $gateway) {
         $result = $gateway->readMany(['status' => 'ENABLED']);
 
@@ -637,20 +759,27 @@ Log::info('Campaign created', [
         // Sync to database...
     }
 }`}</code>
-                      </pre>
-                    </div>
+                        </pre>
+                      </div>
+                    )}
 
                     {/* Command - Complex */}
-                    <div className="bg-white p-3 rounded border border-slate-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-purple-700">
-                          Command (Provider Errors + Raw Response)
-                        </span>
-                      </div>
-                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                        <code className="font-mono">{`class CreateCampaignCommand extends Command {
+                    {activeLaravelTab === "command" && (
+                      <div className="bg-white p-3 rounded border border-slate-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-bold text-purple-700">
+                            Command (Provider Errors + Raw Response)
+                          </span>
+                        </div>
+                        <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                          <code className="font-mono">{`class CreateCampaignCommand extends Command {
     public function handle(CampaignGateway $gateway) {
-        $result = $gateway->create($this->buildDto());
+        $dto = CampaignCreateDTO::fromArray([
+            'name' => $this->argument('name'),
+            'budget' => $this->option('budget'),
+        ]);
+
+        $result = $gateway->create($dto);
         // Gateway already checked INPUT_SPEC before calling adapter
 
         // Provider (Google Ads) rejected our data
@@ -684,26 +813,51 @@ Log::info('Campaign created', [
         return 0;
     }
 }`}</code>
-                      </pre>
-                    </div>
+                        </pre>
+                      </div>
+                    )}
 
                     {/* Action */}
-                    <div className="bg-white p-3 rounded border border-slate-200">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-slate-700">
-                          Action (Lorisleiva) - Same Interface
-                        </span>
-                      </div>
-                      <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
-                        <code className="font-mono">{`$result = CreateCampaignAction::run(['name' => 'Black Friday']);
+                    {activeLaravelTab === "action" && (
+                      <div className="space-y-3">
+                        <div className="bg-white p-3 rounded border border-slate-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-bold text-slate-700">
+                              Action Implementation
+                            </span>
+                          </div>
+                          <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                            <code className="font-mono">{`class CreateCampaignAction extends Action {
+    public function __construct(
+        private CampaignGateway $gateway
+    ) {}
+
+    public function handle(array $data): Result {
+        $dto = CampaignCreateDTO::fromArray($data);
+        return $this->gateway->create($dto);
+    }
+}`}</code>
+                          </pre>
+                        </div>
+
+                        <div className="bg-white p-3 rounded border border-slate-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-bold text-slate-700">
+                              Action Usage
+                            </span>
+                          </div>
+                          <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
+                            <code className="font-mono">{`$result = CreateCampaignAction::run(['name' => 'Black Friday']);
 
 // Same Result<T> interface everywhere
 if ($result->isOk()) {
     $campaign = $result->unwrap();
     $rawResponse = $result->rawResponse();
 }`}</code>
-                      </pre>
-                    </div>
+                          </pre>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -993,15 +1147,26 @@ if ($result->isOk()) {
                   </p>
                   <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
                     <div className="font-mono text-sm">
-                      <div className="text-purple-400">public const <span className="text-yellow-300">INPUT_SPEC</span> = [</div>
+                      <div className="text-purple-400">
+                        public const{" "}
+                        <span className="text-yellow-300">INPUT_SPEC</span> = [
+                      </div>
                       <div className="ml-4 text-slate-300">
-                        <div>'query' =&gt; ['rules' =&gt; ['required', 'string', 'min:2']],</div>
-                        <div>'limit' =&gt; ['rules' =&gt; ['integer', 'max:200'], 'default' =&gt; 50],</div>
+                        <div>
+                          'query' =&gt; ['rules' =&gt; ['required', 'string',
+                          'min:2']],
+                        </div>
+                        <div>
+                          'limit' =&gt; ['rules' =&gt; ['integer', 'max:200'],
+                          'default' =&gt; 50],
+                        </div>
                         <div>'priceMax' =&gt; ['rules' =&gt; ['numeric']],</div>
                       </div>
                       <div className="text-purple-400">];</div>
                       <div className="mt-3 text-slate-500 italic">
-                        <div>// Gateway validates automatically via INPUT_SPEC</div>
+                        <div>
+                          // Gateway validates automatically via INPUT_SPEC
+                        </div>
                         <div>// Teams immediately understand the contract</div>
                       </div>
                     </div>
