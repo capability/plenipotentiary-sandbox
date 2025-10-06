@@ -43,10 +43,10 @@ const workflowSteps: Step[] = [
     principle: "Learn the provider SDK/API first. No premature abstraction.",
     description: (
       <>
-        Promote Understanding vs Over Abstraction. Open{" "}
-        <strong>one file, one operation</strong>. Copy the provider's SDK
-        example almost verbatim. Make a real API call. See what comes back.{" "}
-        <em>Understand</em> before you abstract.
+        Start with the provider's SDK documentation in{" "}
+        <strong>one file</strong>. Copy their working example, make a real API
+        call, and see what comes back. <em>Understand the API</em> before
+        building any abstractions.
       </>
     ),
     code: `// CampaignCreate.php - Start here, all in one place
@@ -93,11 +93,10 @@ public function performWithArray(array $input): Result
     principle: "Codify the minimum data you need. This is YOUR contract.",
     description: (
       <>
-        The Explicit Contract. Identify what fields you{" "}
-        <strong>actually need</strong> from your business use case. Not
-        everything the API supports, just what <em>you</em> need. Write it as{" "}
-        <code>INPUT_SPEC</code>. It's not replicating the API docs, it's your
-        domains contact and it promotes sharing adapters.
+        Write down what <strong>your application needs</strong>, not everything
+        the API offers. Define it as <code>INPUT_SPEC</code> with Laravel
+        validation rules. This becomes your contract—clear, auditable, and
+        shareable.
       </>
     ),
     code: `// CampaignCreate.php
@@ -139,10 +138,10 @@ public static function inputSpec(): array
     principle: "Write requestMapper() and responseMapper() until tests pass.",
     description: (
       <>
-        Stay in One Place. Keep everything in the operation file. Build the
-        request from a mock flat array. Map the response back to your domain.
-        Test <strong>success, validation, and errors</strong>. Don't move on
-        until it's green.
+        Build request and response mappers in the same file. Write tests for{" "}
+        <strong>success, validation errors, and API failures</strong>. Keep
+        iterating until all tests pass. Green tests mean you understand the
+        integration.
       </>
     ),
     code: `// CampaignCreate.php
@@ -188,9 +187,10 @@ test('creates campaign with valid input', function() {
     principle: "Gateway reveals the DTO contract based on YOUR INPUT_SPEC.",
     description: (
       <>
-        A table Boundary Emerges. Run through the gateway for the first time. It
-        will <strong>fail intentionally</strong> and show you what DTO and
-        Factory to create - derived from <em>your</em> INPUT_SPEC, not magic.
+        Call your operation through the Gateway. It will{" "}
+        <strong>show you exactly what DTO to create</strong>, derived from your
+        INPUT_SPEC. No guessing—the structure comes from what you already
+        defined.
       </>
     ),
     code: `// From your Action/Controller/Job
@@ -256,10 +256,10 @@ interface Result {
     principle: "Generate DTO/Factory from the INPUT_SPEC you wrote.",
     description: (
       <>
-        Tooling Follows Understanding. Copy/generate the DTO and Factory shown
-        in the gateway error. They're not guesses - they're{" "}
-        <strong>derived from your INPUT_SPEC</strong>. The spec you wrote while
-        working with the real API.
+        Generate the DTO and Factory that the Gateway showed you. They're{" "}
+        <strong>based on your INPUT_SPEC</strong>—the contract you defined while
+        learning the API. Tooling follows your understanding, not the other way
+        around.
       </>
     ),
     code: `// CampaignCanonicalDTO.php - Generated from YOUR spec
@@ -278,8 +278,6 @@ final class CampaignCanonicalDTO implements CanonicalDTOContract
 
     public ?string $budgetResourceName = null;
 
-    public ?int $cpcBidMicros = null;
-
     public ?int $budgetMicros = null;
 
     public static function fromArray(array $data): self
@@ -291,7 +289,6 @@ final class CampaignCanonicalDTO implements CanonicalDTOContract
         $dto->name = $data['name'] ?? null;
         $dto->status = $data['status'] ?? null;
         $dto->budgetResourceName = $data['budgetResourceName'] ?? null;
-        $dto->cpcBidMicros = isset($data['cpcBidMicros']) ? (int) $data['cpcBidMicros'] : null;
         $dto->budgetMicros = isset($data['budgetMicros']) ? (int) $data['budgetMicros'] : null;
 
         return $dto;
@@ -303,7 +300,7 @@ final class CampaignCanonicalFactory
 {
     public function make(array $input): CampaignCanonicalDTO
     {
-        // Uses INPUT_SPEC for validation
+        // Gateway validates against INPUT_SPEC before this runs
         return CampaignCanonicalDTO::fromArray($input);
     }
 }`,
@@ -319,45 +316,47 @@ final class CampaignCanonicalFactory
     principle: "Cross-cutting concerns layer on top automatically.",
     description: (
       <>
-        Progressive Enhancement. With the Gateway boundary in place, you{" "}
-        <strong>automatically</strong> get robustness features. They weren't
-        there when you were learning the API. They appear when you need them.
+        With the Gateway boundary established, robustness features{" "}
+        <strong>activate automatically</strong>: validation, error mapping,
+        idempotency, queueing, and logging. They weren't in your way while
+        learning—now they protect your production code.
       </>
     ),
-    code: `// Result is consistent: always Result<CanonicalDTO>
+    code: `// Gateway validates DTO against INPUT_SPEC BEFORE calling adapter
+// If validation fails, adapter never runs
 $result = $gateway->create($dto);
 
-// Validation (from INPUT_SPEC)
+// Provider rejected our data (Google's validation, not ours)
 if ($result->isInvalid()) {
-    return $result->violations(); // ['budget' => 'must be >= 1000']
+    // Google Ads rejected the campaign (budget too low, invalid name, etc.)
+    $rawResponse = $result->rawResponse(); // Check Google's actual error
+    return response()->json([
+        'message' => 'Provider rejected data',
+        'violations' => $result->violations()
+    ], 422);
 }
 
-// Error Mapping (provider → domain)
+// Provider error (network, API limit, auth failure, etc.)
 if ($result->isErr()) {
-    return $result->error(); // Normalized structure
+    return $result->error(); // Normalized error structure
 }
 
-// Success: Get the canonical DTO
+// Success: Get canonical DTO AND raw provider response
 if ($result->isOk()) {
     $campaign = $result->unwrap(); // CampaignCanonicalDTO
-    $campaign->externalId; // '12345'
-    $campaign->name; // 'My Campaign'
-
-    // ALSO: Access raw provider response for debugging/logging
     $rawResponse = $result->rawResponse(); // MutateCampaignsResponse
-    $rawResponse->getResults()[0]->getResourceName();
+
+    Log::info('Campaign created', [
+        'externalId' => $campaign->externalId,
+        'resourceName' => $rawResponse->getResults()[0]->getResourceName()
+    ]);
 }
 
-// Idempotency (automatic)
-$result = $gateway->create($dto,
-    idempotencyKey: 'campaign-' . $dto->name
-);
+// Idempotency (automatic via policy)
+$result = $gateway->create($dto, idempotencyKey: 'campaign-' . $dto->name);
 
 // Queueing (Laravel integration)
-dispatch(new CreateCampaignJob($dto));
-
-// Observability (automatic)
-// All calls logged, metrics tracked, errors mapped`,
+dispatch(new CreateCampaignJob($dto));`,
     outcome: "Production-ready with idempotency, validation, queueing, logging",
     antipattern: "Adding cross-cutting concerns while still learning the API",
     icon: Shield,
@@ -405,69 +404,99 @@ export default function APIWorkflow() {
           </p>
         </div>
 
-        {/* Progress Steps */}
-        <div className="mb-14 px-2">
-          <div className="flex items-center justify-center gap-1 sm:gap-2 relative overflow-x-auto pb-2 pt-2">
-            {workflowSteps.map((s, index) => {
-              const Icon = s.icon;
+        {/* Progress Steps - Mobile: Simple buttons, Desktop: Circles */}
+        <div className="mb-8 sm:mb-14">
+          {/* Mobile: Stacked buttons */}
+          <div className="grid grid-cols-3 gap-2 sm:hidden px-4">
+            {workflowSteps.map((s) => {
               const isActive = s.id === currentStep;
               const isCompleted = completedSteps.has(s.id);
 
               return (
-                <React.Fragment key={s.id}>
-                  <div className="flex flex-col items-center flex-shrink-0">
-                    <button
-                      onClick={() => handleStepSelect(s.id)}
-                      className={`
-                        w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center
-                        transition-all duration-300 relative group cursor-pointer
-                        ${
-                          isActive
-                            ? "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-xl shadow-emerald-500/50 scale-110"
-                            : ""
-                        }
-                        ${
-                          isCompleted && !isActive
-                            ? "bg-gradient-to-br from-emerald-400 to-emerald-600"
-                            : ""
-                        }
-                        ${
-                          !isActive && !isCompleted
-                            ? "bg-white border-2 border-slate-300"
-                            : ""
-                        }
-                        hover:scale-105
-                      `}
-                      title={s.title}
-                    >
-                      <Icon
-                        className={`w-5 h-5 sm:w-7 sm:h-7 ${
-                          isActive || isCompleted
-                            ? "text-white"
-                            : "text-slate-400"
-                        }`}
-                      />
-                    </button>
-                    <span
-                      className={`text-xs mt-2 font-medium transition-colors ${
-                        isActive ? "text-emerald-600" : "text-slate-500"
-                      }`}
-                    >
-                      Step {s.number}
-                    </span>
-                  </div>
-                  {index < workflowSteps.length - 1 && (
-                    <div
-                      className={`w-8 sm:w-16 h-1 rounded-full transition-all duration-300 flex-shrink-0 ${
-                        isCompleted
-                          ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
-                          : "bg-slate-300"
-                      }`}
-                    ></div>
-                  )}
-                </React.Fragment>
+                <button
+                  key={s.id}
+                  onClick={() => handleStepSelect(s.id)}
+                  className={`
+                    px-2 py-2 rounded-lg text-xs font-semibold transition-all
+                    ${
+                      isActive
+                        ? "bg-emerald-500 text-white shadow-lg"
+                        : isCompleted
+                        ? "bg-emerald-100 text-emerald-700 border border-emerald-300"
+                        : "bg-white text-slate-600 border border-slate-300"
+                    }
+                  `}
+                >
+                  Step {s.number}
+                </button>
               );
             })}
+          </div>
+
+          {/* Desktop: Circle progress */}
+          <div className="hidden sm:block">
+            <div className="flex items-center justify-center gap-2">
+              {workflowSteps.map((s, index) => {
+                const Icon = s.icon;
+                const isActive = s.id === currentStep;
+                const isCompleted = completedSteps.has(s.id);
+
+                return (
+                  <React.Fragment key={s.id}>
+                    <div className="flex flex-col items-center flex-shrink-0">
+                      <button
+                        onClick={() => handleStepSelect(s.id)}
+                        className={`
+                          w-16 h-16 rounded-full flex items-center justify-center
+                          transition-all duration-300 relative group cursor-pointer
+                          ${
+                            isActive
+                              ? "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-xl shadow-emerald-500/50 scale-110"
+                              : ""
+                          }
+                          ${
+                            isCompleted && !isActive
+                              ? "bg-gradient-to-br from-emerald-400 to-emerald-600"
+                              : ""
+                          }
+                          ${
+                            !isActive && !isCompleted
+                              ? "bg-white border-2 border-slate-300"
+                              : ""
+                          }
+                          hover:scale-105
+                        `}
+                        title={s.title}
+                      >
+                        <Icon
+                          className={`w-7 h-7 ${
+                            isActive || isCompleted
+                              ? "text-white"
+                              : "text-slate-400"
+                          }`}
+                        />
+                      </button>
+                      <span
+                        className={`text-xs mt-1.5 font-medium transition-colors whitespace-nowrap ${
+                          isActive ? "text-emerald-600" : "text-slate-500"
+                        }`}
+                      >
+                        Step {s.number}
+                      </span>
+                    </div>
+                    {index < workflowSteps.length - 1 && (
+                      <div
+                        className={`w-16 h-1 rounded-full transition-all duration-300 flex-shrink-0 ${
+                          isCompleted
+                            ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
+                            : "bg-slate-300"
+                        }`}
+                      ></div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
           </div>
         </div>
 
