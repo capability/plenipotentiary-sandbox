@@ -49,6 +49,7 @@ const config = {
         src: "img/pleni_logo_white.svg",
       },
       items: [
+        { to: "/", label: "Home", position: "left" },
         { type: "doc", docId: "introduction", label: "Docs", position: "left" },
         {
           href: "https://github.com/capability/plenipotentiary-sandbox",
