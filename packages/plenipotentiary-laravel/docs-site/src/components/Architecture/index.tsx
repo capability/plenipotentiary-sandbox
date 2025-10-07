@@ -389,7 +389,10 @@ export default function PlenipotentiaryArchitecture() {
                 </h4>
                 <p className="text-base text-slate-700 leading-relaxed">
                   The Gateway layer (stable contracts, validation, policies) and
-                  scaffolding commands to generate boilerplate.
+                  scaffolding commands to generate boilerplate. Consistent
+                  interfaces enable robust test harnesses that work across all
+                  integration; Mock the Gateway, swap adapters for test doubles,
+                  verify behavior without external API calls.
                 </p>
               </div>
             </div>
@@ -521,16 +524,20 @@ if ($result->isOk()) {
                           2
                         </div>
                         <span className="text-xs font-bold text-slate-700">
-                          Error Handling
+                          Error Handling with ErrorMapper
                         </span>
                       </div>
                       <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`$result = $gateway->update($dto);
 
 if ($result->isErr()) {
-    // Provider error (network, API limit, etc.)
-    $error = $result->error();
-    Log::error('Update failed', $error);
+    // ErrorMapper (Shared/Support) translated provider error → domain error
+    // Gateway applied ErrorMapper before returning Result
+
+    $error = $result->error();           // Consistent domain error structure
+    $rawResponse = $result->rawResponse(); // Original provider error (always available)
+
+    // Same error structure whether Google Ads, Stripe, or eBay
     return response()->json($error, 500);
 }`}</code>
                       </pre>
@@ -550,27 +557,35 @@ if ($result->isErr()) {
                       </div>
                       <pre className="text-sm text-slate-700 leading-relaxed overflow-x-auto">
                         <code className="font-mono">{`$result = $gateway->create($dto);
-// Gateway already validated $dto against INPUT_SPEC before calling adapter
-// If INPUT_SPEC failed, we wouldn't reach the adapter at all
+// Gateway validated INPUT_SPEC before calling adapter
+// Gateway applied ErrorMapper from Shared/Support (provider-specific → domain errors)
 
-// Provider rejected our data (Google's validation, not ours)
+// 1. Provider rejected our data (their validation, not ours)
 if ($result->isInvalid()) {
-    // Google Ads rejected the campaign (budget too low, invalid name, etc.)
-    $rawResponse = $result->rawResponse(); // Check Google's actual error
+    // ErrorMapper translated: GoogleAdsException → DomainInvalidException
+    $violations = $result->violations();   // Normalized violation structure
+    $rawResponse = $result->rawResponse(); // Original Google Ads error (always available)
+
     return response()->json([
         'message' => 'Provider rejected data',
-        'violations' => $result->violations()
+        'violations' => $violations
     ], 422);
 }
 
-// Provider error (network, API limit, auth failure, etc.)
+// 2. Provider error (network, API limit, auth failure, etc.)
 if ($result->isErr()) {
-    return response()->json($result->error(), 500);
+    // ErrorMapper translated: GoogleAdsException → DomainException
+    $error = $result->error();             // Consistent domain error structure
+    $rawResponse = $result->rawResponse(); // Original Google Ads error (always available)
+
+    // Same error shape whether Google Ads, Stripe, eBay, or custom APIs
+    // Original provider error always accessible for debugging
+    return response()->json($error, 500);
 }
 
-// Success: Get canonical DTO AND raw provider response
-$campaign = $result->unwrap();           // Canonical DTO (consistent)
-$rawResponse = $result->rawResponse();   // Provider response (for debugging)
+// 3. Success: Get canonical DTO AND raw provider response
+$campaign = $result->unwrap();           // Canonical DTO (normalized across providers)
+$rawResponse = $result->rawResponse();   // Provider response (Google's MutateCampaignsResponse)
 
 Log::info('Campaign created', [
     'externalId' => $campaign->externalId,
