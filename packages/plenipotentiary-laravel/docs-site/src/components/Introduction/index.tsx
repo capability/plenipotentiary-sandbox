@@ -197,6 +197,11 @@ export default function Introduction() {
               <AlertCircle className="w-6 h-6 text-red-600" />
               What This Is NOT
             </h3>
+            <p className="text-slate-600 mt-4">
+              Even API creators struggle to maintain good SDKs. Third-party
+              wrappers are doomed from the start. Plenipotentiary gives you
+              patterns, not promises.
+            </p>
             <ul className="text-base text-slate-700 space-y-2 pl-4">
               <li className="list-disc">
                 <strong>Not an "API wrapper for X"</strong> - Wrappers promise
@@ -222,11 +227,6 @@ export default function Introduction() {
                 your architecture.
               </li>
             </ul>
-            <p className="text-sm text-slate-600 mt-4 italic">
-              Even API creators struggle to maintain good SDKs. Third-party
-              wrappers are doomed from the start. Plenipotentiary gives you
-              patterns, not promises.
-            </p>
           </div>
         </div>
 

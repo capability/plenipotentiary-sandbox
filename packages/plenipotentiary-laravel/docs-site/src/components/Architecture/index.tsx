@@ -164,12 +164,12 @@ export default function PlenipotentiaryArchitecture() {
     },
     {
       id: "operation",
-      title: "Operation Pattern - RESTful Use Cases",
+      title: "Operation Pattern - Use Cases",
       icon: Zap,
       color: "purple",
       description:
         "Action/query operations organized by business use case. Built for REST APIs via Saloon, but not limited to REST. API results often aren't relational - swap to Redis, Mongo, S3, Elasticsearch, or any data store.",
-      transport: "REST (Saloon)",
+      transport: "SDK or REST (Saloon)",
       examples: [
         "eBay Search",
         "OpenAI Completions",
@@ -281,7 +281,7 @@ export default function PlenipotentiaryArchitecture() {
             </h2>
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Promotes understanding vs over abstraction - Four patterns, one
+            Promotes understanding vs over-abstraction - Five patterns, one
             stable platform
           </p>
         </div>
@@ -883,8 +883,8 @@ if ($result->isOk()) {
             Four Gateway/Adapter Patterns
           </h2>
           <p className="text-center text-slate-600 mb-6">
-            Different abstraction levels for different integration types. REST
-            pattern uses Saloon natively without the Gateway layer.
+            Different abstraction levels for different integration types. Fifth
+            pattern uses Saloon natively with/without the Gateway layer.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

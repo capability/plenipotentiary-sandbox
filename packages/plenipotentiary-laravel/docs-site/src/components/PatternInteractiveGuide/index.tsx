@@ -250,26 +250,27 @@ $result = app(CallToolAction::class)->handle(
   },
 ];
 
-const FeatureBar = ({ label, value }: { label: string; value: number }) => (
-  <div className="mb-3">
-    <div className="flex items-center justify-between mb-1">
+const FeatureBar = ({ label, value }: { label: string; value: number }) => {
+  const getBarColor = (val: number) => {
+    if (val >= 80) return "bg-gradient-to-r from-emerald-400 to-emerald-600";
+    if (val >= 40) return "bg-gradient-to-r from-amber-400 to-amber-600";
+    return "bg-gradient-to-r from-slate-400 to-slate-600";
+  };
+
+  return (
+    <div className="grid grid-cols-[140px_1fr] gap-3 items-center mb-2">
       <span className="text-sm font-medium text-slate-700">{label}</span>
-      <span className="text-sm font-bold text-slate-900">{value}%</span>
+      <div className="relative h-8 bg-slate-100 rounded-lg overflow-hidden">
+        <div
+          className={`h-full rounded-lg transition-all duration-300 ${getBarColor(
+            value
+          )}`}
+          style={{ width: `${value}%` }}
+        />
+      </div>
     </div>
-    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-      <div
-        className={`h-full rounded-full transition-all duration-300 ${
-          value >= 80
-            ? "bg-gradient-to-r from-emerald-400 to-emerald-600"
-            : value >= 60
-            ? "bg-gradient-to-r from-amber-400 to-amber-600"
-            : "bg-gradient-to-r from-red-400 to-red-600"
-        }`}
-        style={{ width: `${value}%` }}
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 export default function PatternInteractiveGuide() {
   const [selectedPattern, setSelectedPattern] = useState<PatternType>("crud");
@@ -438,6 +439,19 @@ export default function PatternInteractiveGuide() {
                   </h4>
                 </div>
                 <div className="bg-slate-50 rounded-2xl p-5 mb-6 border border-slate-200">
+                  {/* Table Headers */}
+                  <div className="grid grid-cols-[140px_1fr] gap-3 mb-3 pb-2 border-b border-slate-300">
+                    <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                      Feature
+                    </span>
+                    <div className="grid grid-cols-3 text-xs font-bold text-slate-600 uppercase tracking-wide text-center">
+                      <span>Low</span>
+                      <span>Medium</span>
+                      <span>High</span>
+                    </div>
+                  </div>
+
+                  {/* Feature Rows */}
                   <FeatureBar
                     label="Type Safety"
                     value={currentPattern.features.typeSafety}
