@@ -39,9 +39,9 @@ const examples: Example[] = [
       "php artisan pleni:make:procedure \\\n  --provider=InternalAPI \\\n  --domain=Admin \\\n  --resource=SendAlert \\\n  --with-commands",
   },
   {
-    title: "MCP Tool for AI Agents",
+    title: "MCP Proxy (Niche: Controlled AI Access)",
     command:
-      "php artisan pleni:make:mcp-tool \\\n  --server=customer-database \\\n  --tool=get_customer_orders \\\n  --with-policies \\\n  --with-tests",
+      "php artisan pleni:make:mcp-proxy \\\n  --server=database \\\n  --with-budget \\\n  --with-rate-limit \\\n  --with-audit \\\n  --with-tests",
   },
 ];
 
@@ -107,8 +107,8 @@ export default function Introduction() {
             <div>
               <p className="text-base text-slate-700 leading-relaxed max-w-5xl mx-auto">
                 A Laravel package helping developers structure API integrations
-                so SDKs, REST APIs, SOAP services, and MCP tools all feel
-                consistent, testable, and swappable. Provides Gateway/Adapter
+                so SDKs, REST APIs, SOAP services, and (optionally) MCP proxies
+                all feel consistent, testable, and swappable. Provides Gateway/Adapter
                 patterns and Artisan scaffolding. You write the integration
                 code; the package adds validation, error handling, idempotency
                 tracking, and a uniform Result interface across all your
@@ -125,7 +125,7 @@ export default function Introduction() {
                 </strong>
                 : payment gateways, CRMs, advertising platforms, and more. Each
                 one uses a different approach: official SDKs, REST APIs, SOAP,
-                or emerging protocols like MCP.
+                or (in niche cases) proxied MCP servers for controlled AI access.
               </p>
               <p className="text-base text-slate-700 leading-relaxed mb-6">
                 Over <strong className="text-emerald-700">3-5 years</strong> and{" "}
@@ -278,8 +278,8 @@ export default function Introduction() {
             </p>
             <ul className="text-base text-slate-700 space-y-2 pl-4">
               <li className="list-disc">
-                <strong>Consistency</strong> across SDK, REST, SOAP, MCP
-                integrations
+                <strong>Consistency</strong> across SDK, REST, SOAP, and (optional)
+                MCP proxy integrations
               </li>
               <li className="list-disc">
                 <strong>Predictability</strong> in how your app interacts with

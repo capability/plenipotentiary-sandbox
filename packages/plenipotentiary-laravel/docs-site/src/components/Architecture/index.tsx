@@ -211,27 +211,27 @@ export default function PlenipotentiaryArchitecture() {
     },
     {
       id: "mcp",
-      title: "MCP Pattern - AI Agent Tool Access",
+      title: "MCP Proxy Pattern - Controlled AI Agent Tool Access",
       icon: Brain,
       color: "pink",
       description:
-        "Laravel client for consuming MCP servers - provide filesystem, database, or custom tools to AI agents (like Claude) with budget tracking, rate limiting, and complete audit trails.",
-      transport: "MCP (stdio/SSE)",
+        "Proxy MCP servers through your Laravel app to add budget tracking, rate limiting, and audit trails when AI agents (Claude, ChatGPT) need controlled access to high-stakes tools (database, email, billing).",
+      transport: "HTTP API → MCP (stdio/SSE)",
       examples: [
-        "Filesystem Tools",
-        "Database Queries",
-        "Code Analysis",
-        "Multi-step Agents",
+        "Proxy Database MCP",
+        "Proxy Filesystem MCP",
+        "Proxy Slack MCP",
+        "Proxy Email MCP",
       ],
       adapterFiles: [
-        "CallTool/CallToolOperation.php",
-        "ReadResource/ReadResourceOperation.php",
-        "ListTools/ListToolsOperation.php",
+        "Adapter/McpProxyAdapter.php",
+        "Support/McpServerConnector.php (stdio/SSE)",
+        "Http/Controllers/McpProxyController.php",
       ],
-      gatewayMethods: ["callTool($dto)", "readResource($dto)", "listTools()"],
-      repositoryNote: "Optional/swappable",
-      returnType: "Result<ToolResult>",
-      highlight: "Budget tracking, rate limits, audit logs",
+      gatewayMethods: ["proxyToolCall($tool, $params)", "forwardToMcpServer($request)"],
+      repositoryNote: "N/A (proxies existing MCP servers)",
+      returnType: "Result<McpToolResult>",
+      highlight: "Proxies existing MCP servers, doesn't create new ones",
     },
   ];
 
@@ -437,7 +437,7 @@ export default function PlenipotentiaryArchitecture() {
                       <h4 className="font-bold text-slate-900 text-sm mb-1">
                         {option.label}
                       </h4>
-                      <p className="text-xs text-slate-600">{option.desc}</p>
+                      <p className="text-sm text-slate-600">{option.desc}</p>
                     </div>
                   );
                 })}
@@ -599,7 +599,7 @@ Log::info('Campaign created', [
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
                     <div className="flex items-start gap-2">
                       <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs text-slate-700 leading-relaxed">
+                      <div className="text-sm text-slate-700 leading-relaxed">
                         <strong className="text-amber-900">
                           What is rawResponse()?
                         </strong>
@@ -633,7 +633,7 @@ Log::info('Campaign created', [
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">
                     Consistent Interface Across All Laravel Patterns
                   </p>
-                  <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+                  <p className="text-sm text-slate-600 mb-3 leading-relaxed">
                     Every pattern returns{" "}
                     <code className="bg-slate-200 px-1 py-0.5 rounded font-mono">
                       Result&lt;T&gt;
@@ -664,7 +664,7 @@ Log::info('Campaign created', [
                   <div className="flex flex-wrap gap-2 mb-4">
                     <button
                       onClick={() => setActiveLaravelTab("controller")}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                         activeLaravelTab === "controller"
                           ? "bg-emerald-500 text-white shadow-md"
                           : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -674,7 +674,7 @@ Log::info('Campaign created', [
                     </button>
                     <button
                       onClick={() => setActiveLaravelTab("job")}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                         activeLaravelTab === "job"
                           ? "bg-blue-500 text-white shadow-md"
                           : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -684,7 +684,7 @@ Log::info('Campaign created', [
                     </button>
                     <button
                       onClick={() => setActiveLaravelTab("command")}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                         activeLaravelTab === "command"
                           ? "bg-purple-500 text-white shadow-md"
                           : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -694,7 +694,7 @@ Log::info('Campaign created', [
                     </button>
                     <button
                       onClick={() => setActiveLaravelTab("action")}
-                      className={`px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                      className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                         activeLaravelTab === "action"
                           ? "bg-slate-500 text-white shadow-md"
                           : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -710,7 +710,7 @@ Log::info('Campaign created', [
                       <div className="space-y-3">
                         <div className="bg-white p-3 rounded border border-slate-200">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-bold text-emerald-700">
+                            <span className="text-sm font-bold text-emerald-700">
                               Option 1: Direct Gateway Usage
                             </span>
                           </div>
@@ -899,7 +899,7 @@ if ($result->isOk()) {
           </h2>
           <p className="text-center text-slate-600 mb-6">
             Different abstraction levels for different integration types. Fifth
-            pattern uses Saloon natively with/without the Gateway layer.
+            pattern, REST, uses Saloon natively with/without the Gateway layer.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1135,7 +1135,7 @@ if ($result->isOk()) {
                         <h4 className="font-bold text-slate-900 text-sm mb-1">
                           {concern.label}
                         </h4>
-                        <p className="text-xs text-slate-600">{concern.desc}</p>
+                        <p className="text-sm text-slate-600">{concern.desc}</p>
                       </div>
                     </div>
                     <div className="text-xs text-slate-500 font-mono bg-slate-50 px-2 py-1 rounded">
@@ -1197,89 +1197,91 @@ if ($result->isOk()) {
                 <Brain className="w-6 h-6 text-pink-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-pink-900 mb-3">
-                    Understanding the MCP Pattern: AI Agents with Safe Tool
+                    Understanding the MCP Proxy Pattern: Controlled AI Tool
                     Access
                   </h4>
 
                   <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
                     <p>
-                      The MCP pattern is fundamentally different from the other
-                      four patterns. You're not integrating with a traditional
-                      API—you're building{" "}
+                      <strong>This is a niche pattern</strong> for when AI
+                      agents (Claude, ChatGPT) need access to high-stakes tools
+                      (database queries, email sending, billing operations) and
+                      you need{" "}
                       <strong>
-                        infrastructure to give AI agents safe, controlled access
-                        to tools
-                      </strong>{" "}
-                      via Anthropic's Model Context Protocol.
+                        budget tracking, rate limiting, and complete audit trails
+                      </strong>
+                      . Your Laravel app acts as a{" "}
+                      <strong>controlled proxy</strong> between the AI agent and
+                      existing MCP servers.
                     </p>
 
                     <div className="bg-white p-4 rounded-lg border border-pink-200">
                       <h5 className="font-bold text-slate-900 mb-2 text-sm">
-                        The Complete Flow
+                        The MCP Proxy Flow
                       </h5>
-                      <div className="space-y-2 text-xs">
+                      <div className="space-y-2 text-sm">
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">1.</span>
                           <span>
-                            <strong>User asks:</strong> "Find all inactive
-                            customers and send re-engagement emails"
+                            <strong>User asks Claude Desktop:</strong> "Find all
+                            inactive customers and send re-engagement emails"
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">2.</span>
                           <span>
-                            <strong>Your Laravel app</strong> sends this to
-                            Claude API with available MCP tools listed
+                            <strong>Claude analyzes</strong> and decides it needs
+                            the{" "}
+                            <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">
+                              query_database
+                            </code>{" "}
+                            tool (configured to call YOUR Laravel API)
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">3.</span>
                           <span>
-                            <strong>Claude thinks:</strong> "I need to query the
-                            database" and requests{" "}
-                            <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">
-                              query_database
-                            </code>{" "}
-                            tool
+                            <strong>Claude calls YOUR Laravel endpoint:</strong>{" "}
+                            POST /api/mcp/database/query_customers
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">4.</span>
                           <span>
-                            <strong>Your MCP Gateway executes</strong> the query
-                            via MCP server (budget/rate limit policies run here)
+                            <strong>Your MCP Proxy Gateway</strong> checks
+                            budget ($42/$50 used), applies rate limit (85/100
+                            calls), logs the request
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">5.</span>
                           <span>
-                            <strong>Results go back to Claude</strong> who
-                            analyzes: "Found 52 inactive customers"
+                            <strong>Gateway forwards to real MCP server:</strong>{" "}
+                            Database MCP executes query → returns 52 customers
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">6.</span>
                           <span>
-                            <strong>Claude requests</strong> 52{" "}
-                            <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">
-                              send_email
-                            </code>{" "}
-                            tool calls
+                            <strong>Results return to Claude</strong> who
+                            analyzes: "Found 52 inactive customers, now I'll send
+                            emails"
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">7.</span>
                           <span>
-                            <strong>Your MCP Gateway executes</strong> each
-                            email via Mailchimp MCP server (budget tracking:
-                            $0.53 spent, $49.47 remaining)
+                            <strong>Claude calls YOUR endpoint 52 times:</strong>{" "}
+                            POST /api/mcp/email/send (each call tracked, logged,
+                            budget checked)
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">8.</span>
                           <span>
-                            <strong>Claude reports:</strong> "Sent 52
-                            re-engagement emails to inactive customers"
+                            <strong>Your Gateway proxies to Email MCP →</strong>{" "}
+                            Sends emails. Total cost: $8.50. Budget remaining:
+                            $41.50. All calls audited.
                           </span>
                         </div>
                       </div>
@@ -1326,45 +1328,52 @@ if ($result->isOk()) {
 
                     <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-4 rounded-lg border border-pink-300">
                       <h5 className="font-bold text-pink-900 mb-2">
-                        Current State vs. Future Vision
+                        When You Need MCP Proxy
                       </h5>
                       <div className="space-y-2">
                         <div>
                           <strong className="text-pink-900">
-                            What's Built Now:
+                            Use MCP Proxy When:
                           </strong>
                           <ul className="ml-4 mt-1 space-y-1 list-none">
                             <li>
-                              • MCP Gateway with budget tracking & rate limiting
+                              • AI agents need access to high-stakes tools
+                              (database, billing, customer data)
                             </li>
                             <li>
-                              • Tool execution via MCP servers (filesystem,
-                              database, etc.)
+                              • You need strict budget limits to prevent runaway
+                              costs
                             </li>
-                            <li>• Complete audit trail of every tool call</li>
                             <li>
-                              • Can be used for deterministic PHP workflows or
-                              external tool access
+                              • Compliance requires complete audit trails (GDPR,
+                              SOC2)
+                            </li>
+                            <li>
+                              • Rate limiting prevents system overload or
+                              provider blocking
                             </li>
                           </ul>
                         </div>
                         <div>
                           <strong className="text-pink-900">
-                            Coming Soon (AI Orchestrator):
+                            Skip MCP Proxy When:
                           </strong>
                           <ul className="ml-4 mt-1 space-y-1 list-none">
                             <li>
-                              • Anthropic SDK integration (Claude + your MCP
-                              tools)
+                              • Tools are read-only and low-risk (documentation,
+                              logs)
                             </li>
                             <li>
-                              • OpenAI function calling integration (GPT + your
-                              MCP tools)
+                              • Claude API's built-in token tracking is
+                              sufficient
                             </li>
-                            <li>• Multi-turn conversation handling</li>
                             <li>
-                              • Tool registry for defining which agents can use
-                              which tools
+                              • You're comfortable with AI calling MCP servers
+                              directly
+                            </li>
+                            <li>
+                              • Simple logging at the conversation level is
+                              enough
                             </li>
                           </ul>
                         </div>
@@ -1378,10 +1387,13 @@ if ($result->isOk()) {
                       You're <strong>not building MCP servers</strong> (those
                       already exist: @modelcontextprotocol/server-filesystem,
                       server-slack, etc.). You're{" "}
-                      <strong>consuming them from Laravel</strong> with the same
-                      Gateway/Adapter consistency as your other integrations,
-                      but adding AI-agent-specific safety policies that prevent
-                      runaway costs and system overload.
+                      <strong>
+                        proxying them through Laravel HTTP endpoints
+                      </strong>{" "}
+                      to add budget tracking, rate limiting, and audit logging
+                      for high-stakes AI agent workflows. This is a niche
+                      pattern - most use cases can call Claude/ChatGPT APIs
+                      directly (Operation/REST patterns).
                     </p>
                   </div>
                 </div>

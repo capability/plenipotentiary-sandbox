@@ -116,13 +116,13 @@ const patterns: Pattern[] = [
   },
   {
     id: "mcp",
-    name: "MCP Pattern",
+    name: "MCP Proxy Pattern (Niche)",
     icon: Brain,
     color: "purple",
-    description: "AI agents calling YOUR tools (database, filesystem, APIs)",
-    provider: "CustomerDatabase",
-    domain: "Tools",
-    resource: "GetCustomerOrders",
+    description: "Proxy MCP servers through Laravel for controlled AI tool access with budget/rate limits",
+    provider: "DatabaseMCP",
+    domain: "Proxy",
+    resource: "QueryTool",
     requiredOptions: [],
   },
 ];
@@ -312,34 +312,34 @@ const realWorldExamples: RealWorldExample[] = [
   },
   {
     id: "ai-log-analyzer",
-    name: "AI Log Analyzer Tool",
+    name: "AI Log Analyzer Tool Proxy",
     icon: Brain,
-    provider: "Filesystem",
-    domain: "Tools",
-    resource: "ReadLogFile",
+    provider: "FilesystemMCP",
+    domain: "Proxy",
+    resource: "ReadLogFileTool",
     pattern: "mcp",
     description:
-      "Expose a tool that lets AI agents read application logs from your filesystem. The agent analyzes errors with Claude/GPT and suggests fixes. MCP Pattern with budget/rate limit controls to prevent runaway costs.",
+      "Proxy the Filesystem MCP server through your Laravel API. Claude/GPT calls YOUR endpoint, which forwards to the real Filesystem MCP server with budget tracking, rate limits, and audit logs to prevent runaway costs from AI agents reading logs.",
     presetOptions: ["actions", "policies", "mcp-server", "audit", "tests"],
     useCase:
-      "Give AI agents controlled access to your filesystem with safety guardrails, budget limits, and full audit trails",
+      "When AI agents need controlled access to existing Filesystem MCP tools with strict budget limits, rate control, and complete audit trails",
     crossCuttingConcerns: [
       {
         id: "agent-budget",
-        name: "Agent Budget Policy",
+        name: "MCP Proxy Budget Policy",
         icon: Gauge,
-        location: "Pleni/MCP/Shared/Policies/AgentBudgetPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyBudgetPolicy.php",
         description:
-          "Prevent runaway AI costs. Limit max tokens per agent invocation and per day.",
+          "Prevent runaway AI costs when proxying MCP tool calls. Track and limit total calls per day/hour.",
         level: "pattern",
       },
       {
         id: "agent-rate-limit",
-        name: "Agent Rate Limit",
+        name: "MCP Proxy Rate Limit",
         icon: Shield,
-        location: "Pleni/MCP/Shared/Policies/AgentRateLimitPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyRateLimitPolicy.php",
         description:
-          "Prevent agent abuse. Max 100 tool calls per minute, 1000 per hour.",
+          "Prevent AI agent abuse when proxying MCP servers. Max 100 tool calls per minute, 1000 per hour.",
         level: "pattern",
       },
       {
@@ -348,50 +348,57 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Activity,
         location: "Pleni/Policies/LoggingPolicy.php",
         description:
-          "Log which files the AI accessed, when, and what it read for debugging and compliance.",
+          "Log every MCP tool call proxied through your Laravel API: which tool, which agent, when, and what data was accessed.",
         level: "global",
       },
       {
         id: "audit-policy",
-        name: "Audit Policy",
+        name: "MCP Proxy Audit Policy",
         icon: Shield,
-        location: "Pleni/MCP/Shared/Policies/AgentAuditPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyAuditPolicy.php",
         description:
-          "Full audit trail of all filesystem access by AI agents for compliance and security review.",
+          "Full audit trail of all MCP tool calls proxied through Laravel for compliance, GDPR, and security review.",
         level: "pattern",
       },
     ],
   },
   {
     id: "ai-customer-insight",
-    name: "Customer Database Query Tool",
+    name: "Customer Database MCP Proxy",
     icon: Brain,
-    provider: "CustomerDatabase",
-    domain: "Tools",
-    resource: "QueryCustomerData",
+    provider: "DatabaseMCP",
+    domain: "Proxy",
+    resource: "QueryCustomerTool",
     pattern: "mcp",
     description:
-      "Expose a tool that lets AI agents query your customer database (orders, preferences, purchase history). The agent analyzes patterns, checks inventory, and generates personalized recommendations. MCP Pattern enforces query limits and logs all data access.",
-    presetOptions: ["actions", "jobs", "policies", "mcp-server", "audit", "tests"],
+      "Proxy a custom Database MCP server through your Laravel API. Claude/GPT calls YOUR endpoint (POST /api/mcp/database/query), which forwards to the real Database MCP server with budget enforcement, query limits, and complete audit logs of all customer data access.",
+    presetOptions: [
+      "actions",
+      "jobs",
+      "policies",
+      "mcp-server",
+      "audit",
+      "tests",
+    ],
     useCase:
-      "Give AI agents safe, audited access to sensitive customer data with strict budget and rate limits",
+      "When AI agents need controlled access to high-stakes customer data via MCP tools with strict budget limits, rate control, and GDPR-compliant audit trails",
     crossCuttingConcerns: [
       {
         id: "agent-budget",
-        name: "Agent Budget Policy",
+        name: "MCP Proxy Budget Policy",
         icon: Gauge,
-        location: "Pleni/MCP/Shared/Policies/AgentBudgetPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyBudgetPolicy.php",
         description:
-          "Complex multi-step workflow can consume significant tokens. Enforce strict budget limits.",
+          "Complex multi-step AI workflows can make hundreds of MCP tool calls. Enforce strict budget limits on proxied requests.",
         level: "pattern",
       },
       {
         id: "agent-rate-limit",
-        name: "Agent Rate Limit",
+        name: "MCP Proxy Rate Limit",
         icon: Shield,
-        location: "Pleni/MCP/Shared/Policies/AgentRateLimitPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyRateLimitPolicy.php",
         description:
-          "Multi-server workflow requires multiple tool calls. Prevent abuse with rate limits.",
+          "Multi-server AI workflows require multiple tool calls. Prevent abuse by limiting proxied MCP requests per minute/hour.",
         level: "pattern",
       },
       {
@@ -400,16 +407,16 @@ const realWorldExamples: RealWorldExample[] = [
         icon: Activity,
         location: "Pleni/Policies/LoggingPolicy.php",
         description:
-          "Log all database queries executed by AI: which customer data was accessed, when, and by which agent.",
+          "Log all database queries proxied through your MCP Gateway: which customer data was accessed, when, and by which AI agent.",
         level: "global",
       },
       {
         id: "audit-policy",
-        name: "Audit Policy",
+        name: "MCP Proxy Audit Policy",
         icon: Shield,
-        location: "Pleni/MCP/Shared/Policies/AgentAuditPolicy.php",
+        location: "Pleni/MCP/Shared/Policies/McpProxyAuditPolicy.php",
         description:
-          "Track all customer data access by AI agents for GDPR compliance and security audits.",
+          "Track all customer data access by AI agents via MCP proxy for GDPR compliance and security audits.",
         level: "pattern",
       },
       {
@@ -417,9 +424,9 @@ const realWorldExamples: RealWorldExample[] = [
         name: "Idempotency",
         icon: RotateCcw,
         location:
-          "Pleni/CustomerDatabase/Tools/QueryCustomerData/Support/QueryIdempotencyHints.php",
+          "Pleni/DatabaseMCP/Proxy/QueryCustomerTool/Support/QueryIdempotencyHints.php",
         description:
-          "Prevent duplicate queries when agent workflow is retried. Cache results by customer ID + query hash.",
+          "Prevent duplicate MCP tool calls when AI workflow is retried. Cache proxied results by customer ID + query hash.",
         level: "context",
       },
     ],
@@ -517,9 +524,9 @@ const scaffoldOptions: ScaffoldOption[] = [
   },
   {
     id: "mcp-server",
-    label: "MCP Server Definition",
-    flag: "--with-mcp-server",
-    description: "Generate MCP server config and tool schemas",
+    label: "MCP Proxy Adapter",
+    flag: "--with-mcp-proxy",
+    description: "Generate adapter to proxy requests to existing MCP servers (stdio/SSE)",
     folders: ["MCP/"],
     filesGenerated: 2,
   },
@@ -804,6 +811,75 @@ export default function MakeScaffoldInteractive() {
                   </span>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Repository Pattern Note */}
+        <div className="mb-10 p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-r-2xl shadow-md">
+          <div className="flex gap-4">
+            <Info className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+            <div>
+              <h4 className="font-bold text-slate-900 mb-2">
+                A Note About the Repository Pattern
+              </h4>
+              <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                Pleni offers a Repository layer but there is no mandate. If your
+                use case is simple and you're happy with direct Eloquent usage,
+                you do not need to adopt the Repository pattern.
+              </p>
+              <p className="text-sm text-slate-700 leading-relaxed mb-3">
+                But bear in mind:{" "}
+                <strong>not all API results are relational</strong>. This is one
+                of the rare cases when you might actually want to use different
+                persistence layers for different types of analysis:
+              </p>
+              <ul className="list-none space-y-2 pl-0 text-sm text-slate-700">
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold">•</span>
+                  <span>
+                    <strong>Time-series data:</strong> API analytics or metrics
+                    are better stored in InfluxDB or TimescaleDB for efficient
+                    time-based queries
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold">•</span>
+                  <span>
+                    <strong>Search results:</strong> Product catalogs or eBay
+                    listings benefit from Elasticsearch for full-text search and
+                    faceted filtering
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold">•</span>
+                  <span>
+                    <strong>Document-based data:</strong> OpenAI completions or
+                    unstructured API responses fit better in MongoDB or DynamoDB
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold">•</span>
+                  <span>
+                    <strong>Session/cache data:</strong> Temporary API results
+                    or rate limit tracking work well in Redis for fast access
+                    and automatic expiration
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-600 font-bold">•</span>
+                  <span>
+                    <strong>File-based storage:</strong> Large responses or blob
+                    data (images, PDFs) may be better stored in S3 with metadata
+                    in your database
+                  </span>
+                </li>
+              </ul>
+              <p className="text-sm text-slate-700 leading-relaxed mt-3">
+                The Repository pattern gives you the flexibility to swap storage
+                layers without changing your application code—exactly what you
+                need when different data types require different analysis tools.
+              </p>
             </div>
           </div>
         </div>

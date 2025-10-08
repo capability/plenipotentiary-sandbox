@@ -206,36 +206,41 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
   },
   {
     id: "mcp",
-    name: "MCP Pattern",
-    tagline: "AI Agents Calling YOUR Tools",
-    when: "Your AI agent needs controlled access to tools in YOUR system (filesystem, database, APIs)",
-    structure: `Pleni/MCP/
-  ├── Contexts/Default/
-  │   └── Operations/CallTool/
-  │       ├── CallToolOperation.php
-  │       ├── CallToolGateway.php
-  │       └── CallToolDTO.php
-  ├── Shared/
-  │   ├── Transport/McpClient.php
-  │   ├── Support/McpServerRegistry.php
-  │   └── Policies/
-  │       ├── AgentBudgetPolicy.php
-  │       └── AgentRateLimitPolicy.php`,
-    example: `// AI agent calls YOUR tool (reverse direction!)
-$result = app(CallToolAction::class)->handle(
-    server: 'customer-database',
-    tool: 'get_customer_orders',
-    arguments: ['customer_id' => 12345],
-    agentId: 'support-agent-claude'
-);
+    name: "MCP Proxy Pattern",
+    tagline: "Controlled AI Tool Access (Niche)",
+    when: "AI agents need high-stakes tool access and you require strict budget limits, rate control, and complete audit trails",
+    structure: `Pleni/MCP/Database/  (Proxy to Database MCP)
+  ├── Gateway/
+  │   └── DatabaseMcpProxyGateway.php
+  ├── Adapter/
+  │   └── DatabaseMcpAdapter.php  (Calls real MCP server)
+  ├── Policies/
+  │   ├── BudgetPolicy.php
+  │   └── RateLimitPolicy.php
+  ├── Support/
+  │   └── AuditLogger.php
+  └── Http/Controllers/
+      └── DatabaseMcpController.php  (API endpoints)`,
+    example: `// Claude Desktop calls YOUR Laravel API
+// POST /api/mcp/database/query_customers
 
-// Budget tracked, rate limited, fully audited
-// AI accesses YOUR resources safely`,
+public function handle(Request $request)
+{
+    // Your Gateway applies cross-cutting concerns
+    $result = $this->gateway->proxyTool(
+        toolName: $request->input('tool'),
+        params: $request->input('params')
+    );
+
+    // Budget tracked, rate limited, fully audited
+    // Then proxies to real Database MCP server
+    return response()->json($result);
+}`,
     useCases: [
-      "AI Reading Customer Data",
-      "AI Querying Databases",
-      "AI Accessing Filesystem",
-      "AI Calling Internal APIs",
+      "Database Queries (High Cost)",
+      "Email Sending (Rate Limited)",
+      "Billing Operations (Audit Required)",
+      "Customer Data Access (GDPR)",
     ],
     features: {
       typeSafety: 100,
@@ -507,9 +512,16 @@ export default function PatternInteractiveGuide() {
           <div className="mt-8 bg-gradient-to-r from-purple-50 to-indigo-50 border-l-4 border-purple-500 rounded-r-2xl shadow-md p-6">
             <div className="flex items-start gap-4 mb-6">
               <Info className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
-              <h3 className="font-bold text-lg text-slate-900">
-                MCP Pattern vs. AI Integration Pattern
-              </h3>
+              <div>
+                <h3 className="font-bold text-lg text-slate-900">
+                  MCP Proxy: When AI Needs Controlled Tool Access
+                </h3>
+                <p className="text-sm text-slate-600 mt-1">
+                  <strong>This is a niche pattern.</strong> Most apps can call
+                  Claude/ChatGPT APIs directly and let the AI use MCP servers
+                  without intervention.
+                </p>
+              </div>
             </div>
 
             <div className="space-y-6">
@@ -549,14 +561,14 @@ $response = $claudeGateway->create(
                   </div>
                 </div>
 
-                {/* AI Calling YOUR Tools */}
+                {/* AI Calling YOUR API which proxies MCP */}
                 <div className="bg-white rounded-lg p-4 border border-purple-200">
                   <h4 className="font-semibold text-base text-slate-900 mb-2 flex items-center gap-2">
                     <ArrowRight className="w-5 h-5 text-purple-600" />
-                    Claude Calls YOUR Tools (MCP Pattern)
+                    Claude Calls YOUR API (MCP Proxy Pattern)
                   </h4>
                   <p className="text-sm text-slate-600 mb-3">
-                    Claude → Your system's tools
+                    Claude → Your Laravel API → MCP Server
                   </p>
                   <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg">
                     <div className="flex items-center gap-2 px-4 py-2 bg-slate-800 border-b border-slate-700">
@@ -566,53 +578,54 @@ $response = $claudeGateway->create(
                         <div className="w-2 h-2 rounded-full bg-green-500"></div>
                       </div>
                       <span className="text-xs text-slate-400 ml-2 font-mono">
-                        mcp.php
+                        mcp-proxy-controller.php
                       </span>
                     </div>
                     <pre className="p-4 overflow-x-auto text-xs leading-relaxed m-0">
                       <code className="text-slate-300 font-mono">
-                        {`// Claude calls YOUR database
-$result = $mcpGateway->callTool(
-  CallToolDTO::fromArray([
-    'server' => 'customer-db',
-    'tool' => 'get_orders',
-    'agentId' => 'claude-support'
-  ])
-);`}
+                        {`// Claude calls: POST /api/mcp/database/query
+// Your endpoint with safety controls
+$result = $gateway->proxyTool(
+  tool: 'get_orders',
+  params: $request->all()
+);
+
+// Budget, rate limit, audit applied
+// Then proxies to real Database MCP`}
                       </code>
                     </pre>
                   </div>
                 </div>
               </div>
 
-              {/* Why MCP Pattern Matters */}
+              {/* Why MCP Proxy Matters */}
               <div className="bg-white rounded-lg p-4 border border-purple-200">
                 <h4 className="font-semibold text-base text-slate-900 mb-3">
-                  Why MCP Pattern Matters
+                  Why Proxy MCP Through Your Laravel App?
                 </h4>
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-700">
                   <div>
                     <p className="font-semibold text-red-600 mb-2">
-                      ❌ Without MCP:
+                      ❌ AI Calling MCP Directly:
                     </p>
                     <ul className="space-y-1.5 ml-4 list-disc">
-                      <li>Fetch ALL customer data upfront</li>
-                      <li>Dump everything in prompt</li>
-                      <li>Hope it fits in context window</li>
-                      <li>No budget tracking</li>
-                      <li>No audit trail</li>
+                      <li>No budget tracking across tools</li>
+                      <li>No rate limiting per agent/session</li>
+                      <li>No audit trail of AI actions</li>
+                      <li>Can't enforce business rules</li>
+                      <li>Runaway costs possible</li>
                     </ul>
                   </div>
                   <div>
                     <p className="font-semibold text-emerald-600 mb-2">
-                      ✅ With MCP:
+                      ✅ With MCP Proxy:
                     </p>
                     <ul className="space-y-1.5 ml-4 list-disc">
-                      <li>AI asks for specific data when needed</li>
-                      <li>Budget limits (max 100 queries/agent)</li>
-                      <li>Rate limiting (10 queries/minute)</li>
-                      <li>Full audit trail of AI access</li>
-                      <li>Policies can require human approval</li>
+                      <li>Budget limits (max $50/day tracked)</li>
+                      <li>Rate limiting (100 calls/min enforced)</li>
+                      <li>Complete audit log of every tool call</li>
+                      <li>Business rules applied (GDPR, permissions)</li>
+                      <li>Graceful degradation on overload</li>
                     </ul>
                   </div>
                 </div>

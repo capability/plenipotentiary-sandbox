@@ -60,7 +60,7 @@ const faqs: FAQ[] = [
               <li className="flex items-start gap-2">
                 <CheckCircle className="w-3.5 h-3.5 text-emerald-500 mt-1 flex-shrink-0" />
                 <span className="text-sm text-slate-700">
-                  <strong>Patterns</strong> - CRUD, Operation, Procedure, REST, MCP
+                  <strong>Patterns</strong> - CRUD, Operation, Procedure, REST, MCP Proxy (niche)
                 </span>
               </li>
               <li className="flex items-start gap-2">
