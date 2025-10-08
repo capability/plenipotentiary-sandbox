@@ -11,13 +11,13 @@ title: Introduction
 
 ## The Integration Challenge
 
-Your Laravel app needs to integrate with **5-15 external services**: payment gateways, CRMs, advertising platforms, and more. Each one uses a different approach: official SDKs, REST APIs, SOAP, or emerging protocols like MCP.
+**The real problem isn't vendor churn—it's chaos.** Your Laravel app integrates with **3-5+ heterogeneous services**: Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP, internal APIs. Each implemented differently.
 
-Over **3-5 years** and **3-10 developers**, these integrations become a **maintenance nightmare**. Scattered patterns, inconsistent error handling, and business logic tightly coupled to vendor implementations.
+**Without a pattern, every integration is a special snowflake:** different error handling, different return types, different testing strategies, different logging approaches. Whether you're a solo developer managing 8 integrations or a team of 10, this heterogeneity creates maintenance chaos.
 
 ### The Core Problem
 
-How do you **maintain consistency across heterogeneous integrations** without losing access to provider-specific features or building leaky abstractions?
+How do you **make heterogeneous integrations look uniform in YOUR system** without losing access to provider-specific features or building leaky abstractions?
 
 ## Goal
 
@@ -46,7 +46,7 @@ This means:
 
 The **Gateway/Adapter pattern** provides a stable interception point between your application and external services. Once this structure is in place, you gain a **single, consistent location** to layer in production-grade features.
 
-Without it, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across 5-15 different integrations.
+Without it, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across heterogeneous integrations (SDKs, REST, SOAP).
 
 > The pattern isn't magic; it's discipline. It gives you one place to solve each problem, once, for all integrations.
 
@@ -111,12 +111,13 @@ php artisan pleni:make:procedure \
   --with-commands
 ```
 
-### MCP Tool for AI Agents
+### MCP Proxy (Niche: Controlled AI Access)
 ```bash
-php artisan pleni:make:mcp-tool \
-  --server=customer-database \
-  --tool=get_customer_orders \
-  --with-policies \
+php artisan pleni:make:mcp-proxy \
+  --server=database \
+  --with-budget \
+  --with-rate-limit \
+  --with-audit \
   --with-tests
 ```
 

@@ -5,7 +5,7 @@ title: Patterns
 
 # Patterns
 
-Five proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper.
+Five proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
 
 ## CRUD Pattern
 
@@ -66,7 +66,7 @@ $result = $gateway->create($campaign);
 
 **Use Case Driven**
 
-Use when: Non-CRUD operations on SDKs - search, generate, verify, calculate
+Use when: Operations beyond CRUD that don't act on resource fields - search, generate, verify, calculate. If pausing a campaign (updating status field), use CRUD + Laravel Actions instead to avoid Gateway-calling-Gateway issues.
 
 ### Structure
 
@@ -75,8 +75,7 @@ Pleni/{Provider}/{Domain}/
   ├── Contexts/Default/Operations/
   │   ├── {UseCase}/
   │   │   ├── {UseCase}Operation.php
-  │   │   ├── {UseCase}DTO.php
-  │   │   └── {UseCase}Result.php
+  │   │   └── {UseCase}DTO.php
   │   └── Actions/
   │       └── {UseCase}Action.php
   │
@@ -219,42 +218,47 @@ $result = $gateway->call('searchItems', [
 - Rapid Prototyping
 - One-off Operations
 
-## MCP Pattern
+## MCP Proxy Pattern (Niche)
 
-**AI Agents Calling YOUR Tools**
+**Controlled AI Agent Tool Access**
 
-Use when: Your AI agent needs controlled access to tools in YOUR system (filesystem, database, APIs)
+Use when: AI agents (Claude, ChatGPT) need access to high-stakes tools (database queries, email sending, billing operations) and you need **budget tracking, rate limiting, and complete audit trails**
 
 ### Structure
 
 ```
-Pleni/MCP/
-  ├── Contexts/Default/
-  │   └── Operations/CallTool/
-  │       ├── CallToolOperation.php
-  │       ├── CallToolGateway.php
-  │       └── CallToolDTO.php
-  ├── Shared/
-  │   ├── Transport/McpClient.php
-  │   ├── Support/McpServerRegistry.php
-  │   └── Policies/
-  │       ├── AgentBudgetPolicy.php
-  │       └── AgentRateLimitPolicy.php
+Pleni/MCP/Database/  (Proxy to Database MCP)
+  ├── Gateway/
+  │   └── DatabaseMcpProxyGateway.php
+  ├── Adapter/
+  │   └── DatabaseMcpAdapter.php  (Calls real MCP server)
+  ├── Policies/
+  │   ├── BudgetPolicy.php
+  │   └── RateLimitPolicy.php
+  ├── Support/
+  │   └── AuditLogger.php
+  └── Http/Controllers/
+      └── DatabaseMcpController.php  (API endpoints)
 ```
 
 ### Developer Usage
 
 ```php
-// AI agent calls YOUR tool (reverse direction!)
-$result = app(CallToolAction::class)->handle(
-    server: 'customer-database',
-    tool: 'get_customer_orders',
-    arguments: ['customer_id' => 12345],
-    agentId: 'support-agent-claude'
-);
+// Claude Desktop calls YOUR Laravel API
+// POST /api/mcp/database/query_customers
 
-// Budget tracked, rate limited, fully audited
-// AI accesses YOUR resources safely
+public function handle(Request $request)
+{
+    // Your Gateway applies cross-cutting concerns
+    $result = $this->gateway->proxyTool(
+        toolName: $request->input('tool'),
+        params: $request->input('params')
+    );
+
+    // Budget tracked, rate limited, fully audited
+    // Then proxies to real Database MCP server
+    return response()->json($result);
+}
 ```
 
 ### Feature Coverage
@@ -268,12 +272,14 @@ $result = app(CallToolAction::class)->handle(
 
 ### Real-World Examples
 
-- AI Reading Customer Data
-- AI Querying Databases
-- AI Accessing Filesystem
-- AI Calling Internal APIs
+- Database Queries (High Cost)
+- Email Sending (Rate Limited)
+- Billing Operations (Audit Required)
+- Customer Data Access (GDPR)
 
-## MCP Pattern vs. AI Integration Pattern
+## MCP Proxy Pattern: Understanding the Flow
+
+**This is a niche pattern** for when AI agents (Claude, ChatGPT) need access to high-stakes tools and you need budget tracking, rate limiting, and complete audit trails. Your Laravel app acts as a **controlled proxy** between the AI agent and existing MCP servers.
 
 ### Calling Claude API (Operation Pattern)
 Your app → Claude API
@@ -288,44 +294,62 @@ $response = $claudeGateway->create(
 );
 ```
 
-### Claude Calls YOUR Tools (MCP Pattern)
-Claude → Your system's tools
+### Claude Calls YOUR API (MCP Proxy Pattern)
+Claude → Your Laravel API → MCP Server
 
 ```php
-// Claude calls YOUR database
-$result = $mcpGateway->callTool(
-  CallToolDTO::fromArray([
-    'server' => 'customer-db',
-    'tool' => 'get_orders',
-    'agentId' => 'claude-support'
-  ])
+// Claude calls: POST /api/mcp/database/query
+// Your endpoint with safety controls
+$result = $gateway->proxyTool(
+  tool: 'get_orders',
+  params: $request->all()
 );
+
+// Budget, rate limit, audit applied
+// Then proxies to real Database MCP
 ```
 
-### Why MCP Pattern Matters
+### Why Proxy MCP Through Your Laravel App?
 
-**❌ Without MCP:**
-- Fetch ALL customer data upfront
-- Dump everything in prompt
-- Hope it fits in context window
-- No budget tracking
-- No audit trail
+**❌ AI Calling MCP Directly:**
+- No budget tracking across tools
+- No rate limiting per agent/session
+- No audit trail of AI actions
+- Can't enforce business rules
+- Runaway costs possible
 
-**✅ With MCP:**
-- AI asks for specific data when needed
-- Budget limits (max 100 queries/agent)
-- Rate limiting (10 queries/minute)
-- Full audit trail of AI access
-- Policies can require human approval
+**✅ With MCP Proxy:**
+- Budget limits (max $50/day tracked)
+- Rate limiting (100 calls/min enforced)
+- Complete audit log of every tool call
+- Business rules applied (GDPR, permissions)
+- Graceful degradation on overload
 
 ### Real-World Example: Customer Support Agent
 
-You run Claude in your Laravel app. When a user asks about their order, Claude needs to check your database:
+1. **User asks Claude Desktop:** "Find all inactive customers and send re-engagement emails"
+2. **Claude analyzes** the request and decides it needs tools
+3. **Claude calls YOUR Laravel API:** `POST /api/mcp/database/query_customers` (configured to call your endpoint, not the MCP server directly)
+4. **Your MCP Proxy Gateway** checks budget, applies rate limit, logs request
+5. **Gateway forwards** to real MCP server → Database MCP executes query
+6. **Results return** to Claude via YOUR API (budget tracked: $0.01 spent)
+7. **Claude analyzes:** "Found 52 inactive customers, need to send emails"
+8. **Claude calls YOUR endpoint** 52 times: `POST /api/mcp/email/send` (all tracked)
+9. **Gateway proxies** to Email MCP server, tracks budget ($0.52 total), enforces rate limits
+10. **Claude reports:** "Sent 52 re-engagement emails" (complete audit trail logged)
 
-1. **User asks:** "What did I order last month?"
-2. **You send to Claude** (Operation Pattern - your app → Claude API)
-3. **Claude responds:** "I need to call get_customer_orders"
-4. **You execute tool via MCP** (MCP Pattern - Claude's request → YOUR tool)
-5. **MCP enforces policies:** Budget check, rate limit, permissions
-6. **You send result back to Claude** with the order data
-7. **Claude responds to user** with the answer
+### When You Need MCP Proxy
+
+**Use MCP Proxy When:**
+- AI agents need access to high-stakes tools (database, billing, customer data)
+- You need strict budget limits to prevent runaway costs
+- Compliance requires complete audit trails (GDPR, SOC2)
+- Rate limiting prevents system overload or provider blocking
+
+**Skip MCP Proxy When:**
+- Tools are read-only and low-risk (documentation, logs)
+- Claude API's built-in token tracking is sufficient
+- You're comfortable with AI calling MCP servers directly
+- Simple logging at the conversation level is enough
+
+**Key Distinction:** You're **not building MCP servers** (those already exist: @modelcontextprotocol/server-filesystem, server-slack, etc.). You're **proxying them through Laravel HTTP endpoints** to add budget tracking, rate limiting, and audit logging for high-stakes AI agent workflows. This is a niche pattern - most use cases can call Claude/ChatGPT APIs directly (Operation/REST patterns).

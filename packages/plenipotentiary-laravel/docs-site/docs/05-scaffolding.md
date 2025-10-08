@@ -59,13 +59,15 @@ php artisan pleni:make:rest \
   --resource={Resource}
 ```
 
-### MCP Pattern
-**AI agents calling YOUR tools (database, filesystem, APIs)**
+### MCP Proxy Pattern (Niche)
+**Proxy MCP servers through Laravel for controlled AI tool access with budget/rate limits**
 
 ```bash
-php artisan pleni:make:mcp-tool \
+php artisan pleni:make:mcp-proxy \
   --server={ServerName} \
-  --tool={ToolName}
+  --with-budget \
+  --with-rate-limit \
+  --with-audit
 ```
 
 ## Optional Components
@@ -127,9 +129,9 @@ Generate seeder classes
 Generate budget, rate limit, and permission policies
 +3 files
 
-### MCP Server Definition
-`--with-mcp-server`
-Generate MCP server config and tool schemas
+### MCP Proxy Adapter
+`--with-mcp-proxy`
+Generate adapter to proxy requests to existing MCP servers (stdio/SSE)
 +2 files
 
 ### Audit Trail
@@ -221,53 +223,51 @@ php artisan pleni:make:rest \
 - **Logging** (Global) - Log all API calls for debugging and monitoring rate limit consumption.
 - **Error Mapping** (Provider) - Maps GitHub API errors (NOT_FOUND, FORBIDDEN, VALIDATION_FAILED) to domain exceptions.
 
-### AI Log Analyzer Tool
+### AI Log Analyzer Tool Proxy
 
-Expose a tool that lets AI agents read application logs from your filesystem. The agent analyzes errors with Claude/GPT and suggests fixes. MCP Pattern with budget/rate limit controls to prevent runaway costs.
+Proxy the Filesystem MCP server through your Laravel API. Claude/GPT calls YOUR endpoint, which forwards to the real Filesystem MCP server with budget tracking, rate limits, and audit logs to prevent runaway costs from AI agents reading logs.
 
-**Use Case:** Give AI agents controlled access to your filesystem with safety guardrails, budget limits, and full audit trails
+**Use Case:** When AI agents need controlled access to existing Filesystem MCP tools with strict budget limits, rate control, and complete audit trails
 
 ```bash
-php artisan pleni:make:mcp-tool \
-  --server=Filesystem \
-  --tool=ReadLogFile \
+php artisan pleni:make:mcp-proxy \
+  --server=FilesystemMCP \
   --with-actions \
   --with-policies \
-  --with-mcp-server \
+  --with-mcp-proxy \
   --with-audit \
   --with-tests
 ```
 
 **Cross-Cutting Concerns:**
-- **Agent Budget Policy** (Pattern) - Prevent runaway AI costs. Limit max tokens per agent invocation and per day.
-- **Agent Rate Limit** (Pattern) - Prevent agent abuse. Max 100 tool calls per minute, 1000 per hour.
-- **Logging** (Global) - Log which files the AI accessed, when, and what it read for debugging and compliance.
-- **Audit Policy** (Pattern) - Full audit trail of all filesystem access by AI agents for compliance and security review.
+- **MCP Proxy Budget Policy** (Pattern) - Prevent runaway AI costs when proxying MCP tool calls. Track and limit total calls per day/hour.
+- **MCP Proxy Rate Limit** (Pattern) - Prevent AI agent abuse when proxying MCP servers. Max 100 tool calls per minute, 1000 per hour.
+- **Logging** (Global) - Log every MCP tool call proxied through your Laravel API: which tool, which agent, when, and what data was accessed.
+- **MCP Proxy Audit Policy** (Pattern) - Full audit trail of all MCP tool calls proxied through Laravel for compliance, GDPR, and security review.
 
-### Customer Database Query Tool
+### Customer Database MCP Proxy
 
-Expose a tool that lets AI agents query your customer database (orders, preferences, purchase history). The agent analyzes patterns, checks inventory, and generates personalized recommendations. MCP Pattern enforces query limits and logs all data access.
+Proxy a custom Database MCP server through your Laravel API. Claude/GPT calls YOUR endpoint (POST /api/mcp/database/query), which forwards to the real Database MCP server with budget enforcement, query limits, and complete audit logs of all customer data access.
 
-**Use Case:** Give AI agents safe, audited access to sensitive customer data with strict budget and rate limits
+**Use Case:** When AI agents need controlled access to high-stakes customer data via MCP tools with strict budget limits, rate control, and GDPR-compliant audit trails
 
 ```bash
-php artisan pleni:make:mcp-tool \
-  --server=CustomerDatabase \
-  --tool=QueryCustomerData \
+php artisan pleni:make:mcp-proxy \
+  --server=DatabaseMCP \
   --with-actions \
   --with-jobs \
   --with-policies \
-  --with-mcp-server \
+  --with-mcp-proxy \
   --with-audit \
   --with-tests
 ```
 
 **Cross-Cutting Concerns:**
-- **Agent Budget Policy** (Pattern) - Complex multi-step workflow can consume significant tokens. Enforce strict budget limits.
-- **Agent Rate Limit** (Pattern) - Multi-server workflow requires multiple tool calls. Prevent abuse with rate limits.
-- **Logging** (Global) - Log all database queries executed by AI: which customer data was accessed, when, and by which agent.
-- **Audit Policy** (Pattern) - Track all customer data access by AI agents for GDPR compliance and security audits.
-- **Idempotency** (Context) - Prevent duplicate queries when agent workflow is retried. Cache results by customer ID + query hash.
+- **MCP Proxy Budget Policy** (Pattern) - Complex multi-step AI workflows can make hundreds of MCP tool calls. Enforce strict budget limits on proxied requests.
+- **MCP Proxy Rate Limit** (Pattern) - Multi-server AI workflows require multiple tool calls. Prevent abuse by limiting proxied MCP requests per minute/hour.
+- **Logging** (Global) - Log all database queries proxied through your MCP Gateway: which customer data was accessed, when, and by which AI agent.
+- **MCP Proxy Audit Policy** (Pattern) - Track all customer data access by AI agents via MCP proxy for GDPR compliance and security audits.
+- **Idempotency** (Context) - Prevent duplicate MCP tool calls when AI workflow is retried. Cache proxied results by customer ID + query hash.
 
 ## What is a Context?
 
@@ -292,5 +292,5 @@ Applied to a specific resource or context.
 Examples: Idempotency hints specific to Campaign operations
 
 ### Pattern
-Pattern-specific concerns (e.g., MCP-only).
-Examples: Agent Budget Policy, Agent Rate Limit Policy, Agent Audit Policy
+Pattern-specific concerns (e.g., MCP Proxy-only).
+Examples: MCP Proxy Budget Policy, MCP Proxy Rate Limit Policy, MCP Proxy Audit Policy

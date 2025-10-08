@@ -108,32 +108,35 @@ export default function Introduction() {
               <p className="text-base text-slate-700 leading-relaxed max-w-5xl mx-auto">
                 A Laravel package helping developers structure API integrations
                 so SDKs, REST APIs, SOAP services, and (optionally) MCP proxies
-                all feel consistent, testable, and swappable. Provides Gateway/Adapter
-                patterns and Artisan scaffolding. You write the integration
-                code; the package adds validation, error handling, idempotency
-                tracking, and a uniform Result interface across all your
-                external services.
+                all feel consistent, testable, and swappable. Provides
+                Gateway/Adapter patterns and Artisan scaffolding. You write the
+                integration code; the package adds validation, error handling,
+                idempotency tracking, and a uniform Result interface across all
+                your external services.
               </p>
 
               <h3 className="text-2xl font-bold text-slate-900 mb-4">
                 The Integration Challenge
               </h3>
               <p className="text-base text-slate-700 leading-relaxed mb-6">
-                Your Laravel app needs to integrate with{" "}
                 <strong className="text-emerald-700">
-                  5-15 external services
+                  The real problem isn't vendor churn—it's chaos.
+                </strong>{" "}
+                Your Laravel app integrates with{" "}
+                <strong className="text-emerald-700">
+                  3-5+ different types of services
                 </strong>
-                : payment gateways, CRMs, advertising platforms, and more. Each
-                one uses a different approach: official SDKs, REST APIs, SOAP,
-                or (in niche cases) proxied MCP servers for controlled AI access.
+                : Google Ads (official SDK), Mailchimp (REST), Stripe (official
+                SDK), legacy SOAP, internal APIs. Each implemented differently.
               </p>
               <p className="text-base text-slate-700 leading-relaxed mb-6">
-                Over <strong className="text-emerald-700">3-5 years</strong> and{" "}
-                <strong className="text-emerald-700">3-10 developers</strong>,
-                these integrations become a{" "}
-                <strong>maintenance challenge</strong>. Scattered patterns,
-                inconsistent error handling, and business logic tightly coupled
-                to vendor implementations.
+                <strong>
+                  Without a pattern, every integration is a special snowflake:
+                </strong>{" "}
+                different error handling, different return types, different
+                testing strategies, different logging approaches. Whether you're
+                a solo developer managing 8 integrations or a team of 10, this
+                mix of different integration types creates maintenance chaos.
               </p>
             </div>
           </div>
@@ -278,8 +281,8 @@ export default function Introduction() {
             </p>
             <ul className="text-base text-slate-700 space-y-2 pl-4">
               <li className="list-disc">
-                <strong>Consistency</strong> across SDK, REST, SOAP, and (optional)
-                MCP proxy integrations
+                <strong>Consistency</strong> across SDK, REST, SOAP, and
+                (optional) MCP proxy integrations
               </li>
               <li className="list-disc">
                 <strong>Predictability</strong> in how your app interacts with
@@ -366,8 +369,8 @@ export default function Introduction() {
               </p>
               <p className="text-base text-slate-700 leading-relaxed mb-4">
                 Without it, these concerns scatter across controllers, jobs, and
-                service classes. Impossible to maintain consistently across 5-15
-                different integrations.
+                service classes. Impossible to maintain consistently across
+                diverse integrations (SDKs, REST, SOAP).
               </p>
               <p className="text-base text-emerald-800 font-semibold italic">
                 The pattern isn't magic; it's discipline. It gives you one place

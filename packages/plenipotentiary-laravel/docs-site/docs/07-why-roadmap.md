@@ -36,30 +36,32 @@ You still implement the API integration. Plenipotentiary provides structure, not
 **Complements Saloon, doesn't replace it**
 Use Saloon for REST calls within your Adapter. Plenipotentiary wraps it in Gateway pattern for consistency across SDK, REST, SOAP, and future transport types.
 
-**Overhead justified for multi-integration apps**
-1-2 integrations? Overkill. 5+ integrations mixing SDKs and REST? Plenipotentiary prevents chaos. It's about consistency at scale.
+**Overhead justified for heterogeneous integrations**
+1-2 similar APIs? Overkill. 3+ integrations mixing SDKs, REST, and SOAP? Plenipotentiary prevents chaos. It's about consistency across different integration types.
 
-**It's not just about vendor churn**
-It's about isolation, testability, and uniform interfaces. When you have Google Ads SDK, Stripe SDK, Mailchimp REST, and legacy SOAP—Gateway pattern brings order.
+**It's about consistency, not churn**
+The real problem: Google Ads SDK, Stripe SDK, Mailchimp REST, and legacy SOAP each look different in YOUR code. Gateway pattern makes them uniform. Vendor churn protection is a bonus, not the goal.
 
 **Built from battle scars, not theory**
 This emerged from years of pain—especially Google's AdWords → Ads API migration. It's opinionated because it's lived experience, not academic exercise.
 
 ## Who Should Actually Use This?
 
+**Key Insight:** It's about integration diversity, not team size. A solo developer managing 8 different vendor integrations (Google Ads SDK, Mailchimp REST, Stripe SDK, legacy SOAP) benefits more than a 10-person team with 2 similar REST APIs.
+
 ### ✅ Good Fit
 
-- Laravel apps with 5+ external API integrations
-- Teams mixing SDKs (Google, Stripe) with REST APIs
+- Apps with 3-5+ heterogeneous integrations (mixing SDKs, REST, SOAP)
+- Solo developers managing 5+ different vendor integrations
 - Projects expecting 3+ year lifespans
 - Agencies building consistent integration patterns
 - Developers who value explicit contracts over magic
 
 ### ✗ Probably Overkill
 
-- Single API integration (just use Saloon/SDK directly)
+- 1-2 integrations using similar APIs (just use Saloon/SDK directly)
 - MVPs and prototypes (premature architecture)
-- Solo developers on small projects
+- Small projects with homogeneous integrations (all REST or all SDK)
 - Teams allergic to structure and patterns
 - Anyone looking for "quick and easy" magic solutions
 
@@ -79,9 +81,11 @@ But if you've ever worked on a Laravel app with a dozen different API integratio
 
 I've spent my whole career making one system talk to another. Over those years PHP has improved, frameworks have matured, and our expectations of testing and code robustness have gone up. My earliest attempts, long before Laravel had a foothold, were brittle. I've thrown together integrations quickly; they worked, but they could have been better.
 
-I've also taken some hard knocks. When Google sunset the AdWords API on April 27, 2022 and moved to the Google Ads API, one of my deepest integrations, built 10 years earlier, effectively became a new project just to get back to where I was before. That experience reshaped how I build: better boundaries, cleaner contracts, and more attention to SDK churn.
+I've also taken some hard knocks. When Google sunset the AdWords API on April 27, 2022 and moved to the Google Ads API, one of my deepest integrations, built 10 years earlier, effectively became a new project just to get back to where I was before. That experience reshaped how I build: better boundaries, cleaner contracts, and isolation from vendor changes.
 
-There are many ways to skin a cat, and I've tried most of them. What you see here is an opinionated way to keep your domain clean and testable while still relying on third-party code that will change. SDK churn is real. That quick script that gets you moving today can just as easily stall you in a few years' time.
+But the real problem isn't vendor churn—it's chaos. In any Laravel app with multiple integrations, you end up with Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP services, and internal APIs—each implemented differently by different developers. Without a pattern, every integration is a special snowflake: different error handling, different return types, different testing strategies, different logging approaches.
+
+There are many ways to skin a cat, and I've tried most of them. What you see here is an opinionated way to make heterogeneous integrations look uniform in YOUR system. Gateway pattern provides the stable interface your app depends on—whether the vendor uses an SDK, REST, SOAP, or something else entirely.
 
 This is not the only way to build integrations. It's not even the best way. It's just my way. If you like it, great! If you keep building integrations a new way every time an API feels different, this opinionated structure will help. If you already have a strong approach, fantastic, share your experience and stick with it. And if you think it's a bad idea, fair enough.
 
@@ -107,6 +111,8 @@ Would you trust an AI coding agent to maintain an entire API integration for you
 
 Maybe this is the solution to the community maintenance challenge. Small, focused, well-tested adapters that AI agents can reliably maintain and update as provider APIs evolve.
 
+**Reality check:** AI can handle mechanical refactoring (renamed methods, new field types). It can't handle semantic changes requiring business knowledge (which enum value does YOUR business need?). But for the 80% that's mechanical? AI is viable.
+
 ## Roadmap: Future Possibilities
 
 Features that aren't here yet but could expand Plenipotentiary's capabilities. These are possibilities, not promises.
@@ -127,4 +133,4 @@ Apply Gateway architecture to GraphQL APIs. Type-safe queries, fragment reuse, a
 Webhooks and streaming APIs as first-class patterns. Handle inbound events with the same stability guarantees as outbound operations.
 
 ### AI-Powered Integration Builder
-Describe your integration in natural language, let AI analyze provider docs, generate DTOs, scaffold adapters, write tests, and produce integration logic. MCP Tools + Gateway contracts = AI that understands your entire integration surface.
+Describe your integration in natural language, let AI analyze provider docs, generate DTOs, scaffold adapters, write tests, and produce integration logic. The MCP Proxy pattern + Gateway contracts = AI that understands your entire integration surface and can help maintain adapters.

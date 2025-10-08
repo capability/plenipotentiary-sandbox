@@ -43,10 +43,9 @@ const workflowSteps: Step[] = [
     principle: "Learn the provider SDK/API first. No premature abstraction.",
     description: (
       <>
-        Start with the provider's SDK documentation in{" "}
-        <strong>one file</strong>. Copy their working example, make a real API
-        call, and see what comes back. <em>Understand the API</em> before
-        building any abstractions.
+        Start with the provider's SDK documentation in <strong>one file</strong>
+        . Copy their working example, make a real API call, and see what comes
+        back. <em>Understand the API</em> before building any abstractions.
       </>
     ),
     code: `// CampaignCreate.php - Start here, all in one place
@@ -82,7 +81,7 @@ public function performWithArray(array $input): Result
     return Result::ok(['resourceName' => $response->getResults()[0]->getResourceName()]);
 }`,
     outcome: "You understand the API call flow",
-    antipattern: "Starting with abstractions before understanding the API",
+    antipattern: "Offer abstractions without seeing or understanding the API",
     icon: Search,
     color: "emerald",
   },
@@ -176,7 +175,7 @@ test('creates campaign with valid input', function() {
     expect($result->isOk())->toBeTrue();
 });`,
     outcome: "Operation tested, API understood, confidence gained",
-    antipattern: "Moving to gateway before understanding the operation",
+    antipattern: "Just call the abstracted operation",
     icon: CheckSquare,
     color: "green",
   },
@@ -245,7 +244,7 @@ interface Result {
     error(): array;  // Normalized errors
 }`,
     outcome: "Gateway boundary defined, contract visible",
-    antipattern: "Premature DTO design before knowing what the API needs",
+    antipattern: "Magic boundary exists between the domain and the API",
     icon: Package,
     color: "purple",
   },
@@ -358,7 +357,7 @@ $result = $gateway->create($dto, idempotencyKey: 'campaign-' . $dto->name);
 // Queueing (Laravel integration)
 dispatch(new CreateCampaignJob($dto));`,
     outcome: "Production-ready with idempotency, validation, queueing, logging",
-    antipattern: "Adding cross-cutting concerns while still learning the API",
+    antipattern: "Ad hoc cross-cutting concerns added later",
     icon: Shield,
     color: "red",
   },

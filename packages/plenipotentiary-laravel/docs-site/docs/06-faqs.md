@@ -20,7 +20,7 @@ Saloon is a best-in-class HTTP transport layer with useful plugins. Plenipotenti
 - Request pools & concurrency
 
 ### Plenipotentiary adds:
-- **Patterns** - CRUD, Operation, Procedure, REST, MCP
+- **Patterns** - CRUD, Operation, Procedure, REST, MCP Proxy (niche)
 - **Layers** - Gateway (stable) vs Adapter (provider-specific)
 - **Contracts** - CanonicalDTO, Result monad, Selector
 - **Scaffolding** - Artisan commands for rapid setup

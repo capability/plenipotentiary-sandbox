@@ -28,8 +28,8 @@ interface Pattern {
     validation: number;
     discoverability: number;
     easeOfSetup: number;
-    persistence: number;
-    idempotency: number;
+    structureOverhead: number;
+    ideSupport: number;
   };
   icon: React.ComponentType<{ size?: number; className?: string }>;
   color: string;
@@ -71,8 +71,8 @@ $result = $gateway->create($campaign);`,
       validation: 100,
       discoverability: 100,
       easeOfSetup: 60,
-      persistence: 100,
-      idempotency: 100,
+      structureOverhead: 60,
+      ideSupport: 100,
     },
     icon: Database,
     color: "blue",
@@ -81,13 +81,12 @@ $result = $gateway->create($campaign);`,
     id: "operation",
     name: "Operation Pattern",
     tagline: "Use Case Driven",
-    when: "Non-CRUD operations on SDKs - search, generate, verify, calculate",
+    when: "Operations beyond CRUD that don't act on resource fields - search, generate, verify, calculate. If pausing a campaign (updating status field), use CRUD + Laravel Actions instead to avoid Gateway-calling-Gateway issues.",
     structure: `Pleni/{Provider}/{Domain}/
   ├── Contexts/Default/Operations/
   │   ├── {UseCase}/
   │   │   ├── {UseCase}Operation.php
-  │   │   ├── {UseCase}DTO.php
-  │   │   └── {UseCase}Result.php
+  │   │   └── {UseCase}DTO.php
   │   └── Actions/
   │       └── {UseCase}Action.php
   │
@@ -101,7 +100,13 @@ $dto = SearchItemsDTO::fromArray([
   'condition' => 'NEW',
 ]);
 
-$result = $gateway->searchItems($dto);`,
+$result = $gateway->searchItems($dto);
+
+// Unwrap to get the same DTO, now with results
+$search = $result->unwrap();  // SearchItemsDTO
+$search->items;       // Results from operation
+$search->totalCount;  // Total found
+$search->query;       // Original input preserved`,
     useCases: [
       "eBay Browse Search",
       "OpenAI Completions",
@@ -113,8 +118,8 @@ $result = $gateway->searchItems($dto);`,
       validation: 100,
       discoverability: 100,
       easeOfSetup: 80,
-      persistence: 80,
-      idempotency: 100,
+      structureOverhead: 70,
+      ideSupport: 100,
     },
     icon: Zap,
     color: "emerald",
@@ -161,8 +166,8 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
       validation: 60,
       discoverability: 90,
       easeOfSetup: 95,
-      persistence: 20,
-      idempotency: 60,
+      structureOverhead: 30,
+      ideSupport: 95,
     },
     icon: Globe,
     color: "cyan",
@@ -198,8 +203,8 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
       validation: 40,
       discoverability: 40,
       easeOfSetup: 100,
-      persistence: 40,
-      idempotency: 40,
+      structureOverhead: 20,
+      ideSupport: 40,
     },
     icon: Wrench,
     color: "orange",
@@ -247,8 +252,8 @@ public function handle(Request $request)
       validation: 100,
       discoverability: 100,
       easeOfSetup: 70,
-      persistence: 100,
-      idempotency: 100,
+      structureOverhead: 90,
+      ideSupport: 100,
     },
     icon: Brain,
     color: "purple",
@@ -329,7 +334,7 @@ export default function PatternInteractiveGuide() {
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
             Five proven patterns for different integration styles. Pick the one
-            that matches your API, not a one-size-fits-all wrapper.
+            that matches your API, not a one-size-fits-all wrapper. These patterns help you handle <strong>heterogeneous integrations</strong> (SDKs, REST, SOAP) with a consistent interface.
           </p>
         </div>
 
@@ -474,12 +479,12 @@ export default function PatternInteractiveGuide() {
                     value={currentPattern.features.easeOfSetup}
                   />
                   <FeatureBar
-                    label="Persistence"
-                    value={currentPattern.features.persistence}
+                    label="Structure Overhead"
+                    value={currentPattern.features.structureOverhead}
                   />
                   <FeatureBar
-                    label="Idempotency"
-                    value={currentPattern.features.idempotency}
+                    label="IDE Support"
+                    value={currentPattern.features.ideSupport}
                   />
                 </div>
 

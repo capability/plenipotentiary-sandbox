@@ -25,23 +25,32 @@ This monorepo contains:
   [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
   [📖 Interactive Docs](https://pleni.dev) | [🚀 Quick Start](#quick-start) | [🎯 Patterns](#patterns) | [❓ FAQs](#faqs)
+
+  ---
+
+  ### 🎯 New here? [**Visit the Interactive Documentation**](https://pleni.dev)
+
+  The interactive docs are the **fastest way to understand** the scope and ambition of Plenipotentiary. Explore live examples, pattern comparisons, and scaffolding visualizations—all in a modern, navigable interface.
+
+  **This README is a summary. The interactive docs tell the full story.**
+
 </div>
 
 ---
 
 ## What is Plenipotentiary?
 
-**Plenipotentiary is not an API wrapper.** It's architectural patterns and scaffolding for Laravel that helps you maintain consistency across 5-15 different API integrations over 3-5 years and multiple developers.
+**Plenipotentiary is not an API wrapper.** It's architectural patterns and scaffolding for Laravel that helps you maintain consistency across heterogeneous integrations (SDKs, REST, SOAP) in your Laravel apps.
 
 ### The Problem
 
-Your Laravel app integrates with payment gateways, CRMs, advertising platforms, and more. Each uses different approaches: official SDKs, REST APIs, SOAP, emerging protocols like MCP. Over time, these integrations become a maintenance nightmare—scattered patterns, inconsistent error handling, business logic tightly coupled to vendor implementations.
+**The real problem isn't vendor churn—it's chaos.** Your Laravel app integrates with Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP services, and internal APIs. Each implemented differently by different developers. Without a pattern, every integration is a special snowflake: different error handling, different return types, different testing strategies, different logging approaches.
 
 ### The Solution
 
 **The Gateway/Adapter pattern** provides a stable architectural boundary between your application and external services. Plenipotentiary gives you:
 
-✅ **Patterns** - Five proven patterns (CRUD, Operation, Procedure, REST, MCP) that match different API shapes
+✅ **Patterns** - Five proven patterns (CRUD, Operation, Procedure, REST, MCP Proxy) that match different API shapes
 ✅ **Scaffolding** - Artisan commands that generate folder structure, DTOs, Gateways, Adapters, and tests
 ✅ **Contracts** - Consistent `Result<T>` interface across all integrations with `isOk()`, `isErr()`, `isInvalid()`, `unwrap()`
 ✅ **Stability** - Gateway layer stays stable when provider APIs change—only Adapters need updates
@@ -120,15 +129,15 @@ public function store(Request $req, CampaignGateway $gateway)
 
 ## Patterns
 
-Plenipotentiary provides **five patterns** for different API shapes. Choose the one that matches your integration:
+Plenipotentiary provides **five patterns** for different API shapes. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface:
 
-| Pattern | Use When | Example APIs | Structure |
-|---------|----------|--------------|-----------|
-| **CRUD** | Managing resources with full lifecycle | Google Ads Campaigns, Stripe Customers | Create/Read/Update/Delete operations |
-| **Operation** | Non-CRUD use cases (search, calculate, verify) | eBay Search, OpenAI Completions | Single-purpose operation classes |
-| **Procedure** | Quick prototypes, admin tools | Internal APIs, one-off scripts | RPC-style dynamic operations |
-| **REST** | Clean RESTful APIs where Saloon shines | GitHub API, most REST services | Native Saloon Request pattern |
-| **MCP** | AI agents calling YOUR tools | Filesystem, Database, Custom tools | Reverse direction: AI → Your system |
+| Pattern | Use When | Example APIs | Return Type |
+|---------|----------|--------------|-------------|
+| **CRUD** | Managing resources with full lifecycle | Google Ads Campaigns, Stripe Customers | `Result<{Resource}CanonicalDTO>` |
+| **Operation** | Operations beyond CRUD that don't act on resource fields (search, calculate, verify) | eBay Search, OpenAI Completions | `Result<{UseCase}DTO>` |
+| **Procedure** | Quick prototypes, admin tools | Internal APIs, one-off scripts | `Result<mixed>` |
+| **REST** | Clean RESTful APIs using Saloon | CRUD-like: Todo API, Operation-like: OpenAI, Simple: Weather API | `Result<CanonicalDTO>` OR `Result<{UseCase}DTO>` OR `Saloon Response` |
+| **MCP Proxy** | Controlled AI tool access (niche) | Proxy Database/Filesystem MCP servers | `Result<McpToolResult>` |
 
 **Learn more:** [Pattern Documentation](https://pleni.dev/docs/patterns)
 
@@ -188,7 +197,7 @@ The Gateway layer provides a **single, consistent location** to apply production
 - **Observability** - Metrics, events, audit trails
 - **Budget Controls** - For AI agent tool access (MCP pattern)
 
-Without the Gateway pattern, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across 5-15 integrations.
+Without the Gateway pattern, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across heterogeneous integrations (SDKs, REST, SOAP).
 
 ---
 
@@ -226,24 +235,23 @@ php artisan pleni:make:operation \
   --with-tests
 ```
 
-### AI Log Analyzer (MCP Pattern)
-AI agent reads application logs, analyzes errors, suggests fixes. Budget tracking prevents runaway costs.
+### AI Log Analyzer Tool Proxy (MCP Proxy Pattern - Niche)
+Proxy the Filesystem MCP server through your Laravel API. Claude/GPT calls YOUR endpoint, which forwards to the real Filesystem MCP server with budget tracking, rate limits, and audit logs.
 
 ```bash
-php artisan pleni:make:mcp-tool \
-  --server=Filesystem \
-  --tool=ReadLogFile \
+php artisan pleni:make:mcp-proxy \
+  --server=FilesystemMCP \
   --with-actions \
   --with-policies \
-  --with-mcp-server \
+  --with-mcp-proxy \
   --with-audit \
   --with-tests
 ```
 
 **Cross-cutting concerns:**
-- Agent Budget Policy (Pattern) - Limit max tokens per agent invocation
-- Agent Rate Limit (Pattern) - Max 100 tool calls/minute, 1000/hour
-- Audit Policy (Pattern) - Full trail of all filesystem access by AI agents
+- MCP Proxy Budget Policy (Pattern) - Track and limit total MCP tool calls per day/hour
+- MCP Proxy Rate Limit (Pattern) - Max 100 proxied tool calls/minute, 1000/hour
+- MCP Proxy Audit Policy (Pattern) - Full audit trail of all MCP tool calls proxied through Laravel
 
 **See more:** [Scaffolding Examples](https://pleni.dev/docs/scaffolding)
 
@@ -260,7 +268,7 @@ php artisan pleni:make:mcp-tool \
 ### Can't all this be done in Saloon?
 
 Saloon is a best-in-class HTTP transport layer. Plenipotentiary uses Saloon underneath and adds:
-- **Patterns** (CRUD, Operation, Procedure, REST, MCP)
+- **Patterns** (CRUD, Operation, Procedure, REST, MCP Proxy)
 - **Gateway/Adapter separation** (stable vs provider-specific)
 - **Scaffolding** (Artisan commands)
 - **Cross-cutting concerns** (idempotency hints, error mapping)
@@ -273,15 +281,20 @@ It's an **orchestration + anti-corruption layer**. You still write Adapters; we 
 
 ### Who should use this?
 
+**Key Insight:** It's about integration diversity, not team size. A solo developer managing 8 different vendor integrations (Google Ads SDK, Mailchimp REST, Stripe SDK, legacy SOAP) benefits more than a 10-person team with 2 similar REST APIs.
+
 ✅ **Good fit:**
-- Laravel apps with 5+ external API integrations
-- Teams mixing SDKs (Google, Stripe) with REST APIs
+- Apps with 3-5+ heterogeneous integrations (mixing SDKs, REST, SOAP)
+- Solo developers managing 5+ different vendor integrations
 - Projects expecting 3+ year lifespans
+- Agencies building consistent integration patterns
 - Developers who value explicit contracts over magic
 
 ✗ **Probably overkill:**
-- Single API integration (just use Saloon/SDK directly)
-- MVPs and prototypes
+- 1-2 integrations using similar APIs (just use Saloon/SDK directly)
+- MVPs and prototypes (premature architecture)
+- Small projects with homogeneous integrations (all REST or all SDK)
+- Teams allergic to structure and patterns
 - Anyone looking for "quick and easy" magic solutions
 
 **More answers:** [FAQs Documentation](https://pleni.dev/docs/faqs)
@@ -296,9 +309,9 @@ It's an **orchestration + anti-corruption layer**. You still write Adapters; we 
 ### 📚 Key Documentation Pages
 
 - **[Introduction](https://pleni.dev/docs/introduction)** - What Plenipotentiary is and isn't, the integration challenge
-- **[Architecture](https://pleni.dev/docs/architecture)** - Gateway/Adapter pattern, four patterns explained
+- **[Architecture](https://pleni.dev/docs/architecture)** - Gateway/Adapter pattern, five patterns explained
 - **[Developer Workflow](https://pleni.dev/docs/developer-workflow)** - Six-step API-first approach
-- **[Patterns](https://pleni.dev/docs/patterns)** - CRUD, Operation, Procedure, REST, MCP patterns in detail
+- **[Patterns](https://pleni.dev/docs/patterns)** - CRUD, Operation, Procedure, REST, MCP Proxy patterns in detail
 - **[Scaffolding](https://pleni.dev/docs/scaffolding)** - Artisan commands, real-world examples
 - **[FAQs](https://pleni.dev/docs/faqs)** - Common questions answered
 - **[Why & Roadmap](https://pleni.dev/docs/why-roadmap)** - The story behind Plenipotentiary and future plans
@@ -309,11 +322,11 @@ It's an **orchestration + anti-corruption layer**. You still write Adapters; we 
 
 I've spent my career making one system talk to another. When Google sunset the AdWords API on April 27, 2022 and moved to the Google Ads API, one of my deepest integrations, built 10 years earlier, effectively became a new project just to get back to where I was before.
 
-That experience reshaped how I build: **better boundaries, cleaner contracts, and more attention to SDK churn.**
+That experience reshaped how I build: **better boundaries, cleaner contracts, and isolation from vendor changes.**
 
-This is not the only way to build integrations. It's not even the best way. It's just my way. If you like it, great! If you already have a strong approach, fantastic. If you think it's a bad idea, fair enough.
+But the real problem isn't vendor churn—it's chaos. In any Laravel app with multiple integrations, you end up with Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP services, and internal APIs—each implemented differently by different developers. Without a pattern, every integration is a special snowflake: different error handling, different return types, different testing strategies, different logging approaches.
 
-For me, I just wanted a tool that spins up a safe, predictable way to use a small slice of a big API or SDK without reinventing the guardrails every time.
+This is not the only way to build integrations. It's not even the best way. It's just my way—an opinionated approach to make heterogeneous integrations look uniform in YOUR system. Gateway pattern provides the stable interface your app depends on—whether the vendor uses an SDK, REST, SOAP, or something else entirely.
 
 **Read more:** [Why & Roadmap](https://pleni.dev/docs/why-roadmap)
 
@@ -323,7 +336,7 @@ For me, I just wanted a tool that spins up a safe, predictable way to use a smal
 
 ### Current Focus (Sandbox Phase)
 - ✅ Core Gateway/Adapter architecture
-- ✅ Five pattern implementations (CRUD, Operation, Procedure, REST, MCP)
+- ✅ Five pattern implementations (CRUD, Operation, Procedure, REST, MCP Proxy)
 - ✅ Interactive documentation site
 - ✅ Real-world examples (Google Ads, eBay, OpenAI)
 - 🚧 Scaffolding commands (`pleni:make:*`)
@@ -336,7 +349,7 @@ For me, I just wanted a tool that spins up a safe, predictable way to use a smal
 - gRPC transport support
 - GraphQL Gateway pattern
 - Event-driven adapters
-- AI-powered integration builder
+- AI-powered integration builder (MCP Proxy pattern + Gateway contracts)
 
 ---
 

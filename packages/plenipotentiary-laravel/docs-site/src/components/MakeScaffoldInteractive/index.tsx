@@ -660,7 +660,7 @@ export default function MakeScaffoldInteractive() {
   const folderStructure = useMemo(() => {
     const basePath =
       selectedPattern === "mcp"
-        ? "Pleni/MCP/Contexts/Default/Operations/CallTool/"
+        ? "Pleni/MCP/{Server}/"
         : selectedPattern === "procedure"
         ? "Pleni/{Provider}/{Domain}/Shared/Procedure/"
         : selectedPattern === "rest"
@@ -688,10 +688,17 @@ export default function MakeScaffoldInteractive() {
           ]
         : selectedPattern === "mcp"
         ? [
-            "├── CallToolOperation.php",
-            "├── CallToolGateway.php",
-            "├── CallToolDTO.php",
-            "└── CallToolResult.php",
+            "├── Gateway/",
+            "│   └── {Server}McpProxyGateway.php",
+            "├── Adapter/",
+            "│   └── {Server}McpAdapter.php",
+            "├── Policies/",
+            "│   ├── BudgetPolicy.php",
+            "│   └── RateLimitPolicy.php",
+            "├── Support/",
+            "│   └── AuditLogger.php",
+            "└── Http/Controllers/",
+            "    └── {Server}McpController.php",
           ]
         : selectedPattern === "operation"
         ? [

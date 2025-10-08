@@ -9,7 +9,7 @@ Promotes understanding vs over abstraction - Four patterns, one stable platform
 
 ## Core Principle
 
-**Abstract the Abstractable (CRUD):** Pleni supports CRUD where it fits, but most real integrations need additional patterns. It offers multiple integration patterns to match different API shapes, each built on Laravel's native tooling and proven libraries like Saloon for HTTP.
+**Consistency across heterogeneous integrations.** The real problem isn't vendor churn—it's chaos. When you have Google Ads (SDK), Mailchimp (REST), Stripe (SDK), and legacy SOAP, each looks different in your code. Plenipotentiary provides multiple patterns to match different API shapes while maintaining a uniform interface, each built on Laravel's native tooling and proven libraries like Saloon for HTTP.
 
 ## How Plenipotentiary Works: The Flow
 
@@ -246,7 +246,7 @@ if ($result->isOk()) {
 
 ## Four Gateway/Adapter Patterns
 
-Different abstraction levels for different integration types. REST pattern uses Saloon natively without the Gateway layer.
+Different abstraction levels for different integration types. The patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
 
 ### 1. CRUD Pattern - Abstractable Resource Lifecycle
 
@@ -312,27 +312,26 @@ Quick prototyping with dynamic operation names for fast iteration and exploratio
 **Repository:** Optional/swappable
 **Return Type:** `Result<mixed>`
 
-### 4. MCP Pattern - AI Agent Tool Access
+### 4. MCP Proxy Pattern - Controlled AI Agent Tool Access (Niche)
 
-Laravel client for consuming MCP servers - provide filesystem, database, or custom tools to AI agents (like Claude) with budget tracking, rate limiting, and complete audit trails.
+Proxy MCP servers through your Laravel app to add budget tracking, rate limiting, and audit trails when AI agents (Claude, ChatGPT) need controlled access to high-stakes tools (database, email, billing).
 
-**Transport:** MCP (stdio/SSE)
+**Transport:** HTTP API → MCP (stdio/SSE)
 
-**Examples:** Filesystem Tools, Database Queries, Code Analysis, Multi-step Agents
+**Examples:** Proxy Database MCP, Proxy Filesystem MCP, Proxy Slack MCP, Proxy Email MCP
 
 **Adapter Files:**
-- CallTool/CallToolOperation.php
-- ReadResource/ReadResourceOperation.php
-- ListTools/ListToolsOperation.php
+- Adapter/McpProxyAdapter.php
+- Support/McpServerConnector.php (stdio/SSE)
+- Http/Controllers/McpProxyController.php
 
 **Gateway Methods:**
-- `callTool($dto)`
-- `readResource($dto)`
-- `listTools()`
+- `proxyToolCall($tool, $params)`
+- `forwardToMcpServer($request)`
 
-**Repository:** Optional/swappable
-**Return Type:** `Result<ToolResult>`
-**Highlight:** Budget tracking, rate limits, audit logs
+**Repository:** N/A (proxies existing MCP servers)
+**Return Type:** `Result<McpToolResult>`
+**Highlight:** Proxies existing MCP servers, doesn't create new ones
 
 ## Gateway Layer: Your Stable Platform
 
@@ -366,42 +365,35 @@ public const INPUT_SPEC = [
 // Teams immediately understand the contract
 ```
 
-### Understanding the MCP Pattern: AI Agents with Safe Tool Access
+### Understanding the MCP Proxy Pattern: Controlled AI Tool Access
 
-The MCP pattern is fundamentally different from the other four patterns. You're not integrating with a traditional API—you're building **infrastructure to give AI agents safe, controlled access to tools** via Anthropic's Model Context Protocol.
+**This is a niche pattern** for when AI agents (Claude, ChatGPT) need access to high-stakes tools (database queries, email sending, billing operations) and you need **budget tracking, rate limiting, and complete audit trails**. Your Laravel app acts as a **controlled proxy** between the AI agent and existing MCP servers.
 
 #### The Complete Flow
 
-1. **User asks:** "Find all inactive customers and send re-engagement emails"
-2. **Your Laravel app** sends this to Claude API with available MCP tools listed
-3. **Claude thinks:** "I need to query the database" and requests `query_database` tool
-4. **Your MCP Gateway executes** the query via MCP server (budget/rate limit policies run here)
-5. **Results go back to Claude** who analyzes: "Found 52 inactive customers"
-6. **Claude requests** 52 `send_email` tool calls
-7. **Your MCP Gateway executes** each email via Mailchimp MCP server (budget tracking: $0.53 spent, $49.47 remaining)
-8. **Claude reports:** "Sent 52 re-engagement emails to inactive customers"
+1. **User asks Claude Desktop:** "Find all inactive customers and send re-engagement emails"
+2. **Claude analyzes** the request and decides it needs tools
+3. **Claude calls YOUR Laravel API:** `POST /api/mcp/database/query_customers` (configured to call your endpoint, not the MCP server directly)
+4. **Your MCP Proxy Gateway** checks budget, applies rate limit, logs request
+5. **Gateway forwards** to real MCP server → Database MCP executes query
+6. **Results return** to Claude via YOUR API (budget tracked: $0.01 spent)
+7. **Claude analyzes:** "Found 52 inactive customers, need to send emails"
+8. **Claude calls YOUR endpoint** 52 times: `POST /api/mcp/email/send` (all tracked)
+9. **Gateway proxies** to Email MCP server, tracks budget ($0.52 total), enforces rate limits
+10. **Claude reports:** "Sent 52 re-engagement emails" (complete audit trail logged)
 
-#### Why Safety Features Are Critical
+#### When You Need MCP Proxy
 
-AI agents can make dozens or hundreds of tool calls autonomously. Without guardrails:
-- Claude queries your database 10,000 times → $100 in costs before you notice
-- Runaway loop sends 50,000 emails in 10 seconds → provider blocks you
-- No audit trail → can't debug what went wrong or replay the session
+**Use MCP Proxy When:**
+- AI agents need access to high-stakes tools (database, billing, customer data)
+- You need strict budget limits to prevent runaway costs
+- Compliance requires complete audit trails (GDPR, SOC2)
+- Rate limiting prevents system overload or provider blocking
 
-Your MCP Gateway with **budget policies** (max $50/day), **rate limits** (max 100 calls/minute), and **complete audit logs** prevents all of this.
+**Skip MCP Proxy When:**
+- Tools are read-only and low-risk (documentation, logs)
+- Claude API's built-in token tracking is sufficient
+- You're comfortable with AI calling MCP servers directly
+- Simple logging at the conversation level is enough
 
-#### Current State vs. Future Vision
-
-**What's Built Now:**
-- MCP Gateway with budget tracking & rate limiting
-- Tool execution via MCP servers (filesystem, database, etc.)
-- Complete audit trail of every tool call
-- Can be used for deterministic PHP workflows or external tool access
-
-**Coming Soon (AI Orchestrator):**
-- Anthropic SDK integration (Claude + your MCP tools)
-- OpenAI function calling integration (GPT + your MCP tools)
-- Multi-turn conversation handling
-- Tool registry for defining which agents can use which tools
-
-**Key Distinction:** You're **not building MCP servers** (those already exist: @modelcontextprotocol/server-filesystem, server-slack, etc.). You're **consuming them from Laravel** with the same Gateway/Adapter consistency as your other integrations, but adding AI-agent-specific safety policies that prevent runaway costs and system overload.
+**Key Distinction:** You're **not building MCP servers** (those already exist: @modelcontextprotocol/server-filesystem, server-slack, etc.). You're **proxying them through Laravel HTTP endpoints** to add budget tracking, rate limiting, and audit logging for high-stakes AI agent workflows. This is a niche pattern - most use cases can call Claude/ChatGPT APIs directly (Operation/REST patterns).

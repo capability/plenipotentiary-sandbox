@@ -168,15 +168,16 @@ export default function PlenipotentiaryArchitecture() {
       icon: Zap,
       color: "purple",
       description:
-        "Action/query operations organized by business use case. Built for REST APIs via Saloon, but not limited to REST. API results often aren't relational - swap to Redis, Mongo, S3, Elasticsearch, or any data store.",
+        "For operations beyond CRUD - search, generate, calculate, verify. Use this when the operation isn't about changing resource fields. If you need to pause a campaign (update status field), use CRUD + Laravel Actions instead. Avoids Gateway-calling-Gateway issues.",
       transport: "SDK or REST (Saloon)",
       examples: [
         "eBay Search",
         "OpenAI Completions",
-        "Stripe Charges",
-        "Custom APIs",
+        "Calculate Pricing",
+        "Verify Availability",
       ],
       adapterFiles: [
+        "DTO/SearchItemsDTO.php",
         "Adapter/SearchItems/SearchItemsOperation.php",
         "Adapter/CreateCompletion/CreateCompletionOperation.php",
         "Adapter/VerifyAvailability/VerifyOperation.php",
@@ -187,13 +188,45 @@ export default function PlenipotentiaryArchitecture() {
         "verify($dto)",
       ],
       repositoryNote: "Optional/swappable",
-      returnType: "Result<UseCaseResult>",
-      highlight: "Leverages Saloon - best-in-class HTTP client",
+      returnType: "Result<{UseCase}DTO>",
+      highlight: "For operations that don't map to resource field changes",
+    },
+    {
+      id: "rest",
+      title: "REST Pattern - Native Saloon",
+      icon: Globe,
+      color: "green",
+      description:
+        "Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use {UseCase}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.",
+      transport: "REST (Saloon)",
+      examples: [
+        "OpenAI Completion",
+        "Weather API",
+        "GitHub API",
+        "SendGrid Email",
+      ],
+      adapterFiles: [
+        "// Mode 1: Operation-like with Gateway",
+        "DTO/CreateCompletionDTO.php",
+        "Adapter/RestAdapter.php",
+        "// Mode 2: Pure Saloon (no Gateway)",
+        "Rest/Connector.php",
+        "Requests/GetWeatherRequest.php",
+      ],
+      gatewayMethods: [
+        "// Mode 1: With Gateway + validation",
+        "$gateway->execute($completionDTO)",
+        "// Mode 2: Pure Saloon",
+        "$connector->send(new GetWeatherRequest())",
+      ],
+      repositoryNote: "Flexible",
+      returnType: "Result<{UseCase}DTO> OR Saloon Response",
+      highlight: "For CRUD operations, use CRUD pattern. REST is for operations and simple calls.",
     },
     {
       id: "procedure",
       title: "Procedure Pattern - Rapid Prototyping",
-      icon: Globe,
+      icon: Terminal,
       color: "orange",
       description:
         "Quick prototyping with dynamic operation names for fast iteration and exploration.",
@@ -228,7 +261,10 @@ export default function PlenipotentiaryArchitecture() {
         "Support/McpServerConnector.php (stdio/SSE)",
         "Http/Controllers/McpProxyController.php",
       ],
-      gatewayMethods: ["proxyToolCall($tool, $params)", "forwardToMcpServer($request)"],
+      gatewayMethods: [
+        "proxyToolCall($tool, $params)",
+        "forwardToMcpServer($request)",
+      ],
       repositoryNote: "N/A (proxies existing MCP servers)",
       returnType: "Result<McpToolResult>",
       highlight: "Proxies existing MCP servers, doesn't create new ones",
@@ -293,10 +329,12 @@ export default function PlenipotentiaryArchitecture() {
             <div>
               <h3 className="font-bold text-slate-900 mb-2">Core Principle</h3>
               <p className="text-slate-700 leading-relaxed">
-                <strong>Abstract the Abstractable (CRUD):</strong> Pleni
-                supports CRUD where it fits, but most real integrations need
-                additional patterns. It offers multiple integration patterns to
-                match different API shapes, each built on Laravel's native
+                <strong>Consistency across heterogeneous integrations.</strong>{" "}
+                The real problem isn't vendor churn—it's chaos. When you have
+                Google Ads (SDK), Mailchimp (REST), Stripe (SDK), and legacy
+                SOAP, each looks different in your code. Plenipotentiary
+                provides multiple patterns to match different API shapes while
+                maintaining a uniform interface, each built on Laravel's native
                 tooling and proven libraries like Saloon for HTTP.
               </p>
             </div>
@@ -449,11 +487,19 @@ export default function PlenipotentiaryArchitecture() {
                   Consistent Result Interface Across All Patterns
                 </p>
                 <p className="text-base text-slate-600 mb-4 leading-relaxed">
-                  Every pattern returns{" "}
+                  Every pattern returns a consistent{" "}
+                  <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">
+                    Result&lt;T&gt;
+                  </code>{" "}
+                  interface - whether{" "}
                   <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">
                     Result&lt;CanonicalDTO&gt;
                   </code>{" "}
-                  - consistent, predictable, testable. From simplest to most
+                  (CRUD) or{" "}
+                  <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">
+                    Result&lt;{"{UseCase}"}DTO&gt;
+                  </code>{" "}
+                  (Operation). Predictable, testable, transport-agnostic. From simplest to most
                   complex syntax:
                 </p>
 
@@ -607,8 +653,8 @@ Log::info('Campaign created', [
                           <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">
                             unwrap()
                           </code>{" "}
-                          returns your <strong>canonical DTO</strong>{" "}
-                          (consistent across all providers).
+                          returns your <strong>domain DTO</strong>{" "}
+                          (CanonicalDTO for CRUD, {"{UseCase}"}DTO for Operation - consistent across providers).
                         </p>
                         <p className="mt-1">
                           <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">
@@ -616,12 +662,12 @@ Log::info('Campaign created', [
                           </code>{" "}
                           returns the <strong>actual provider response</strong>{" "}
                           (Google's MutateCampaignsResponse, Stripe's Charge
-                          object, etc.).
+                          object, eBay's SearchResponse, etc.).
                         </p>
                         <p className="mt-2 text-amber-900">
                           <strong>Use it for:</strong> Debugging, logging
                           provider-specific metadata, accessing fields not in
-                          your canonical DTO.
+                          your domain DTO.
                         </p>
                       </div>
                     </div>
@@ -892,14 +938,15 @@ if ($result->isOk()) {
           </div>
         </div>
 
-        {/* 2. Four Patterns */}
+        {/* 2. Five Patterns */}
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-slate-900 mb-2 text-center">
-            Four Gateway/Adapter Patterns
+            Five Patterns for Different Integration Types
           </h2>
           <p className="text-center text-slate-600 mb-6">
-            Different abstraction levels for different integration types. Fifth
-            pattern, REST, uses Saloon natively with/without the Gateway layer.
+            Different abstraction levels for different integration types. These
+            patterns help you handle <strong>heterogeneous integrations</strong>{" "}
+            (SDKs, REST, SOAP) with a consistent interface.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1151,16 +1198,17 @@ if ($result->isOk()) {
                 <Users className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
                 <div>
                   <h4 className="font-bold text-blue-900 mb-2">
-                    Team Collaboration via INPUT_SPEC
+                    Collaboration via INPUT_SPEC
                   </h4>
                   <p className="text-base text-blue-800 leading-relaxed mb-4">
                     All adapters define{" "}
                     <code className="px-2 py-0.5 bg-blue-100 rounded text-blue-900 font-mono text-sm">
                       INPUT_SPEC
                     </code>{" "}
-                    as their contract. When teams share adapters, INPUT_SPEC
-                    becomes an invaluable kickstart - everyone knows exactly
-                    what fields are needed, validation rules, and defaults.
+                    as their contract. When sharing adapters, INPUT_SPEC becomes
+                    an invaluable kickstart - self documenting errors ensures
+                    everyone knows exactly what fields are needed, validation
+                    rules, and defaults.
                   </p>
                   <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
                     <div className="font-mono text-sm">
@@ -1208,7 +1256,8 @@ if ($result->isOk()) {
                       (database queries, email sending, billing operations) and
                       you need{" "}
                       <strong>
-                        budget tracking, rate limiting, and complete audit trails
+                        budget tracking, rate limiting, and complete audit
+                        trails
                       </strong>
                       . Your Laravel app acts as a{" "}
                       <strong>controlled proxy</strong> between the AI agent and
@@ -1230,8 +1279,8 @@ if ($result->isOk()) {
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">2.</span>
                           <span>
-                            <strong>Claude analyzes</strong> and decides it needs
-                            the{" "}
+                            <strong>Claude analyzes</strong> and decides it
+                            needs the{" "}
                             <code className="bg-pink-100 text-pink-800 px-1 py-0.5 rounded font-mono">
                               query_database
                             </code>{" "}
@@ -1256,7 +1305,9 @@ if ($result->isOk()) {
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">5.</span>
                           <span>
-                            <strong>Gateway forwards to real MCP server:</strong>{" "}
+                            <strong>
+                              Gateway forwards to real MCP server:
+                            </strong>{" "}
                             Database MCP executes query → returns 52 customers
                           </span>
                         </div>
@@ -1264,14 +1315,16 @@ if ($result->isOk()) {
                           <span className="text-pink-600 font-bold">6.</span>
                           <span>
                             <strong>Results return to Claude</strong> who
-                            analyzes: "Found 52 inactive customers, now I'll send
-                            emails"
+                            analyzes: "Found 52 inactive customers, now I'll
+                            send emails"
                           </span>
                         </div>
                         <div className="flex items-start gap-2">
                           <span className="text-pink-600 font-bold">7.</span>
                           <span>
-                            <strong>Claude calls YOUR endpoint 52 times:</strong>{" "}
+                            <strong>
+                              Claude calls YOUR endpoint 52 times:
+                            </strong>{" "}
                             POST /api/mcp/email/send (each call tracked, logged,
                             budget checked)
                           </span>
@@ -1295,7 +1348,7 @@ if ($result->isOk()) {
                         AI agents can make dozens or hundreds of tool calls
                         autonomously. Without guardrails:
                       </p>
-                      <ul className="space-y-1.5 ml-4 list-none">
+                      <ul className="space-y-1.5 ml-4 list-none pl-1">
                         <li className="flex items-start gap-2">
                           <span className="text-red-600 font-bold">•</span>
                           <span>
@@ -1335,22 +1388,34 @@ if ($result->isOk()) {
                           <strong className="text-pink-900">
                             Use MCP Proxy When:
                           </strong>
-                          <ul className="ml-4 mt-1 space-y-1 list-none">
-                            <li>
-                              • AI agents need access to high-stakes tools
-                              (database, billing, customer data)
+                          <ul className="mt-1 space-y-1.5 list-none pl-1">
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                AI agents need access to high-stakes tools
+                                (database, billing, customer data)
+                              </span>
                             </li>
-                            <li>
-                              • You need strict budget limits to prevent runaway
-                              costs
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                You need strict budget limits to prevent runaway
+                                costs
+                              </span>
                             </li>
-                            <li>
-                              • Compliance requires complete audit trails (GDPR,
-                              SOC2)
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                Compliance requires complete audit trails (GDPR,
+                                SOC2)
+                              </span>
                             </li>
-                            <li>
-                              • Rate limiting prevents system overload or
-                              provider blocking
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                Rate limiting prevents system overload or
+                                provider blocking
+                              </span>
                             </li>
                           </ul>
                         </div>
@@ -1358,22 +1423,34 @@ if ($result->isOk()) {
                           <strong className="text-pink-900">
                             Skip MCP Proxy When:
                           </strong>
-                          <ul className="ml-4 mt-1 space-y-1 list-none">
-                            <li>
-                              • Tools are read-only and low-risk (documentation,
-                              logs)
+                          <ul className="mt-1 space-y-1.5 list-none pl-1">
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                Tools are read-only and low-risk (documentation,
+                                logs)
+                              </span>
                             </li>
-                            <li>
-                              • Claude API's built-in token tracking is
-                              sufficient
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                Claude API's built-in token tracking is
+                                sufficient
+                              </span>
                             </li>
-                            <li>
-                              • You're comfortable with AI calling MCP servers
-                              directly
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                You're comfortable with AI calling MCP servers
+                                directly
+                              </span>
                             </li>
-                            <li>
-                              • Simple logging at the conversation level is
-                              enough
+                            <li className="flex items-start gap-2">
+                              <span className="text-pink-600 font-bold">•</span>
+                              <span>
+                                Simple logging at the conversation level is
+                                enough
+                              </span>
                             </li>
                           </ul>
                         </div>
