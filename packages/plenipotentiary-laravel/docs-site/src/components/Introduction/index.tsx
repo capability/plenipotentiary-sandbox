@@ -107,8 +107,8 @@ export default function Introduction() {
             <div>
               <p className="text-base text-slate-700 leading-relaxed max-w-5xl mx-auto">
                 A Laravel package helping developers structure API integrations
-                so SDKs, REST APIs, SOAP services, and (optionally) MCP proxies
-                all feel consistent, testable, and swappable. Provides
+                so SDKs, REST APIs, SOAP services and MCP proxies (niche) all
+                feel consistent, testable, and swappable. Provides
                 Gateway/Adapter patterns and Artisan scaffolding. You write the
                 integration code; the package adds validation, error handling,
                 idempotency tracking, and a uniform Result interface across all
