@@ -115,7 +115,7 @@ $result = $gateway->searchItems($dto);
 
 **Saloon Request/Response**
 
-Use when: Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use {UseCase}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
+Use when: Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use \{UseCase\}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
 
 ### Structure
 

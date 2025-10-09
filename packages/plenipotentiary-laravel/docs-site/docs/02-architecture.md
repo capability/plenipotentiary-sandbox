@@ -48,7 +48,7 @@ Use any Laravel pattern you know - all return Result&lt;T&gt;
 
 ### Consistent Result Interface
 
-Every pattern returns a consistent `Result<T>` interface - whether `Result<CanonicalDTO>` (CRUD) or `Result<{UseCase}DTO>` (Operation). Predictable, testable, transport-agnostic. From simplest to most complex syntax:
+Every pattern returns a consistent `Result<T>` interface - whether `Result<CanonicalDTO>` (CRUD) or `Result<\{UseCase\}DTO>` (Operation). Predictable, testable, transport-agnostic. From simplest to most complex syntax:
 
 #### 1. Simplest: Basic Success Check
 
@@ -109,7 +109,7 @@ Log::info('Campaign created', [
 
 #### What is rawResponse()?
 
-`unwrap()` returns your **domain DTO** (CanonicalDTO for CRUD, {UseCase}DTO for Operation - consistent across providers).
+`unwrap()` returns your **domain DTO** (CanonicalDTO for CRUD, \{UseCase\}DTO for Operation - consistent across providers).
 
 `rawResponse()` returns the **actual provider response** (Google's MutateCampaignsResponse, Stripe's Charge object, eBay's SearchResponse, etc.).
 
@@ -291,12 +291,12 @@ Operations beyond CRUD that don't act on resource fields - search, generate, ver
 - `createCompletion($dto)`
 
 **Repository:** Optional/swappable
-**Return Type:** `Result<{UseCase}DTO>`
+**Return Type:** `Result<\{UseCase\}DTO>`
 **Highlight:** For operations that don't map to resource field changes
 
 ### 3. REST Pattern - Native Saloon
 
-Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use {UseCase}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
+Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use \{UseCase\}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
 
 **Transport:** REST (Saloon)
 
@@ -313,7 +313,7 @@ Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1
 - Mode 2: `$connector->send(new GetWeatherRequest())`
 
 **Repository:** Flexible
-**Return Type:** `Result<{UseCase}DTO>` OR `Saloon Response`
+**Return Type:** `Result<\{UseCase\}DTO>` OR `Saloon Response`
 **Highlight:** For CRUD operations, use CRUD pattern. REST is for operations and simple calls.
 
 ### 4. Procedure Pattern - Rapid Prototyping
