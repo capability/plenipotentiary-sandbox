@@ -389,9 +389,10 @@ export default function PatternInteractiveGuide() {
 
           <div className="relative">
             <div className="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
-              <p className="text-sm text-slate-700 m-0">
-                <strong>Use when:</strong> {currentPattern.when}
-              </p>
+              <p
+                className="text-sm text-slate-700 m-0"
+                dangerouslySetInnerHTML={{ __html: `<strong>Use when:</strong> ${currentPattern.when.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')}` }}
+              />
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">
@@ -412,9 +413,10 @@ export default function PatternInteractiveGuide() {
                     </div>
                   </div>
                   <pre className="p-5 overflow-x-auto text-sm leading-relaxed m-0">
-                    <code className="text-slate-300 font-mono">
-                      {currentPattern.structure}
-                    </code>
+                    <code
+                      className="text-slate-300 font-mono"
+                      dangerouslySetInnerHTML={{ __html: currentPattern.structure.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                    />
                   </pre>
                 </div>
 
@@ -436,9 +438,10 @@ export default function PatternInteractiveGuide() {
                     </span>
                   </div>
                   <pre className="p-5 overflow-x-auto text-sm leading-relaxed m-0">
-                    <code className="text-slate-300 font-mono">
-                      {currentPattern.example}
-                    </code>
+                    <code
+                      className="text-slate-300 font-mono"
+                      dangerouslySetInnerHTML={{ __html: currentPattern.example.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                    />
                   </pre>
                 </div>
               </div>

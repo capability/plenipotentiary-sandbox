@@ -988,9 +988,10 @@ if ($result->isOk()) {
                     </div>
                   </div>
 
-                  <p className="text-base text-slate-600 mb-3 leading-relaxed">
-                    {pattern.description}
-                  </p>
+                  <p
+                    className="text-base text-slate-600 mb-3 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: pattern.description.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                  />
 
                   {/* Spacer */}
                   <div className="flex-grow"></div>
@@ -1033,9 +1034,10 @@ if ($result->isOk()) {
                         <p className="text-xs font-semibold text-slate-600 mb-1">
                           Returns
                         </p>
-                        <p className={`text-xs font-mono ${colors.textDark}`}>
-                          {pattern.returnType}
-                        </p>
+                        <p
+                          className={`text-xs font-mono ${colors.textDark}`}
+                          dangerouslySetInnerHTML={{ __html: pattern.returnType.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                        />
                       </div>
                       <div
                         className={`p-3 ${colors.bgLight} rounded-lg border ${colors.borderLight}`}

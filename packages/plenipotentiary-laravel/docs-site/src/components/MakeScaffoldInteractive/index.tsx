@@ -1084,13 +1084,16 @@ export default function MakeScaffoldInteractive() {
                   </div>
                   <pre className="p-6 overflow-x-auto text-sm leading-relaxed m-0">
                     <code className="text-slate-300 font-mono">
-                      <div className="text-cyan-400 mb-2">
-                        {folderStructure.basePath}
-                      </div>
+                      <div
+                        className="text-cyan-400 mb-2"
+                        dangerouslySetInnerHTML={{ __html: folderStructure.basePath.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                      />
                       {folderStructure.baseFolders.map((folder, idx) => (
-                        <div key={idx} className="text-slate-300">
-                          {folder}
-                        </div>
+                        <div
+                          key={idx}
+                          className="text-slate-300"
+                          dangerouslySetInnerHTML={{ __html: folder.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
+                        />
                       ))}
                       {folderStructure.optionalFolders.length > 0 && (
                         <>
@@ -1099,9 +1102,11 @@ export default function MakeScaffoldInteractive() {
                           </div>
                           {folderStructure.optionalFolders.map(
                             (folder, idx) => (
-                              <div key={idx} className="text-emerald-400">
-                                │ {folder}
-                              </div>
+                              <div
+                                key={idx}
+                                className="text-emerald-400"
+                                dangerouslySetInnerHTML={{ __html: `│ ${folder.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')}` }}
+                              />
                             )
                           )}
                         </>
