@@ -13,6 +13,21 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+// Helper to safely render strings with curly braces
+const SafeText = ({ text }: { text: string }) => {
+  const parts = text.split(/(\{[^}]+\})/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.match(/^\{[^}]+\}$/)) {
+          return <span key={i}>{part}</span>;
+        }
+        return <React.Fragment key={i}>{part}</React.Fragment>;
+      })}
+    </>
+  );
+};
+
 type PatternType = "crud" | "operation" | "rest" | "procedure" | "mcp";
 
 interface Pattern {
@@ -389,10 +404,9 @@ export default function PatternInteractiveGuide() {
 
           <div className="relative">
             <div className="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
-              <p
-                className="text-sm text-slate-700 m-0"
-                dangerouslySetInnerHTML={{ __html: `<strong>Use when:</strong> ${currentPattern.when.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;')}` }}
-              />
+              <p className="text-sm text-slate-700 m-0">
+                <strong>Use when:</strong> <SafeText text={currentPattern.when} />
+              </p>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-8">
@@ -413,10 +427,9 @@ export default function PatternInteractiveGuide() {
                     </div>
                   </div>
                   <pre className="p-5 overflow-x-auto text-sm leading-relaxed m-0">
-                    <code
-                      className="text-slate-300 font-mono"
-                      dangerouslySetInnerHTML={{ __html: currentPattern.structure.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
-                    />
+                    <code className="text-slate-300 font-mono">
+                      <SafeText text={currentPattern.structure} />
+                    </code>
                   </pre>
                 </div>
 
@@ -438,10 +451,9 @@ export default function PatternInteractiveGuide() {
                     </span>
                   </div>
                   <pre className="p-5 overflow-x-auto text-sm leading-relaxed m-0">
-                    <code
-                      className="text-slate-300 font-mono"
-                      dangerouslySetInnerHTML={{ __html: currentPattern.example.replace(/\{/g, '&#123;').replace(/\}/g, '&#125;') }}
-                    />
+                    <code className="text-slate-300 font-mono">
+                      <SafeText text={currentPattern.example} />
+                    </code>
                   </pre>
                 </div>
               </div>
