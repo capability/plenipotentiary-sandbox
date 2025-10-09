@@ -5,11 +5,11 @@ title: Architecture
 
 # Architecture
 
-Promotes understanding vs over abstraction - Four patterns, one stable platform
+Promotes understanding vs over-abstraction - Five patterns, one stable platform
 
 ## Core Principle
 
-**Consistency across heterogeneous integrations.** The real problem isn't vendor churn—it's chaos. When you have Google Ads (SDK), Mailchimp (REST), Stripe (SDK), and legacy SOAP, each looks different in your code. Plenipotentiary provides multiple patterns to match different API shapes while maintaining a uniform interface, each built on Laravel's native tooling and proven libraries like Saloon for HTTP.
+**Abstract the Abstractable (CRUD):** Pleni supports CRUD where it fits but doesn't pretend it covers everything. It offers multiple integration patterns to match different API shapes - each built on Laravel's native tooling and proven libraries like Saloon for HTTP.
 
 ## How Plenipotentiary Works: The Flow
 
@@ -48,7 +48,7 @@ Use any Laravel pattern you know - all return Result&lt;T&gt;
 
 ### Consistent Result Interface
 
-Every pattern returns `Result<CanonicalDTO>` - consistent, predictable, testable. From simplest to most complex syntax:
+Every pattern returns a consistent `Result<T>` interface - whether `Result<CanonicalDTO>` (CRUD) or `Result<{UseCase}DTO>` (Operation). Predictable, testable, transport-agnostic. From simplest to most complex syntax:
 
 #### 1. Simplest: Basic Success Check
 
@@ -109,11 +109,11 @@ Log::info('Campaign created', [
 
 #### What is rawResponse()?
 
-`unwrap()` returns your **canonical DTO** (consistent across all providers).
+`unwrap()` returns your **domain DTO** (CanonicalDTO for CRUD, {UseCase}DTO for Operation - consistent across providers).
 
-`rawResponse()` returns the **actual provider response** (Google's MutateCampaignsResponse, Stripe's Charge object, etc.).
+`rawResponse()` returns the **actual provider response** (Google's MutateCampaignsResponse, Stripe's Charge object, eBay's SearchResponse, etc.).
 
-**Use it for:** Debugging, logging provider-specific metadata, accessing fields not in your canonical DTO.
+**Use it for:** Debugging, logging provider-specific metadata, accessing fields not in your domain DTO.
 
 ### Laravel Integration Examples
 
@@ -244,9 +244,9 @@ if ($result->isOk()) {
 }
 ```
 
-## Four Gateway/Adapter Patterns
+## Five Gateway/Adapter Patterns
 
-Different abstraction levels for different integration types. The patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
+Different patterns for different use cases. Pick the pattern that matches your use case, not a one-size-fits-all wrapper. You can use multiple patterns with the same API. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
 
 ### 1. CRUD Pattern - Abstractable Resource Lifecycle
 
@@ -273,29 +273,50 @@ Full lifecycle management with Create/Read/Update/Delete operations on resource-
 **Repository:** Optional
 **Return Type:** `Result<CanonicalDTO>`
 
-### 2. Operation Pattern - RESTful Use Cases
+### 2. Operation Pattern - Use Case Driven
 
-Action/query operations organized by business use case. Built for REST APIs via Saloon, but not limited to REST. API results often aren't relational - swap to Redis, Mongo, S3, Elasticsearch, or any data store.
+Operations beyond CRUD that don't act on resource fields - search, generate, verify, calculate. If pausing a campaign (updating status field), use CRUD + Laravel Actions instead to avoid Gateway-calling-Gateway issues.
 
-**Transport:** REST (Saloon)
+**Transport:** SDK or REST (Saloon)
 
-**Examples:** eBay Search, OpenAI Completions, Stripe Charges, Custom APIs
+**Examples:** eBay Browse Search, OpenAI Completions, Google Ads Reporting, Price Calculators
 
 **Adapter Files:**
+- DTO/SearchItemsDTO.php
 - Adapter/SearchItems/SearchItemsOperation.php
 - Adapter/CreateCompletion/CreateCompletionOperation.php
-- Adapter/VerifyAvailability/VerifyOperation.php
 
 **Gateway Methods:**
 - `search($dto)`
 - `createCompletion($dto)`
-- `verify($dto)`
 
 **Repository:** Optional/swappable
-**Return Type:** `Result<UseCaseResult>`
-**Highlight:** Leverages Saloon - best-in-class HTTP client
+**Return Type:** `Result<{UseCase}DTO>`
+**Highlight:** For operations that don't map to resource field changes
 
-### 3. Procedure Pattern - Rapid Prototyping
+### 3. REST Pattern - Native Saloon
+
+Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use {UseCase}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
+
+**Transport:** REST (Saloon)
+
+**Examples:** OpenAI Completions, Weather APIs, SendGrid Emails, GitHub API
+
+**Adapter Files:**
+- Rest/Connector.php
+- Requests/CreateCompletionRequest.php
+- Requests/GetWeatherRequest.php
+- (Optional) DTO/CreateCompletionDTO.php
+
+**Gateway Methods:**
+- Mode 1: `$gateway->execute($completionDTO)`
+- Mode 2: `$connector->send(new GetWeatherRequest())`
+
+**Repository:** Flexible
+**Return Type:** `Result<{UseCase}DTO>` OR `Saloon Response`
+**Highlight:** For CRUD operations, use CRUD pattern. REST is for operations and simple calls.
+
+### 4. Procedure Pattern - Rapid Prototyping
 
 Quick prototyping with dynamic operation names for fast iteration and exploration.
 
@@ -312,7 +333,7 @@ Quick prototyping with dynamic operation names for fast iteration and exploratio
 **Repository:** Optional/swappable
 **Return Type:** `Result<mixed>`
 
-### 4. MCP Proxy Pattern - Controlled AI Agent Tool Access (Niche)
+### 5. MCP Proxy Pattern - Controlled AI Agent Tool Access (Niche)
 
 Proxy MCP servers through your Laravel app to add budget tracking, rate limiting, and audit trails when AI agents (Claude, ChatGPT) need controlled access to high-stakes tools (database, email, billing).
 
@@ -352,13 +373,28 @@ All applied via `GatewayPolicy`.
 
 ### Team Collaboration via INPUT_SPEC
 
-All adapters define `INPUT_SPEC` as their contract. When teams share adapters, INPUT_SPEC becomes an invaluable kickstart - everyone knows exactly what fields are needed, validation rules, and defaults.
+All adapters define `INPUT_SPEC` as their contract. When sharing adapters, INPUT_SPEC becomes an invaluable kickstart - self documenting errors ensures everyone knows exactly what fields are needed, validation rules, and defaults. This is what YOUR domain needs, not everything the API/SDK call supports (See step 2 in the developer workflow).
 
 ```php
+// CampaignCreate.php
 public const INPUT_SPEC = [
-    'query' => ['rules' => ['required', 'string', 'min:2']],
-    'limit' => ['rules' => ['integer', 'max:200'], 'default' => 50],
-    'priceMax' => ['rules' => ['numeric']],
+    'name' => [
+        'rules' => ['required', 'string', 'min:1', 'max:128'],
+    ],
+    'status' => [
+        'rules' => ['nullable', 'in:ENABLED,PAUSED,REMOVED'],
+    ],
+    'budgetMicros' => [
+        'rules' => ['nullable', 'numeric', 'min:0'],
+    ],
+    'budgetResourceName' => [
+        'rules' => ['nullable', 'string'],
+    ],
+    // customerId comes from providerContext - auto-injected
+    'providerContext.google.customerId' => [
+        'rules' => ['required', 'string'],
+        'source' => 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
+    ],
 ];
 
 // Gateway validates automatically via INPUT_SPEC

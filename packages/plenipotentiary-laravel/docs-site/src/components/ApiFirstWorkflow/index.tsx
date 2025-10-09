@@ -175,7 +175,7 @@ test('creates campaign with valid input', function() {
     expect($result->isOk())->toBeTrue();
 });`,
     outcome: "Operation tested, API understood, confidence gained",
-    antipattern: "Just call the abstracted operation",
+    antipattern: "Just trust the abstracted operation works",
     icon: CheckSquare,
     color: "green",
   },
@@ -187,9 +187,9 @@ test('creates campaign with valid input', function() {
     description: (
       <>
         Call your operation through the Gateway. It will{" "}
-        <strong>show you exactly what DTO to create</strong>, derived from your
-        INPUT_SPEC. No guessing—the structure comes from what you already
-        defined.
+        <strong>show you exactly what DTO to create</strong>. The Gateway
+        validates incoming data against INPUT_SPEC before calling the adapter—if
+        validation fails, the adapter never runs.
       </>
     ),
     code: `// From your Action/Controller/Job
@@ -252,13 +252,12 @@ interface Result {
     id: "scaffold",
     number: 5,
     title: "Scaffold to Your Spec",
-    principle: "Generate DTO/Factory from the INPUT_SPEC you wrote.",
+    principle: "Generate DTO with factory method from the INPUT_SPEC you wrote.",
     description: (
       <>
-        Generate the DTO and Factory that the Gateway showed you. They're{" "}
-        <strong>based on your INPUT_SPEC</strong>—the contract you defined while
-        learning the API. Tooling follows your understanding, not the other way
-        around.
+        Generate the DTO with its <code>fromArray()</code> factory method.
+        Scaffolding reads INPUT_SPEC and creates type-safe properties with proper
+        validation. Tooling follows your understanding, not the other way around.
       </>
     ),
     code: `// CampaignCanonicalDTO.php - Generated from YOUR spec
@@ -294,15 +293,9 @@ final class CampaignCanonicalDTO implements CanonicalDTOContract
     }
 }
 
-// CampaignCanonicalFactory.php
-final class CampaignCanonicalFactory
-{
-    public function make(array $input): CampaignCanonicalDTO
-    {
-        // Gateway validates against INPUT_SPEC before this runs
-        return CampaignCanonicalDTO::fromArray($input);
-    }
-}`,
+// Gateway uses the factory method directly:
+// $dto = CampaignCanonicalDTO::fromArray($validated);
+// No separate Factory class needed - static method is cleaner`,
     outcome: "Type-safe contracts scaffolded from your understanding",
     antipattern: "Auto-generated DTOs that include fields you don't need",
     icon: FileCode,
@@ -321,41 +314,45 @@ final class CampaignCanonicalFactory
         learning—now they protect your production code.
       </>
     ),
-    code: `// Gateway validates DTO against INPUT_SPEC BEFORE calling adapter
-// If validation fails, adapter never runs
-$result = $gateway->create($dto);
-
-// Provider rejected our data (Google's validation, not ours)
-if ($result->isInvalid()) {
-    // Google Ads rejected the campaign (budget too low, invalid name, etc.)
-    $rawResponse = $result->rawResponse(); // Check Google's actual error
-    return response()->json([
-        'message' => 'Provider rejected data',
-        'violations' => $result->violations()
-    ], 422);
-}
-
-// Provider error (network, API limit, auth failure, etc.)
-if ($result->isErr()) {
-    return $result->error(); // Normalized error structure
-}
-
-// Success: Get canonical DTO AND raw provider response
-if ($result->isOk()) {
-    $campaign = $result->unwrap(); // CampaignCanonicalDTO
-    $rawResponse = $result->rawResponse(); // MutateCampaignsResponse
-
-    Log::info('Campaign created', [
-        'externalId' => $campaign->externalId,
-        'resourceName' => $rawResponse->getResults()[0]->getResourceName()
-    ]);
-}
-
-// Idempotency (automatic via policy)
+    code: `// 1. Idempotency - Automatic via GatewayPolicy
+// Same request twice? Second returns cached result (no duplicate API call)
 $result = $gateway->create($dto, idempotencyKey: 'campaign-' . $dto->name);
 
-// Queueing (Laravel integration)
-dispatch(new CreateCampaignJob($dto));`,
+// 2. Automatic Retries - Exponential backoff on transient errors
+// Network timeout? Gateway retries 3x before failing
+// You didn't write retry logic - GatewayPolicy handles it
+
+// 3. Rate Limiting - Laravel RateLimiter integration
+// Hit Google Ads limit? Gateway delays next request automatically
+// Policy: RateLimiter::for('google-ads', fn() => Limit::perMinute(100))
+
+// 4. Structured Logging - All calls logged via policy
+// Every create/update/delete logged with context:
+// - Input DTO, output DTO, raw response, duration, errors
+// Search logs for "campaign-12345" - see complete history
+
+// 5. Error Mapping - Provider exceptions → Domain exceptions
+// GoogleAdsException → CampaignCreationFailedException
+// Stripe\\Exception → PaymentFailedException
+// Consistent error handling across all providers
+
+// 6. Observability - Metrics via policy
+// Metrics::increment('campaign.created');
+// Metrics::timing('campaign.create.duration', $duration);
+// Metrics::gauge('campaign.active.count', $count);
+
+// Your controller stays simple:
+$result = $gateway->create($dto);
+
+if ($result->isOk()) {
+    return response()->json($result->unwrap());
+}
+
+return response()->json($result->error(), 400);
+
+// All cross-cutting concerns applied automatically via GatewayPolicy
+// - Idempotency, retries, rate limiting, logging, metrics, error mapping
+// You focus on business logic, policies handle robustness`,
     outcome: "Production-ready with idempotency, validation, queueing, logging",
     antipattern: "Ad hoc cross-cutting concerns added later",
     icon: Shield,

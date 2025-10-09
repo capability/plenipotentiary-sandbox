@@ -141,7 +141,7 @@ test('creates campaign with valid input', function() {
 
 **Principle:** Gateway reveals the DTO contract based on YOUR INPUT_SPEC.
 
-Call your operation through the Gateway. It will **show you exactly what DTO to create**, derived from your INPUT_SPEC. No guessing—the structure comes from what you already defined.
+Call your operation through the Gateway. It will **show you exactly what DTO to create**. The Gateway validates incoming data against INPUT_SPEC before calling the adapter—if validation fails, the adapter never runs.
 
 ```php
 // From your Action/Controller/Job
@@ -203,9 +203,9 @@ interface Result {
 
 ### Step 5: Scaffold to Your Spec
 
-**Principle:** Generate DTO/Factory from the INPUT_SPEC you wrote.
+**Principle:** Generate DTO with factory method from the INPUT_SPEC you wrote.
 
-Generate the DTO and Factory that the Gateway showed you. They're **based on your INPUT_SPEC**—the contract you defined while learning the API. Tooling follows your understanding, not the other way around.
+Generate the DTO with its `fromArray()` factory method. Scaffolding reads INPUT_SPEC and creates type-safe properties with proper validation. Tooling follows your understanding, not the other way around.
 
 ```php
 // CampaignCanonicalDTO.php - Generated from YOUR spec
@@ -241,15 +241,9 @@ final class CampaignCanonicalDTO implements CanonicalDTOContract
     }
 }
 
-// CampaignCanonicalFactory.php
-final class CampaignCanonicalFactory
-{
-    public function make(array $input): CampaignCanonicalDTO
-    {
-        // Gateway validates against INPUT_SPEC before this runs
-        return CampaignCanonicalDTO::fromArray($input);
-    }
-}
+// Gateway uses the factory method directly:
+// $dto = CampaignCanonicalDTO::fromArray($validated);
+// No separate Factory class needed - static method is cleaner
 ```
 
 **Our Approach:** Type-safe contracts scaffolded from your understanding

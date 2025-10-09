@@ -221,7 +221,8 @@ export default function PlenipotentiaryArchitecture() {
       ],
       repositoryNote: "Flexible",
       returnType: "Result<{UseCase}DTO> OR Saloon Response",
-      highlight: "For CRUD operations, use CRUD pattern. REST is for operations and simple calls.",
+      highlight:
+        "For CRUD operations, use CRUD pattern. REST is for operations and simple calls.",
     },
     {
       id: "procedure",
@@ -329,13 +330,11 @@ export default function PlenipotentiaryArchitecture() {
             <div>
               <h3 className="font-bold text-slate-900 mb-2">Core Principle</h3>
               <p className="text-slate-700 leading-relaxed">
-                <strong>Consistency across heterogeneous integrations.</strong>{" "}
-                The real problem isn't vendor churn—it's chaos. When you have
-                Google Ads (SDK), Mailchimp (REST), Stripe (SDK), and legacy
-                SOAP, each looks different in your code. Plenipotentiary
-                provides multiple patterns to match different API shapes while
-                maintaining a uniform interface, each built on Laravel's native
-                tooling and proven libraries like Saloon for HTTP.
+                <strong>Abstract the Abstractable (CRUD):</strong> Pleni
+                supports CRUD where it fits but doesn't pretend it covers
+                everything. It offers multiple integration patterns to match
+                different API shapes - each built on Laravel's native tooling
+                and proven libraries like Saloon for HTTP.
               </p>
             </div>
           </div>
@@ -453,11 +452,9 @@ export default function PlenipotentiaryArchitecture() {
               <div className="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg">
                 <p className="text-base text-slate-700 leading-relaxed">
                   <strong>This is how your code will look.</strong> You still
-                  need to code the integration (adapter) - this isn't magic or
-                  over-abstraction. Plenipotentiary is{" "}
-                  <strong>not a universal wrapper</strong>. It's a guided
-                  adapter approach that gives you structure, stability, and
-                  robustness without hiding the API from you.
+                  need to code the integration (adapter). Plenipotentiary offers
+                  a guided adapter approach that gives you structure, stability,
+                  and robustness without hiding the API from you.
                 </p>
               </div>
 
@@ -499,8 +496,8 @@ export default function PlenipotentiaryArchitecture() {
                   <code className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-800 font-mono text-xs">
                     Result&lt;{"{UseCase}"}DTO&gt;
                   </code>{" "}
-                  (Operation). Predictable, testable, transport-agnostic. From simplest to most
-                  complex syntax:
+                  (Operation). Predictable, testable, transport-agnostic. From
+                  simplest to most complex syntax:
                 </p>
 
                 {/* Tab Navigation */}
@@ -653,8 +650,9 @@ Log::info('Campaign created', [
                           <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">
                             unwrap()
                           </code>{" "}
-                          returns your <strong>domain DTO</strong>{" "}
-                          (CanonicalDTO for CRUD, {"{UseCase}"}DTO for Operation - consistent across providers).
+                          returns your <strong>domain DTO</strong> (CanonicalDTO
+                          for CRUD, {"{UseCase}"}DTO for Operation - consistent
+                          across providers).
                         </p>
                         <p className="mt-1">
                           <code className="bg-white px-1.5 py-0.5 rounded text-slate-800 font-mono">
@@ -1208,24 +1206,54 @@ if ($result->isOk()) {
                     as their contract. When sharing adapters, INPUT_SPEC becomes
                     an invaluable kickstart - self documenting errors ensures
                     everyone knows exactly what fields are needed, validation
-                    rules, and defaults.
+                    rules, and defaults. This is what YOUR domain needs, not
+                    everything the API/SDK call supports (See step 4 in the
+                    developer workflow).
                   </p>
                   <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                    <div className="font-mono text-sm">
+                    <div className="font-mono text-xs leading-relaxed">
+                      <div className="text-slate-500">
+                        // CampaignCreate.php
+                      </div>
                       <div className="text-purple-400">
                         public const{" "}
                         <span className="text-yellow-300">INPUT_SPEC</span> = [
                       </div>
                       <div className="ml-4 text-slate-300">
-                        <div>
-                          'query' =&gt; ['rules' =&gt; ['required', 'string',
-                          'min:2']],
+                        <div>'name' =&gt; [</div>
+                        <div className="ml-4">
+                          'rules' =&gt; ['required', 'string', 'min:1',
+                          'max:128'],
                         </div>
-                        <div>
-                          'limit' =&gt; ['rules' =&gt; ['integer', 'max:200'],
-                          'default' =&gt; 50],
+                        <div>],</div>
+                        <div>'status' =&gt; [</div>
+                        <div className="ml-4">
+                          'rules' =&gt; ['nullable',
+                          'in:ENABLED,PAUSED,REMOVED'],
                         </div>
-                        <div>'priceMax' =&gt; ['rules' =&gt; ['numeric']],</div>
+                        <div>],</div>
+                        <div>'budgetMicros' =&gt; [</div>
+                        <div className="ml-4">
+                          'rules' =&gt; ['nullable', 'numeric', 'min:0'],
+                        </div>
+                        <div>],</div>
+                        <div>'budgetResourceName' =&gt; [</div>
+                        <div className="ml-4">
+                          'rules' =&gt; ['nullable', 'string'],
+                        </div>
+                        <div>],</div>
+                        <div className="text-slate-500">
+                          // customerId comes from providerContext -
+                          auto-injected
+                        </div>
+                        <div>'providerContext.google.customerId' =&gt; [</div>
+                        <div className="ml-4">
+                          'rules' =&gt; ['required', 'string'],
+                        </div>
+                        <div className="ml-4">
+                          'source' =&gt; 'env:GOOGLE_ADS_LINKED_CUSTOMER_ID',
+                        </div>
+                        <div>],</div>
                       </div>
                       <div className="text-purple-400">];</div>
                       <div className="mt-3 text-slate-500 italic">

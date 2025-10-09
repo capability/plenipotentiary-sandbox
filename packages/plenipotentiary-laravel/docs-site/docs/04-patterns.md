@@ -5,7 +5,7 @@ title: Patterns
 
 # Patterns
 
-Five proven patterns for different integration styles. Pick the one that matches your API, not a one-size-fits-all wrapper. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
+Five proven patterns for different integration styles. Pick the pattern that matches your use case, not a one-size-fits-all wrapper. You can use multiple patterns with the same API. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface.
 
 ## CRUD Pattern
 
@@ -18,9 +18,7 @@ Use when: Managing resources with Create/Read/Update/Delete lifecycle
 ```
 Pleni/{Provider}/{Domain}/Contexts/{Context}/{Resource}/
   ├── DTO/
-  │   └── {Resource}CanonicalDTO.php
-  ├── Factory/
-  │   └── {Resource}CanonicalFactory.php
+  │   └── {Resource}CanonicalDTO.php  (includes fromArray() factory method)
   ├── Selector/
   │   └── {Resource}Selector.php
   ├── Gateway/
@@ -48,12 +46,12 @@ $result = $gateway->create($campaign);
 
 ### Feature Coverage
 
-- **Type Safety:** 100%
-- **Validation:** 100%
-- **Discoverability:** 100%
-- **Ease of Setup:** 60%
-- **Persistence:** 100%
-- **Idempotency:** 100%
+- **Type Safety:** High
+- **Validation:** High
+- **Discoverability:** High
+- **Ease of Setup:** Medium
+- **Structure Overhead:** Medium
+- **IDE Support:** High
 
 ### Real-World Examples
 
@@ -99,12 +97,12 @@ $result = $gateway->searchItems($dto);
 
 ### Feature Coverage
 
-- **Type Safety:** 100%
-- **Validation:** 100%
-- **Discoverability:** 100%
-- **Ease of Setup:** 80%
-- **Persistence:** 80%
-- **Idempotency:** 100%
+- **Type Safety:** High
+- **Validation:** High
+- **Discoverability:** High
+- **Ease of Setup:** High
+- **Structure Overhead:** High
+- **IDE Support:** High
 
 ### Real-World Examples
 
@@ -117,7 +115,7 @@ $result = $gateway->searchItems($dto);
 
 **Saloon Request/Response**
 
-Use when: Clean RESTful APIs where Saloon's native pattern is perfect
+Use when: Clean RESTful APIs using Saloon's native Request/Response pattern. Two modes: (1) Operation-like use cases use {UseCase}DTO with Gateway for validation/policies, (2) Simple calls use pure Saloon without Gateway overhead. For CRUD operations, use the CRUD pattern instead.
 
 ### Structure
 
@@ -126,50 +124,51 @@ Pleni/{Provider}/{Domain}/
   ├── Shared/Transfer/Rest/
   │   └── {Provider}{Domain}RestConnector.php
   │
-  └── Contexts/Default/{Resource}/
+  └── Contexts/Default/
       └── Requests/
-          ├── CreatePaymentRequest.php
-          ├── GetCustomerRequest.php
-          └── ProcessRefundRequest.php
+          ├── CreateCompletionRequest.php
+          ├── GetWeatherRequest.php
+          └── SendEmailRequest.php
 
-  Optional (if using Gateway pattern):
+  Optional (if using Gateway for validation/policies):
   ├── Shared/Transfer/Rest/
   │   ├── {Provider}{Domain}RestGateway.php
   │   └── {Provider}{Domain}RestAdapter.php
+  └── DTO/
+      └── CreateCompletionDTO.php
 ```
 
 ### Developer Usage
 
 ```php
-// Pure Saloon - use if you don't need Gateway features
-$stripe = new StripeConnector($apiKey);
-$response = $stripe->send(new CreatePaymentRequest(
-    amount: 5000,
-    currency: 'usd'
+// Mode 1: Pure Saloon (no Gateway) - simple calls
+$connector = new WeatherConnector($apiKey);
+$response = $connector->send(new GetWeatherRequest(
+    location: 'London'
 ));
 
-// With Gateway - use when you need validation/policies
-$result = $gateway->createPayment(CreatePaymentDTO::fromArray([
-    'amount' => 5000,
-    'currency' => 'usd'
+// Mode 2: With Gateway + DTO - when you need validation/policies
+$result = $gateway->createCompletion(CreateCompletionDTO::fromArray([
+    'model' => 'gpt-4',
+    'messages' => [...]
 ]));
 ```
 
 ### Feature Coverage
 
-- **Type Safety:** 90%
-- **Validation:** 60%
-- **Discoverability:** 90%
-- **Ease of Setup:** 95%
-- **Persistence:** 20%
-- **Idempotency:** 60%
+- **Type Safety:** High
+- **Validation:** Medium
+- **Discoverability:** High
+- **Ease of Setup:** High
+- **Structure Overhead:** Low
+- **IDE Support:** High
 
 ### Real-World Examples
 
-- Stripe Payments
+- OpenAI Completions
+- Weather APIs
 - SendGrid Emails
-- Twilio SMS
-- Most RESTful APIs
+- GitHub API
 
 ## Procedure Pattern
 
@@ -204,12 +203,12 @@ $result = $gateway->call('searchItems', [
 
 ### Feature Coverage
 
-- **Type Safety:** 40%
-- **Validation:** 40%
-- **Discoverability:** 40%
-- **Ease of Setup:** 100%
-- **Persistence:** 40%
-- **Idempotency:** 40%
+- **Type Safety:** Low
+- **Validation:** Low
+- **Discoverability:** Low
+- **Ease of Setup:** High
+- **Structure Overhead:** Low
+- **IDE Support:** Low
 
 ### Real-World Examples
 
@@ -263,12 +262,12 @@ public function handle(Request $request)
 
 ### Feature Coverage
 
-- **Type Safety:** 100%
-- **Validation:** 100%
-- **Discoverability:** 100%
-- **Ease of Setup:** 70%
-- **Persistence:** 100%
-- **Idempotency:** 100%
+- **Type Safety:** High
+- **Validation:** High
+- **Discoverability:** High
+- **Ease of Setup:** Low
+- **Structure Overhead:** High
+- **IDE Support:** High
 
 ### Real-World Examples
 
@@ -338,6 +337,72 @@ $result = $gateway->proxyTool(
 9. **Gateway proxies** to Email MCP server, tracks budget ($0.52 total), enforces rate limits
 10. **Claude reports:** "Sent 52 re-engagement emails" (complete audit trail logged)
 
+### Real-World Example: AI Debugging with App Telemetry
+
+**Scenario:** AI agent helping you debug production issues by combining MCP database access with your Laravel app's telemetry.
+
+```php
+// DatabaseMcpProxyGateway.php
+public function proxyTool(string $toolName, array $params): Result
+{
+    // Execute original MCP tool
+    $result = $this->mcpAdapter->executeTool($toolName, $params);
+
+    // AUGMENT with your app telemetry
+    if ($toolName === 'query_orders') {
+        $telemetry = $this->telemetryService->getRecentMetrics([
+            'slow_queries_last_hour' => true,
+            'error_rates' => true,
+            'active_sessions' => true,
+        ]);
+
+        // Inject telemetry into response
+        $enrichedResult = array_merge($result, [
+            'app_context' => [
+                'slow_queries' => $telemetry['slow_queries'],
+                'error_rate' => $telemetry['error_rate'],
+                'load' => $telemetry['active_sessions'],
+                'deployment_version' => config('app.version'),
+                'last_deployment' => cache('last_deployment_time'),
+            ]
+        ]);
+
+        return Result::ok($enrichedResult);
+    }
+
+    return Result::ok($result);
+}
+```
+
+**What the AI receives:**
+
+```json
+{
+  "orders": [...],
+  "app_context": {
+    "slow_queries": 15,
+    "error_rate": "0.02%",
+    "load": 234,
+    "deployment_version": "v2.3.1",
+    "last_deployment": "2024-01-15 10:30:00"
+  }
+}
+```
+
+Now when you ask: **"Why are orders slow today?"**
+
+The AI can correlate the data with your app telemetry and respond: *"The slow queries increased from 3 to 15 after the v2.3.1 deployment at 10:30 AM. The error rate also doubled from 0.01% to 0.02%."*
+
+**Other telemetry injection possibilities:**
+- Cache hit/miss rates
+- Queue depths and lag
+- API rate limit remaining
+- Feature flag states
+- A/B test variant assignments
+- Recent error logs and stack traces
+- Database connection pool stats
+- Memory usage and load averages
+
 ### When You Need MCP Proxy
 
 **Use MCP Proxy When:**
@@ -345,11 +410,13 @@ $result = $gateway->proxyTool(
 - You need strict budget limits to prevent runaway costs
 - Compliance requires complete audit trails (GDPR, SOC2)
 - Rate limiting prevents system overload or provider blocking
+- You want to augment MCP responses with your app's telemetry/context
 
 **Skip MCP Proxy When:**
 - Tools are read-only and low-risk (documentation, logs)
 - Claude API's built-in token tracking is sufficient
 - You're comfortable with AI calling MCP servers directly
 - Simple logging at the conversation level is enough
+- No need to inject additional app context
 
 **Key Distinction:** You're **not building MCP servers** (those already exist: @modelcontextprotocol/server-filesystem, server-slack, etc.). You're **proxying them through Laravel HTTP endpoints** to add budget tracking, rate limiting, and audit logging for high-stakes AI agent workflows. This is a niche pattern - most use cases can call Claude/ChatGPT APIs directly (Operation/REST patterns).

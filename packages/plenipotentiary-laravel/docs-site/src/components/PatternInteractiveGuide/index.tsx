@@ -70,8 +70,8 @@ $result = $gateway->create($campaign);`,
       typeSafety: 100,
       validation: 100,
       discoverability: 100,
-      easeOfSetup: 60,
-      structureOverhead: 60,
+      easeOfSetup: 66,
+      structureOverhead: 66,
       ideSupport: 100,
     },
     icon: Database,
@@ -117,8 +117,8 @@ $search->query;       // Original input preserved`,
       typeSafety: 100,
       validation: 100,
       discoverability: 100,
-      easeOfSetup: 80,
-      structureOverhead: 70,
+      easeOfSetup: 100,
+      structureOverhead: 100,
       ideSupport: 100,
     },
     icon: Zap,
@@ -162,12 +162,12 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
       "Most RESTful APIs",
     ],
     features: {
-      typeSafety: 90,
-      validation: 60,
-      discoverability: 90,
-      easeOfSetup: 95,
-      structureOverhead: 30,
-      ideSupport: 95,
+      typeSafety: 100,
+      validation: 66,
+      discoverability: 100,
+      easeOfSetup: 100,
+      structureOverhead: 33,
+      ideSupport: 100,
     },
     icon: Globe,
     color: "cyan",
@@ -199,12 +199,12 @@ $result = $gateway->createPayment(CreatePaymentDTO::fromArray([
       "One-off Operations",
     ],
     features: {
-      typeSafety: 40,
-      validation: 40,
-      discoverability: 40,
+      typeSafety: 33,
+      validation: 33,
+      discoverability: 33,
       easeOfSetup: 100,
-      structureOverhead: 20,
-      ideSupport: 40,
+      structureOverhead: 33,
+      ideSupport: 33,
     },
     icon: Wrench,
     color: "orange",
@@ -251,8 +251,8 @@ public function handle(Request $request)
       typeSafety: 100,
       validation: 100,
       discoverability: 100,
-      easeOfSetup: 70,
-      structureOverhead: 90,
+      easeOfSetup: 33,
+      structureOverhead: 100,
       ideSupport: 100,
     },
     icon: Brain,
@@ -262,9 +262,9 @@ public function handle(Request $request)
 
 const FeatureBar = ({ label, value }: { label: string; value: number }) => {
   const getBarColor = (val: number) => {
-    if (val >= 80) return "bg-gradient-to-r from-emerald-400 to-emerald-600";
-    if (val >= 40) return "bg-gradient-to-r from-amber-400 to-amber-600";
-    return "bg-gradient-to-r from-slate-400 to-slate-600";
+    if (val >= 80) return "bg-gradient-to-r from-emerald-400 to-emerald-600"; // High (100%)
+    if (val >= 50) return "bg-gradient-to-r from-amber-400 to-amber-600"; // Medium (66%)
+    return "bg-gradient-to-r from-slate-400 to-slate-600"; // Low (33%)
   };
 
   return (
@@ -333,8 +333,11 @@ export default function PatternInteractiveGuide() {
             <h2 className="text-3xl font-bold text-slate-900 m-0">Patterns</h2>
           </div>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-            Five proven patterns for different integration styles. Pick the one
-            that matches your API, not a one-size-fits-all wrapper. These patterns help you handle <strong>heterogeneous integrations</strong> (SDKs, REST, SOAP) with a consistent interface.
+            Five proven patterns for different integration styles. Pick the pattern
+            that matches your use case, not a one-size-fits-all wrapper. You can use
+            multiple patterns with the same API. These patterns help you handle{" "}
+            <strong>heterogeneous integrations</strong> (SDKs, REST, SOAP) with a
+            consistent interface.
           </p>
         </div>
 
@@ -636,7 +639,7 @@ $result = $gateway->proxyTool(
                 </div>
               </div>
 
-              {/* Real Example */}
+              {/* Real Example 1: Customer Support */}
               <div className="bg-white rounded-lg p-4 border border-purple-200">
                 <h4 className="font-semibold text-base text-slate-900 mb-3">
                   Real-World Example: Customer Support Agent
@@ -673,6 +676,66 @@ $result = $gateway->proxyTool(
                     <strong>Claude responds to user</strong> with the answer
                   </li>
                 </ol>
+              </div>
+
+              {/* Real Example 2: Telemetry Injection */}
+              <div className="bg-white rounded-lg p-4 border border-purple-200">
+                <h4 className="font-semibold text-base text-slate-900 mb-3">
+                  Real-World Example: AI Debugging with App Telemetry
+                </h4>
+                <p className="text-sm text-slate-600 mb-3">
+                  <strong>Scenario:</strong> AI agent helping you debug
+                  production by combining MCP database access with your Laravel
+                  app's telemetry.
+                </p>
+                <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg mb-3">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-slate-800 border-b border-slate-700">
+                    <div className="flex gap-2">
+                      <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    </div>
+                    <span className="text-xs text-slate-400 ml-2 font-mono">
+                      DatabaseMcpProxyGateway.php
+                    </span>
+                  </div>
+                  <pre className="p-4 overflow-x-auto text-xs leading-relaxed m-0">
+                    <code className="text-slate-300 font-mono">
+                      {`// Execute original MCP tool
+$result = $this->mcpAdapter->executeTool($toolName, $params);
+
+// AUGMENT with your app telemetry
+if ($toolName === 'query_orders') {
+    $enriched = array_merge($result, [
+        'app_context' => [
+            'slow_queries' => 15,
+            'error_rate' => '0.02%',
+            'deployment_version' => 'v2.3.1',
+            'last_deployment' => '2024-01-15 10:30:00'
+        ]
+    ]);
+    return Result::ok($enriched);
+}`}
+                    </code>
+                  </pre>
+                </div>
+                <p className="text-sm text-slate-700 mb-2">
+                  <strong>You ask:</strong>{" "}
+                  <em>"Why are orders slow today?"</em>
+                </p>
+                <p className="text-sm text-slate-700">
+                  <strong>AI responds:</strong>{" "}
+                  <em>
+                    "The slow queries increased from 3 to 15 after the v2.3.1
+                    deployment at 10:30 AM. The error rate also doubled from
+                    0.01% to 0.02%."
+                  </em>
+                </p>
+                <div className="mt-3 text-xs text-slate-600">
+                  <strong>Other telemetry you can inject:</strong> Cache hit
+                  rates, queue depths, feature flags, A/B test variants, error
+                  logs, database pool stats.
+                </div>
               </div>
             </div>
           </div>

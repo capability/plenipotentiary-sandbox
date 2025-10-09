@@ -671,9 +671,7 @@ export default function MakeScaffoldInteractive() {
       selectedPattern === "crud"
         ? [
             "├── DTO/",
-            "│   └── {Resource}CanonicalDTO.php",
-            "├── Factory/",
-            "│   └── {Resource}CanonicalFactory.php",
+            "│   └── {Resource}CanonicalDTO.php (includes fromArray() factory method)",
             "├── Selector/",
             "│   └── {Resource}Selector.php",
             "├── Gateway/",

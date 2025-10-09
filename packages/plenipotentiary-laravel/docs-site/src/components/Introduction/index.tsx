@@ -119,9 +119,6 @@ export default function Introduction() {
                 The Integration Challenge
               </h3>
               <p className="text-base text-slate-700 leading-relaxed mb-6">
-                <strong className="text-emerald-700">
-                  The real problem isn't vendor churn—it's chaos.
-                </strong>{" "}
                 Your Laravel app integrates with{" "}
                 <strong className="text-emerald-700">
                   3-5+ different types of services
