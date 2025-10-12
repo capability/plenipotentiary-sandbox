@@ -1,0 +1,8 @@
+{
+  "label": "Core Concepts",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Core architectural concepts, patterns, and workflows that make up Plenipotentiary."
+  }
+}

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 title: Architecture
 ---
 
@@ -14,8 +14,8 @@ Promotes understanding vs over-abstraction - Five patterns, one stable platform
 ## How Plenipotentiary Works: The Flow
 
 ```
-Your Application → Gateway → Adapter → External API
-(You write)      (Provided) (You write) (Third-party)
+Your Application    →   Gateway     →   Adapter         →   External API
+(You write)             (Provided)      (You write)         (Third-party)
 ```
 
 ### Your Application Domain
