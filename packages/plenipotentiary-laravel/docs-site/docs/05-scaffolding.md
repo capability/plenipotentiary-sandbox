@@ -17,6 +17,20 @@ The scaffold creates your **folder structure**, **stub files**, and **base class
 
 ✓ **Configure cross-cutting concerns** – Add policies, queuing, caching, logging as needed
 
+## A Note About the Repository Pattern
+
+Pleni offers a Repository layer but there is no mandate. If your use case is simple and you're happy with direct Eloquent usage, you do not need to adopt the Repository pattern.
+
+But bear in mind: **not all API results are relational**. This is one of the rare cases when you might actually want to use different persistence layers for different types of analysis:
+
+- **Time-series data:** API analytics or metrics are better stored in InfluxDB or TimescaleDB for efficient time-based queries
+- **Search results:** Product catalogs or eBay listings benefit from Elasticsearch for full-text search and faceted filtering
+- **Document-based data:** OpenAI completions or unstructured API responses fit better in MongoDB or DynamoDB
+- **Session/cache data:** Temporary API results or rate limit tracking work well in Redis for fast access and automatic expiration
+- **File-based storage:** Large responses or blob data (images, PDFs) may be better stored in S3 with metadata in your database
+
+The Repository pattern gives you the flexibility to swap storage layers without changing your application code—exactly what you need when different data types require different analysis tools.
+
 ## Patterns Available
 
 ### CRUD Pattern

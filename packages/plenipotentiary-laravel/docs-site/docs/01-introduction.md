@@ -31,6 +31,7 @@ This means:
 - **Testability** - same mocking strategy for all integrations
 - **Discoverability** - new dev sees Gateway pattern everywhere
 - **Swappability** - change providers without touching business logic
+- **Focusability** - AI code agents perform best within defined, repeatable patterns. Repetition turns AI output into reliability.
 
 ## What This Is NOT
 

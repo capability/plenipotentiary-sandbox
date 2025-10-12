@@ -44,17 +44,25 @@ This monorepo contains:
 
 ### The Problem
 
-**The real problem isn't vendor churn—it's chaos.** Your Laravel app integrates with Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP services, and internal APIs. Each implemented differently by different developers. Without a pattern, every integration is a special snowflake: different error handling, different return types, different testing strategies, different logging approaches.
+Your Laravel app integrates with **3-5+ different types of services**: Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP, internal APIs. Each implemented differently.
 
 ### The Solution
 
 **The Gateway/Adapter pattern** provides a stable architectural boundary between your application and external services. Plenipotentiary gives you:
 
-✅ **Patterns** - Five proven patterns (CRUD, Operation, Procedure, REST, MCP Proxy) that match different API shapes
-✅ **Scaffolding** - Artisan commands that generate folder structure, DTOs, Gateways, Adapters, and tests
-✅ **Contracts** - Consistent `Result<T>` interface across all integrations with `isOk()`, `isErr()`, `isInvalid()`, `unwrap()`
-✅ **Stability** - Gateway layer stays stable when provider APIs change—only Adapters need updates
-✅ **Cross-cutting Concerns** - Idempotency, logging, retries, rate limiting, error mapping applied consistently
+- ✅ **Consistency** - Uniform interface across SDK, REST, SOAP, MCP integrations
+- ✅ **Predictability** - Same patterns and contracts for ANY external service
+- ✅ **Testability** - Same mocking strategy for all integrations
+- ✅ **Discoverability** - New developers see Gateway pattern everywhere
+- ✅ **Swappability** - Change providers without touching business logic
+- ✅ **Focusability** - AI code agents perform best within defined, repeatable patterns. Repetition turns AI output into reliability.
+
+**What you get:**
+- **Patterns** - Five proven patterns (CRUD, Operation, Procedure, REST, MCP Proxy) that match different API shapes
+- **Scaffolding** - Artisan commands that generate folder structure, DTOs, Gateways, Adapters, and tests
+- **Contracts** - Consistent `Result<T>` interface across all integrations with `isOk()`, `isErr()`, `isInvalid()`, `unwrap()`
+- **Stability** - Gateway layer stays stable when provider APIs change—only Adapters need updates
+- **Cross-cutting Concerns** - Idempotency, logging, retries, rate limiting, error mapping applied consistently
 
 ### What You Still Write
 
@@ -87,8 +95,10 @@ Pleni/Google/Ads/Contexts/Default/Campaign/
 ├── DTO/CampaignCanonicalDTO.php
 ├── Gateway/CampaignCrudGateway.php
 ├── Adapter/
+│   ├── CampaignCrudAdapter.php  
 │   ├── CampaignCreate.php    ← You implement this
 │   ├── CampaignRead.php      ← You implement this
+│   ├── CampaignReadMany.php  ← You implement this
 │   ├── CampaignUpdate.php    ← You implement this
 │   └── CampaignDelete.php    ← You implement this
 ├── Actions/
@@ -131,13 +141,13 @@ public function store(Request $req, CampaignGateway $gateway)
 
 Plenipotentiary provides **five patterns** for different API shapes. These patterns help you handle **heterogeneous integrations** (SDKs, REST, SOAP) with a consistent interface:
 
-| Pattern | Use When | Example APIs | Return Type |
-|---------|----------|--------------|-------------|
-| **CRUD** | Managing resources with full lifecycle | Google Ads Campaigns, Stripe Customers | `Result<{Resource}CanonicalDTO>` |
-| **Operation** | Operations beyond CRUD that don't act on resource fields (search, calculate, verify) | eBay Search, OpenAI Completions | `Result<{UseCase}DTO>` |
-| **Procedure** | Quick prototypes, admin tools | Internal APIs, one-off scripts | `Result<mixed>` |
-| **REST** | Clean RESTful APIs using Saloon | CRUD-like: Todo API, Operation-like: OpenAI, Simple: Weather API | `Result<CanonicalDTO>` OR `Result<{UseCase}DTO>` OR `Saloon Response` |
-| **MCP Proxy** | Controlled AI tool access (niche) | Proxy Database/Filesystem MCP servers | `Result<McpToolResult>` |
+| Pattern       | Use When                                                                             | Example APIs                                                     | Return Type                                                           |
+|---------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------|-----------------------------------------------------------------------|
+| **CRUD**      | Managing resources with full lifecycle                                               | Google Ads Campaigns, Stripe Customers                           | `Result<{Resource}CanonicalDTO>`                                      |
+| **Operation** | Operations beyond CRUD that don't act on resource fields (search, calculate, verify) | eBay Search, OpenAI Completions                                  | `Result<{UseCase}DTO>`                                                |
+| **Procedure** | Quick prototypes, admin tools                                                        | Internal APIs, one-off scripts                                   | `Result<mixed>`                                                       |
+| **REST**      | Clean RESTful APIs using Saloon                                                      | CRUD-like: Todo API, Operation-like: OpenAI, Simple: Weather API | `Result<CanonicalDTO>` OR `Result<{UseCase}DTO>` OR `Saloon Response` |
+| **MCP Proxy** | Controlled AI tool access (niche)                                                    | Proxy Database/Filesystem MCP servers                            | `Result<McpToolResult>`                                               |
 
 **Learn more:** [Pattern Documentation](https://pleni.dev/docs/patterns)
 

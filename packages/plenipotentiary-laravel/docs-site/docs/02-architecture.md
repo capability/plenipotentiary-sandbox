@@ -373,7 +373,7 @@ All applied via `GatewayPolicy`.
 
 ### Team Collaboration via INPUT_SPEC
 
-All adapters define `INPUT_SPEC` as their contract. When sharing adapters, INPUT_SPEC becomes an invaluable kickstart - self documenting errors ensures everyone knows exactly what fields are needed, validation rules, and defaults. This is what YOUR domain needs, not everything the API/SDK call supports (See step 2 in the developer workflow).
+All adapters define `INPUT_SPEC` as their contract. When sharing adapters, INPUT_SPEC becomes an invaluable kickstart - self documenting errors ensures everyone knows exactly what fields are needed, validation rules, and defaults. This is what YOUR domain needs, not everything the API/SDK call supports (See step 4 in the developer workflow).
 
 ```php
 // CampaignCreate.php
