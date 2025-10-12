@@ -669,27 +669,324 @@ $this->mock(CampaignCrudGateway::class, function ($mock) {
 - AI cannot design new features
 - AI excels at keeping existing code working as APIs evolve
 
-## Scaffolding Test Generation
+## What Can Be Auto-Generated? (70-80% of Tests)
 
-### Future: Auto-Generate Test Harness
+Most test structure and boilerplate can be scaffolded automatically, with developers filling in provider-specific details.
+
+### Fully Auto-Generated (100%)
+
+#### 1. DTO Validation Tests
+
+**From INPUT_SPEC → Complete Tests**
+
+Since `INPUT_SPEC` is machine-readable, DTO validation tests are **100% auto-generated**:
+
+```php
+// You write INPUT_SPEC in adapter:
+public const INPUT_SPEC = [
+    'name' => ['rules' => ['required', 'string', 'max:128']],
+    'status' => ['rules' => ['nullable', 'in:ENABLED,PAUSED']],
+    'budgetMicros' => ['rules' => ['nullable', 'numeric', 'min:0']],
+];
+
+// Scaffolding generates complete CampaignCanonicalDTOTest.php:
+/** @test */
+public function it_validates_name_is_required() {
+    $dto = CampaignCanonicalDTO::fromArray(['name' => '']);
+    $this->assertValidationFails($dto, 'name');
+}
+
+/** @test */
+public function it_validates_name_max_length() {
+    $dto = CampaignCanonicalDTO::fromArray(['name' => str_repeat('x', 129)]);
+    $this->assertValidationFails($dto, 'name');
+}
+
+/** @test */
+public function it_validates_status_enum_values() {
+    $dto = CampaignCanonicalDTO::fromArray(['status' => 'INVALID']);
+    $this->assertValidationFails($dto, 'status');
+}
+
+/** @test */
+public function it_validates_budget_is_numeric() {
+    $dto = CampaignCanonicalDTO::fromArray(['budgetMicros' => 'not-a-number']);
+    $this->assertValidationFails($dto, 'budgetMicros');
+}
+
+/** @test */
+public function it_validates_budget_is_positive() {
+    $dto = CampaignCanonicalDTO::fromArray(['budgetMicros' => -1000]);
+    $this->assertValidationFails($dto, 'budgetMicros');
+}
+```
+
+**No human input needed.** All generated from INPUT_SPEC rules.
+
+#### 2. Gateway Orchestration Tests (95%)
+
+Gateway tests are **pattern-based**, so they're fully scaffolded:
+
+```php
+// 100% generated - tests the Gateway pattern itself
+/** @test */
+public function it_validates_input_before_calling_adapter() { ... }
+
+/** @test */
+public function it_applies_idempotency_policy() { ... }
+
+/** @test */
+public function it_applies_rate_limiting_policy() { ... }
+
+/** @test */
+public function it_applies_error_mapping_policy() { ... }
+```
+
+### Mostly Auto-Generated (90%)
+
+#### 3. Unit Test Templates
+
+**Generated with TODOs:**
+
+```php
+class CampaignCreateTest extends TestCase
+{
+    /** @test */
+    public function it_creates_campaign_with_valid_input()
+    {
+        // Arrange - 100% generated
+        $mockClient = Mockery::mock(CampaignServiceClient::class);
+
+        // TODO: Replace with actual Google Ads API response structure
+        $mockResponse = $this->createMockResponse([
+            'resourceName' => 'customers/123/campaigns/456',
+            // ← Human adds real API response fields here
+        ]);
+
+        $mockClient->shouldReceive('mutateCampaigns')
+            ->once()
+            ->andReturn($mockResponse);
+
+        $adapter = new CampaignCreate($mockClient);
+
+        // DTO generated from INPUT_SPEC
+        $dto = CampaignCanonicalDTO::fromArray([
+            'name' => 'Test Campaign',
+            'status' => 'PAUSED',
+            'budgetMicros' => 50000,
+        ]);
+
+        // Act - 100% generated
+        $result = $adapter->perform($dto);
+
+        // Assert - 90% generated
+        $this->assertTrue($result->isOk());
+        $this->assertEquals('456', $result->unwrap()->externalId);
+        // TODO: Add provider-specific assertions
+    }
+
+    /** @test */
+    public function it_handles_provider_api_errors()
+    {
+        $mockClient = Mockery::mock(CampaignServiceClient::class);
+
+        // TODO: Replace with actual Google Ads error codes
+        $mockClient->shouldReceive('mutateCampaigns')
+            ->andThrow(new \Google\ApiCore\ApiException('RATE_LIMIT_EXCEEDED', 429));
+
+        $adapter = new CampaignCreate($mockClient);
+        $dto = CampaignCanonicalDTO::fromArray(['name' => 'Test']);
+
+        $result = $adapter->perform($dto);
+
+        $this->assertTrue($result->isErr());
+        // TODO: Verify error code mapping is correct
+    }
+}
+```
+
+**Human fills in:**
+- Real API response structures (from provider docs)
+- Provider-specific error codes
+- Additional assertions for complex responses
+
+### Partially Auto-Generated (70%)
+
+#### 4. Integration Tests
+
+```php
+/** @test */
+public function it_creates_campaign_end_to_end()
+{
+    // 100% generated - uses test doubles
+    $gateway = app(CampaignCrudGateway::class);
+
+    // DTO fields generated from INPUT_SPEC
+    $dto = CampaignCanonicalDTO::fromArray([
+        'name' => 'Integration Test Campaign',
+        'status' => 'PAUSED',
+        'budgetMicros' => 50000,
+    ]);
+
+    $result = $gateway->create($dto);
+
+    // Standard assertions - 100% generated
+    $this->assertTrue($result->isOk());
+    $this->assertNotNull($result->unwrap()->externalId);
+
+    // TODO: Add provider-specific validations
+    // Example: Verify campaign appears in test Google Ads account
+}
+```
+
+## What Requires Human Input (20-30%)
+
+### 1. Provider Response Structures
+
+```php
+// Human must copy from provider documentation
+$mockResponse = $this->createMockResponse([
+    'resourceName' => 'customers/123/campaigns/456',  // ← From Google Ads docs
+    'campaign' => [
+        'id' => 456,
+        'name' => 'Test Campaign',
+        'status' => 'PAUSED',
+        'advertisingChannelType' => 'SEARCH',  // ← Provider-specific fields
+    ],
+]);
+```
+
+### 2. Provider Error Codes
+
+```php
+// Human documents actual provider errors
+->andThrow(new \Google\ApiCore\ApiException('RATE_LIMIT_EXCEEDED', 429));
+//                                          ↑ From Google Ads error codes
+```
+
+### 3. Business Logic Tests
+
+```php
+// Human writes domain-specific tests
+/** @test */
+public function it_enforces_minimum_daily_budget_for_google_ads()
+{
+    // Business rule: Google Ads requires minimum $1/day budget
+    $dto = CampaignCanonicalDTO::fromArray([
+        'budgetMicros' => 500000, // $0.50 - too low
+    ]);
+
+    $result = $gateway->create($dto);
+    $this->assertTrue($result->isInvalid());
+}
+```
+
+### 4. Edge Cases
+
+```php
+// Human adds domain-specific edge cases
+/** @test */
+public function it_prevents_duplicate_campaign_names_in_same_account() { ... }
+
+/** @test */
+public function it_handles_campaigns_with_unicode_characters() { ... }
+```
+
+## Scaffolding Command
 
 ```bash
 php artisan pleni:make:crud \
   --provider=Google \
   --domain=Ads \
   --resource=Campaign \
-  --with-tests  # Generates full test harness
+  --with-tests
 ```
 
-**Generated tests:**
-- Unit tests for each adapter operation (Create, Read, Update, Delete)
-- DTO validation tests
-- Gateway orchestration tests
-- Integration tests with test doubles
-- Feature tests for Laravel integration
-- Example fixtures and mocks
+### What Gets Generated
 
-**AI maintenance enabled from day one.**
+**Immediately after scaffolding:**
+
+```
+✅ Tests/Unit/Adapter/
+   ├── CampaignCreateTest.php       (90% complete - has TODOs)
+   ├── CampaignReadTest.php         (90% complete - has TODOs)
+   ├── CampaignUpdateTest.php       (90% complete - has TODOs)
+   ├── CampaignDeleteTest.php       (90% complete - has TODOs)
+
+✅ Tests/Unit/DTO/
+   └── CampaignCanonicalDTOTest.php (100% complete - no TODOs)
+
+✅ Tests/Unit/Gateway/
+   └── CampaignCrudGatewayTest.php  (100% complete - no TODOs)
+
+✅ Tests/Integration/
+   ├── CampaignCreateIntegrationTest.php  (70% complete - has TODOs)
+   ├── CampaignReadIntegrationTest.php    (70% complete - has TODOs)
+   └── ...
+
+✅ Tests/Feature/
+   └── CampaignGatewayFeatureTest.php     (80% complete - has TODOs)
+```
+
+### Developer Task: Fill TODOs (2-4 hours)
+
+1. **Read provider documentation** - Understand actual API responses
+2. **Copy response structures** - Add real field names and types
+3. **Document error codes** - List provider-specific errors
+4. **Add business assertions** - Domain-specific validations
+5. **Write edge case tests** - Use case specific scenarios
+
+**Result:** Comprehensive test suite ready for AI maintenance.
+
+## Test Generation Workflow
+
+### Phase 1: Scaffold (5 minutes)
+
+```bash
+php artisan pleni:make:crud \
+  --provider=Google \
+  --domain=Ads \
+  --resource=Campaign \
+  --with-tests
+```
+
+**Output:**
+- ✅ 70-80% of tests auto-generated
+- ✅ Clear TODOs for remaining work
+- ✅ All boilerplate done
+- ✅ Test structure complete
+
+### Phase 2: Human Completes (2-4 hours)
+
+Developer fills TODOs:
+1. Provider response structures
+2. Error code documentation
+3. Business logic assertions
+4. Edge case coverage
+
+### Phase 3: AI Maintains (Automated)
+
+With complete tests, AI can:
+- ✅ Update when provider SDK changes
+- ✅ Refactor test code
+- ✅ Add new test cases following patterns
+- ✅ Keep tests passing through mechanical changes
+
+## Summary: Scaffolding Coverage
+
+| Test Type             | Auto-Generated | Human Input | Total Time               |
+|-----------------------|----------------|-------------|--------------------------|
+| DTO Validation        | 100%           | 0%          | 0 min (fully scaffolded) |
+| Gateway Orchestration | 95%            | 5%          | 10 min (verify policies) |
+| Unit Tests (Adapter)  | 90%            | 10%         | 30-60 min per operation  |
+| Integration Tests     | 70%            | 30%         | 20-40 min per operation  |
+| Feature Tests         | 80%            | 20%         | 15-30 min                |
+
+**Total for CRUD pattern (5 operations):**
+- **Scaffolded in:** 5 minutes (command execution)
+- **Human completion:** 2-4 hours (provider details + business logic)
+- **Total test files:** 20-25 files
+- **Result:** Comprehensive test suite enabling AI maintenance
 
 ## Best Practices
 

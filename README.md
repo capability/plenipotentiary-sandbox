@@ -104,7 +104,26 @@ Pleni/Google/Ads/Contexts/Default/Campaign/
 ├── Actions/
 │   └── CreateCampaignAction.php
 └── Tests/
-    └── CampaignCrudTest.php
+    ├── Unit/
+    │   ├── Adapter/
+    │   │   ├── CampaignCreateTest.php
+    │   │   ├── CampaignReadTest.php
+    │   │   ├── CampaignReadManyTest.php
+    │   │   ├── CampaignUpdateTest.php
+    │   │   └── CampaignDeleteTest.php
+    │   ├── DTO/
+    │   │   └── CampaignCanonicalDTOTest.php
+    │   └── Support/
+    │       ├── CampaignIdempotencyHintsTest.php
+    │       └── GoogleAdsErrorMapperTest.php
+    ├── Integration/
+    │   ├── CampaignCreateIntegrationTest.php
+    │   ├── CampaignReadIntegrationTest.php
+    │   ├── CampaignReadManyIntegrationTest.php
+    │   ├── CampaignUpdateIntegrationTest.php
+    │   └── CampaignDeleteIntegrationTest.php
+    └── Feature/
+        └── CampaignGatewayFeatureTest.php
 ```
 
 ### Usage in Your App
