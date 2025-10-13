@@ -401,6 +401,22 @@ public const INPUT_SPEC = [
 // Teams immediately understand the contract
 ```
 
+## Adapter Layer
+
+**Gateway delegates to Adapters** - Adapters contain your actual API integration code, implemented according to the pattern you selected (CRUD, Operation, REST, Procedure, or MCP Proxy). Each adapter translates between your domain (DTOs, INPUT_SPEC) and the provider's API (SDK calls, HTTP requests, SOAP).
+
+When provider APIs change, you update the Adapter implementation - the Gateway contract and your application code stay stable.
+
+*You write this*
+
+## External API
+
+**Adapters call External APIs** - The third-party services your application integrates with: Stripe, Google Ads, Mailchimp, OpenAI, eBay, or any custom API. Your application never calls these directly - always through the Gateway → Adapter layer.
+
+This indirection provides stability, testability, and consistent error handling across all your integrations.
+
+*Third-party service*
+
 ### Understanding the MCP Proxy Pattern: Controlled AI Tool Access
 
 **This is a niche pattern** for when AI agents (Claude, ChatGPT) need access to high-stakes tools (database queries, email sending, billing operations) and you need **budget tracking, rate limiting, and complete audit trails**. Your Laravel app acts as a **controlled proxy** between the AI agent and existing MCP servers.

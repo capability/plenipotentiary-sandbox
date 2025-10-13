@@ -22,6 +22,7 @@ import {
   PlayCircle,
   List,
   MousePointer,
+  ChevronDown,
 } from "lucide-react";
 
 // Helper to safely render strings with curly braces
@@ -50,6 +51,7 @@ export default function PlenipotentiaryArchitecture() {
   const [activeLaravelTab, setActiveLaravelTab] = useState<
     "controller" | "job" | "command" | "action"
   >("controller");
+  const [showMcpDetails, setShowMcpDetails] = useState<boolean>(false);
 
   const getColorClasses = (color: string) => {
     const colorMap = {
@@ -1147,17 +1149,13 @@ if ($result->isOk()) {
         {/* 3. Gateway Layer */}
         <div className="mb-8">
           <div className="bg-gradient-to-r from-emerald-50 via-blue-50 to-emerald-50 rounded-2xl p-8 border-2 border-emerald-400 shadow-xl">
-            <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-8 h-8 text-emerald-600" />
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">
-                  Gateway Layer: Your Stable Platform
-                </h2>
-                <p className="text-slate-600">
-                  The stable boundary that provides robustness
-                </p>
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              <Shield className="w-7 h-7 text-emerald-600" />
+              Gateway Layer: Your Stable Platform
+            </h2>
+            <p className="text-slate-600 mb-4">
+              The stable boundary that provides robustness
+            </p>
 
             <div className="mb-6 p-4 bg-white rounded-xl border border-emerald-200">
               <p className="text-base text-slate-700 leading-relaxed">
@@ -1288,28 +1286,48 @@ if ($result->isOk()) {
             <div className="mt-6 p-5 bg-pink-50 rounded-xl border border-pink-200">
               <div className="flex items-start gap-3">
                 <Brain className="w-6 h-6 text-pink-600 flex-shrink-0 mt-1" />
-                <div>
+                <div className="flex-1">
                   <h4 className="font-bold text-pink-900 mb-3">
                     Understanding the MCP Proxy Pattern: Controlled AI Tool
                     Access
                   </h4>
 
-                  <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
-                    <p>
-                      <strong>This is a niche pattern</strong> for when AI
-                      agents (Claude, ChatGPT) need access to high-stakes tools
-                      (database queries, email sending, billing operations) and
-                      you need{" "}
-                      <strong>
-                        budget tracking, rate limiting, and complete audit
-                        trails
-                      </strong>
-                      . Your Laravel app acts as a{" "}
-                      <strong>controlled proxy</strong> between the AI agent and
-                      existing MCP servers.
-                    </p>
+                  <p className="text-sm text-slate-700 leading-relaxed mb-4">
+                    <strong>This is a niche pattern</strong> for when AI
+                    agents (Claude, ChatGPT) need access to high-stakes tools
+                    (database queries, email sending, billing operations) and
+                    you need{" "}
+                    <strong>
+                      budget tracking, rate limiting, and complete audit
+                      trails
+                    </strong>
+                    . Your Laravel app acts as a{" "}
+                    <strong>controlled proxy</strong> between the AI agent and
+                    existing MCP servers.
+                  </p>
 
-                    <div className="bg-white p-4 rounded-lg border border-pink-200">
+                  {/* Accordion Toggle Button */}
+                  <button
+                    onClick={() => setShowMcpDetails(!showMcpDetails)}
+                    className="w-full p-3 rounded-lg border-2 transition-all text-left flex items-center justify-between bg-white hover:bg-pink-50 mb-4"
+                    style={{
+                      borderColor: showMcpDetails ? '#ec4899' : '#fecdd3'
+                    }}
+                  >
+                    <span className="text-sm font-semibold text-pink-900">
+                      {showMcpDetails ? 'Hide' : 'Show'} Detailed MCP Proxy Information
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-pink-600 transition-transform ${
+                        showMcpDetails ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {/* Expandable Content */}
+                  {showMcpDetails && (
+                    <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
+                      <div className="bg-white p-4 rounded-lg border border-pink-200">
                       <h5 className="font-bold text-slate-900 mb-2 text-sm">
                         The MCP Proxy Flow
                       </h5>
@@ -1502,23 +1520,105 @@ if ($result->isOk()) {
                       </div>
                     </div>
 
-                    <p className="bg-white p-3 rounded border border-pink-200 mb-0">
-                      <strong className="text-pink-900">
-                        Key Distinction:
-                      </strong>{" "}
-                      You're <strong>not building MCP servers</strong> (those
-                      already exist: @modelcontextprotocol/server-filesystem,
-                      server-slack, etc.). You're{" "}
-                      <strong>
-                        proxying them through Laravel HTTP endpoints
-                      </strong>{" "}
-                      to add budget tracking, rate limiting, and audit logging
-                      for high-stakes AI agent workflows. This is a niche
-                      pattern - most use cases can call Claude/ChatGPT APIs
-                      directly (Operation/REST patterns).
-                    </p>
-                  </div>
+                      <p className="bg-white p-3 rounded border border-pink-200 mb-0">
+                        <strong className="text-pink-900">
+                          Key Distinction:
+                        </strong>{" "}
+                        You're <strong>not building MCP servers</strong> (those
+                        already exist: @modelcontextprotocol/server-filesystem,
+                        server-slack, etc.). You're{" "}
+                        <strong>
+                          proxying them through Laravel HTTP endpoints
+                        </strong>{" "}
+                        to add budget tracking, rate limiting, and audit logging
+                        for high-stakes AI agent workflows. This is a niche
+                        pattern - most use cases can call Claude/ChatGPT APIs
+                        directly (Operation/REST patterns).
+                      </p>
+                    </div>
+                  )}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Flow Arrow */}
+        <div className="flex justify-center mb-8">
+          <div className="flex flex-col items-center">
+            <div className="text-sm font-semibold text-slate-600 mb-2">
+              delegates
+            </div>
+            <ArrowRight className="w-6 h-6 text-slate-400 rotate-90" />
+          </div>
+        </div>
+
+        {/* 4. Adapter Layer */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-purple-50 via-purple-100 to-purple-50 rounded-2xl p-8 border-2 border-purple-400 shadow-xl">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              <Layers className="w-7 h-7 text-purple-600" />
+              Adapter Layer
+            </h2>
+            <p className="text-slate-600 mb-4">
+              Your actual API integration code
+            </p>
+
+            <div className="p-4 bg-white rounded-xl border border-purple-200">
+              <p className="text-base text-slate-700 leading-relaxed mb-3">
+                <strong>Gateway delegates to Adapters</strong> - Adapters
+                contain your actual API integration code, implemented according
+                to the pattern you selected (CRUD, Operation, REST, Procedure,
+                or MCP Proxy). Each adapter translates between your domain
+                (DTOs, INPUT_SPEC) and the provider's API (SDK calls, HTTP
+                requests, SOAP).
+              </p>
+              <p className="text-base text-slate-700 leading-relaxed">
+                When provider APIs change, you update the Adapter implementation
+                - the Gateway contract and your application code stay stable.
+              </p>
+              <div className="mt-3 text-sm text-slate-500 italic">
+                You write this
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Flow Arrow */}
+        <div className="flex justify-center mb-8">
+          <div className="flex flex-col items-center">
+            <div className="text-sm font-semibold text-slate-600 mb-2">
+              calls
+            </div>
+            <ArrowRight className="w-6 h-6 text-slate-400 rotate-90" />
+          </div>
+        </div>
+
+        {/* 5. External API */}
+        <div className="mb-8">
+          <div className="bg-gradient-to-r from-orange-50 via-orange-100 to-orange-50 rounded-2xl p-8 border-2 border-orange-400 shadow-xl">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2 flex items-center gap-3">
+              <Globe className="w-7 h-7 text-orange-600" />
+              External API
+            </h2>
+            <p className="text-slate-600 mb-4">
+              Third-party services
+            </p>
+
+            <div className="p-4 bg-white rounded-xl border border-orange-200">
+              <p className="text-base text-slate-700 leading-relaxed mb-3">
+                <strong>Adapters call External APIs</strong> - The third-party
+                services your application integrates with: Stripe, Google Ads,
+                Mailchimp, OpenAI, eBay, or any custom API. Your application
+                never calls these directly - always through the Gateway →
+                Adapter layer.
+              </p>
+              <p className="text-base text-slate-700 leading-relaxed">
+                This indirection provides stability, testability, and consistent
+                error handling across all your integrations.
+              </p>
+              <div className="mt-3 text-sm text-slate-500 italic">
+                Third-party service
               </div>
             </div>
           </div>
