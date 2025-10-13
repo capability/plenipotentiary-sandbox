@@ -5,28 +5,26 @@ title: Introduction
 
 # Plenipotentiary
 
-**Scaffolding and patterns for Laravel API/SDK integrations**
+**Structure, scaffolding, and sanity for API/SDK integrations in Laravel**
 
 ![Plenipotentiary Logo](/img/pleni_logo.svg)
 
+A Laravel package helping developers structure API integrations so SDKs, REST APIs, SOAP services and MCP proxies (niche) all feel consistent, testable, and swappable. Provides Gateway/Adapter patterns and Artisan scaffolding. You write the integration code; the package adds validation, error handling, idempotency tracking, and a uniform Result interface across all your external services.
+
 ## The Integration Challenge
 
-**The real problem isn't vendor churn—it's chaos.** Your Laravel app integrates with **3-5+ heterogeneous services**: Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP, internal APIs. Each implemented differently.
+Your Laravel app integrates with **3-5+ different types of services**: Google Ads (official SDK), Mailchimp (REST), Stripe (official SDK), legacy SOAP services and MCP proxies (niche), internal APIs. Each implemented differently.
 
-**Without a pattern, every integration is a special snowflake:** different error handling, different return types, different testing strategies, different logging approaches. Whether you're a solo developer managing 8 integrations or a team of 10, this heterogeneity creates maintenance chaos.
-
-### The Core Problem
-
-How do you **make heterogeneous integrations look uniform in YOUR system** without losing access to provider-specific features or building leaky abstractions?
+**Without a pattern, every integration is a special snowflake:** different error handling, different return types, different testing strategies, different logging approaches. Whether you're a solo developer managing 8 integrations or a team of 10, this mix of different integration types creates maintenance chaos.
 
 ## Goal
 
-**Uniform interface for heterogeneous integrations.**
+**A consistent way to work with diverse APIs.**
 
 Provide **architectural patterns and tooling** so that all integrations look consistent from the app's perspective, while allowing full access to underlying APIs.
 
 This means:
-- **Consistency** across SDK, REST, SOAP, MCP integrations
+- **Consistency** across SDK, REST, SOAP, and (optional) MCP proxy integrations
 - **Predictability** in how your app interacts with ANY external service
 - **Testability** - same mocking strategy for all integrations
 - **Discoverability** - new dev sees Gateway pattern everywhere
@@ -47,7 +45,7 @@ This means:
 
 The **Gateway/Adapter pattern** provides a stable interception point between your application and external services. Once this structure is in place, you gain a **single, consistent location** to layer in production-grade features.
 
-Without it, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across heterogeneous integrations (SDKs, REST, SOAP).
+Without it, these concerns scatter across controllers, jobs, and service classes. Impossible to maintain consistently across diverse integrations (SDKs, REST, SOAP).
 
 > The pattern isn't magic; it's discipline. It gives you one place to solve each problem, once, for all integrations.
 
